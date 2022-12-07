@@ -1,0 +1,22 @@
+package com.example.appcommerceclone.di
+
+import android.content.Context
+import com.example.appcommerceclone.data.connection.ConnectivityObserver
+import com.example.appcommerceclone.data.connection.DefaultConnectivityObserver
+import dagger.Module
+import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
+
+@Module
+@InstallIn(SingletonComponent::class)
+object ConnectivityModule {
+
+    @Singleton
+    @Provides
+    fun provideConnectivityObserver(@ApplicationContext context: Context): ConnectivityObserver {
+        return DefaultConnectivityObserver(context)
+    }
+}

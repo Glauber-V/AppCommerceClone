@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/products_fragment"
+        android:icon="@drawable/ic_home_icon"
+        android:title="@string/menu_title_home"/>
+
+    <item
+        android:id="@+id/user_profile_fragment"
+        android:icon="@drawable/ic_profile_icon"
+        android:title="@string/menu_title_profile"/>
+
+    <item
+        android:id="@+id/favorites_fragment"
+        android:icon="@drawable/ic_favorites_icon"
+        android:title="@string/menu_title_favorites"/>
+
+    <item
+        android:id="@+id/orders_fragment"
+        android:icon="@drawable/ic_history_icon"
+        android:title="@string/menu_title_my_orders"/>
+
+    <item
+        android:id="@+id/categories_fragment"
+        android:icon="@drawable/ic_category_icon"
+        android:title="@string/menu_title_categories"/>
+
+    <item
+        android:id="@+id/cart_fragment"
+        android:icon="@drawable/ic_shop_cart_icon"
+        android:title="@string/menu_title_cart"/>
+
+</menu>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="TextAppearance.AppCommerce.Base" parent="">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:letterSpacing">0.0325</item>
+        <item name="android:textColor">@color/black_900_100</item>
+        <item name="android:textStyle">normal</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Headline.Small" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Headline.Medium" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Headline.Large" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">22sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Subtitle.Small" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Subtitle.Medium" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Body.Small" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Body.Medium" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Body.Large" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Body.ExtraLarge" parent="TextAppearance.AppCommerce.Base">
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Button.Small" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="TextAppearance.AppCommerce.Button.Medium" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/alata</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+</resources>

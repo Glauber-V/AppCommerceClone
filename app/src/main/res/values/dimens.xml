@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="stroke_size_small">1dp</dimen>
+    <dimen name="stroke_size_medium">2dp</dimen>
+    <dimen name="stroke_size_large">3dp</dimen>
+
+    <dimen name="chip_unchecked_stroke_width">1dp</dimen>
+    <dimen name="chip_checked_stroke_width">2dp</dimen>
+
+    <dimen name="small_elevation">2dp</dimen>
+    <dimen name="medium_elevation">4dp</dimen>
+    <dimen name="high_elevation">6dp</dimen>
+
+</resources>

@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="product"
+            type="com.example.appcommerceclone.model.product.Product"/>
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/background_color">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/product_full_detail_image"
+                setProductImageFromUrl="@{product.imageUrl}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:adjustViewBounds="true"
+                android:elevation="@dimen/small_elevation"
+                android:maxHeight="300dp"
+                android:minHeight="200dp"
+                android:scaleType="centerInside"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/ShapeAppearance.AppCommerce.Image.Detail.Square"
+                tools:src="@drawable/banner_men_s_clothing"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/product_full_detail_add_to_favorites"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                app:backgroundTint="@color/background_color"
+                app:elevation="@dimen/small_elevation"
+                app:fabSize="mini"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_full_detail_name"
+                app:srcCompat="@drawable/ic_favorites_icon"
+                app:tint="@color/primaryColor"/>
+
+            <TextView
+                android:id="@+id/product_full_detail_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="@{product.name}"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Headline.Medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_full_detail_image"
+                tools:text="Product Name"/>
+
+            <TextView
+                android:id="@+id/product_full_detail_price"
+                setProductPrice="@{product.price}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Headline.Small"
+                app:layout_constraintEnd_toStartOf="@+id/product_full_detail_add_to_favorites"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_full_detail_name"
+                tools:text="R$ 49,90"/>
+
+            <TextView
+                android:id="@+id/product_full_detail_description"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:text="@{product.description}"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Body.Medium"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/product_full_detail_add_to_favorites"
+                tools:text="@string/test_text"/>
+
+            <View
+                android:id="@+id/product_full_detail_view_1"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/view_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_full_detail_description"/>
+
+            <TextView
+                android:id="@+id/product_full_detail_available_colors"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/product_detail_available_colors"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Headline.Small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_full_detail_view_1"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/product_full_detail_colors_chip_group"
+                android:layout_width="0dp"
+                android:layout_height="55dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                app:chipSpacingHorizontal="0dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_full_detail_available_colors"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_color_1"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:chipBackgroundColor="@color/chip_color_1"
+                    app:chipStrokeColor="@color/chip_unchecked_stroke_color"
+                    app:chipStrokeWidth="1dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_color_2"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:chipBackgroundColor="@color/chip_color_2"
+                    app:chipStrokeColor="@color/chip_unchecked_stroke_color"
+                    app:chipStrokeWidth="1dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_color_3"
+                    android:layout_width="64dp"
+                    android:layout_height="match_parent"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:chipBackgroundColor="@color/chip_color_3"
+                    app:chipStrokeColor="@color/chip_unchecked_stroke_color"
+                    app:chipStrokeWidth="1dp"/>
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <View
+                android:id="@+id/product_full_detail_view_2"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@color/view_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_full_detail_colors_chip_group"/>
+
+            <TextView
+                android:id="@+id/product_full_detail_available_sizes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/product_detail_available_sizes"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Headline.Small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_full_detail_view_2"/>
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/product_full_detail_sizes_chip_group"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="20dp"
+                app:chipSpacingHorizontal="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/product_full_detail_available_sizes"
+                app:singleLine="true"
+                app:singleSelection="true">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_size_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/product_detail_chip_size_1"
+                    android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+                    app:chipBackgroundColor="@color/white_100"
+                    app:chipCornerRadius="8dp"
+                    app:chipStrokeColor="@color/chip_unchecked_stroke_color"
+                    app:chipStrokeWidth="1dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_size_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/product_detail_chip_size_2"
+                    android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+                    app:chipBackgroundColor="@color/white_100"
+                    app:chipCornerRadius="8dp"
+                    app:chipStrokeColor="@color/chip_unchecked_stroke_color"
+                    app:chipStrokeWidth="1dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_size_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:checkable="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:text="@string/product_detail_chip_size_3"
+                    android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+                    app:chipBackgroundColor="@color/white_100"
+                    app:chipCornerRadius="8dp"
+                    app:chipStrokeColor="@color/chip_unchecked_stroke_color"
+                    app:chipStrokeWidth="1dp"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_size_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="@string/product_detail_chip_size_4"
+                    android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+                    app:chipBackgroundColor="@color/white_100"
+                    app:chipCornerRadius="8dp"
+                    app:chipStrokeColor="@color/chip_unchecked_stroke_color"
+                    app:chipStrokeWidth="1dp"/>
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/product_full_detail_add_to_cart"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="96dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                app:icon="@drawable/ic_shop_cart_icon"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconTint="@color/icon_color_black"
+                app:layout_constraintBottom_toBottomOf="@+id/product_full_detail_buy_now"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/product_full_detail_buy_now"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/product_full_detail_buy_now"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/product_detail_buy_now"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Button.Small"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/product_full_detail_add_to_cart"
+                app:layout_constraintTop_toBottomOf="@id/product_full_detail_sizes_chip_group"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>
+

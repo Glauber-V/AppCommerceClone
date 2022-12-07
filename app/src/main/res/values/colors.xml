@@ -1,0 +1,67 @@
+<!--?xml version="1.0" encoding="UTF-8"?-->
+<resources>
+
+    <color name="primaryColor">#c62828</color>
+    <color name="primaryLightColor">#D64D42</color>
+    <color name="primaryDarkColor">#8e0000</color>
+    <color name="onPrimaryColor">#ffffff</color>
+
+    <color name="secondaryColor">#F0F0F0</color>
+    <color name="secondaryLightColor">#ffffff</color>
+    <color name="secondaryDarkColor">#E6E6E6</color>
+    <color name="onSecondaryColor">#000000</color>
+
+    <color name="onBackgroundColor">#ffffff</color>
+    <color name="onSurfaceColor">#000000</color>
+    <color name="onErrorColor">#c62828</color>
+
+    <color name="background_color">#FAFAFA</color>
+    <color name="background_color_alt">#F0F0F0</color>
+
+    <color name="white_100">#ffffff</color>
+    <color name="white_090">#E6FFFFFF</color>
+    <color name="white_080">#CCFFFFFF</color>
+    <color name="white_060">#99FFFFFF</color>
+    <color name="white_030">#4DFFFFFF</color>
+    <color name="white_000">#00FFFFFF</color>
+
+    <color name="black_900_100">#000000</color>
+    <color name="black_900_090">#E6000000</color>
+    <color name="black_900_080">#CC000000</color>
+    <color name="black_900_060">#99000000</color>
+    <color name="black_900_040">#66000000</color>
+    <color name="black_900_030">#4D000000</color>
+    <color name="black_900_020">#33000000</color>
+    <color name="black_900_010">#1A000000</color>
+    <color name="black_900_005">#0D000000</color>
+
+    <color name="shimmer_color">#C8C8C8</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="view_divider">#4D000000</color>
+
+    <color name="chip_color_1">#FFC107</color>
+    <color name="chip_color_2">#03A9F4</color>
+    <color name="chip_color_3">#8BC34A</color>
+    <color name="chip_unchecked_stroke_color">#33000000</color>
+    <color name="chip_checked_stroke_color">#CC000000</color>
+    <color name="chip_checked_stroke_color_2">@color/primaryColor</color>
+
+    <color name="status_bar_color">#99C62828</color>
+    <color name="nav_bar_color">#66000000</color>
+
+    <color name="stroke_color_small">#33000000</color>
+    <color name="stroke_color_light">#ffffff</color>
+    <color name="stroke_color_dark">#CC000000</color>
+
+    <color name="progress_track_color">#0D000000</color>
+    <color name="progress_indicator_color">#c62828</color>
+
+    <color name="snackbar_bg_color">#CC000000</color>
+    <color name="snackbar_text_color">#000000</color>
+
+    <color name="icon_color_black">#333333</color>
+    <color name="icon_color_red">#8e0000</color>
+
+</resources>

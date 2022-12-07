@@ -1,0 +1,35 @@
+package com.example.appcommerceclone.adapters.binding
+
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
+import com.example.appcommerceclone.R
+import com.example.appcommerceclone.model.order.OrderedProduct
+import java.text.NumberFormat
+
+@BindingAdapter("setProductImageFromUrl")
+fun ImageView.setProductImageFromUrl(imageUrl: String?) {
+    Glide.with(context)
+        .load(imageUrl)
+        .fitCenter()
+        .override(800, 480)
+        .error(R.drawable.ic_broken_image)
+        .into(this)
+}
+
+@BindingAdapter("setProductPrice")
+fun TextView.setProductPrice(price: Double) {
+    text = NumberFormat.getCurrencyInstance().format(price)
+}
+
+@BindingAdapter("setProductQuantity")
+fun TextView.setProductQuantity(quantity: Int) {
+    text = quantity.toString()
+}
+
+@BindingAdapter("setOrderedProductPrice")
+fun TextView.setOrderedProductPrice(orderedProduct: OrderedProduct) {
+    val finalPrice = orderedProduct.product.price * orderedProduct.quantity
+    text = NumberFormat.getCurrencyInstance().format(finalPrice)
+}

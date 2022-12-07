@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="20dp">
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/user_login_progression"
+        android:layout_width="150dp"
+        android:layout_height="0dp"
+        android:indeterminate="true"
+        app:indicatorColor="@color/progress_indicator_color"
+        app:indicatorSize="150dp"
+        app:layout_constraintBottom_toBottomOf="@+id/user_login_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:trackColor="@color/progress_track_color"
+        app:trackThickness="4dp"/>
+
+    <ImageView
+        android:id="@+id/user_login_profile"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:src="@drawable/ic_profile_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/user_login_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        app:endIconMode="clear_text"
+        app:layout_constraintBottom_toTopOf="@+id/user_login_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_login_profile"
+        app:startIconDrawable="@drawable/ic_profile_icon"
+        app:startIconTint="@color/icon_color_black">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/user_login_username_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/user_hint_username"
+            android:inputType="textPersonName"
+            android:textAppearance="@style/TextAppearance.AppCommerce.Body.Medium"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/user_login_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:endIconMode="password_toggle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_login_username"
+        app:startIconDrawable="@drawable/ic_password_icon"
+        app:startIconTint="@color/icon_color_black">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/user_login_password_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/user_hint_password"
+            android:inputType="textPassword"
+            android:textAppearance="@style/TextAppearance.AppCommerce.Body.Medium"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/user_login_btn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:elevation="@dimen/small_elevation"
+        android:text="@string/user_login_btn"
+        android:textAppearance="@style/TextAppearance.AppCommerce.Button.Medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_login_password"/>
+
+    <TextView
+        android:id="@+id/user_login_no_account_warning"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/user_no_account_warning"
+        android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_login_btn"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/user_login_register_btn"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/user_register_btn"
+        android:textAppearance="@style/TextAppearance.AppCommerce.Button.Small"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_login_no_account_warning"
+        app:layout_constraintVertical_bias="0.10"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

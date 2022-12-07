@@ -1,0 +1,125 @@
+<resources>
+
+    <string name="app_name">E-Commerce</string>
+
+    <!--Fragments Names-->
+    <string name="fragment_products_label">@string/app_name</string>
+    <string name="fragment_product_detail_label" translatable="false">Product Name</string>
+    <string name="fragment_user_login_label">Log In</string>
+    <string name="fragment_user_profile_label">Profile</string>
+    <string name="fragment_user_profile_editable">Profile</string>
+    <string name="fragment_user_register_label">Register</string>
+    <string name="fragment_categories_label">Categories</string>
+    <string name="fragment_orders_label">My Orders</string>
+    <string name="fragment_cart_label">Cart</string>
+    <string name="fragment_favorites_label">My favorites</string>
+    <string name="fragment_connection_label">Connection Status</string>
+
+    <!--Menu Options-->
+    <string name="menu_title_home">Home</string>
+    <string name="menu_title_profile">Profile</string>
+    <string name="menu_title_login">Login</string>
+    <string name="menu_title_my_orders">My Orders</string>
+    <string name="menu_title_categories">Categories</string>
+    <string name="menu_title_cart">Cart</string>
+    <string name="menu_title_favorites">Favorites</string>
+    <string name="menu_title_search">Search</string>
+    <string name="menu_title_logout">Logout</string>
+    <string name="menu_title_edit">Edit</string>
+    <string name="menu_drawer_title">Login</string>
+    <string name="menu_drawer_toggle_open">Open</string>
+    <string name="menu_drawer_toggle_close">Close</string>
+
+    <!--User Hints-->
+    <string name="user_hint_name_first_name">First Name</string>
+    <string name="user_hint_name_last_name">Last Name</string>
+    <string name="user_hint_username">Username</string>
+    <string name="user_hint_password">Password</string>
+    <string name="user_hint_email" translatable="false">Email</string>
+    <string name="user_hint_phone">Phone</string>
+    <string name="user_hint_address_city">City</string>
+    <string name="user_hint_address_number">Number</string>
+    <string name="user_hint_address_street">Street</string>
+    <string name="user_hint_address_zipcode">Zipcode</string>
+
+    <!--User Errors-->
+    <string name="user_error_not_found">User doesn\'t exist</string>
+    <string name="user_error_account_already_exist">Account already exist</string>
+    <string name="user_error_no_email">Type your email</string>
+    <string name="user_error_no_username">Type your username</string>
+    <string name="user_error_no_password">Type your password</string>
+
+    <!--Profile Fragment-->
+    <string name="user_profile_welcome_message">Welcome %1s</string>
+    <string name="user_profile_updated_message">Profile updated</string>
+    <string name="user_profile_start_update_btn">Update profile</string>
+    <string name="user_profile_cancel_update_btn">Cancel</string>
+    <string name="user_profile_save_update_btn">Save</string>
+    <string name="user_profile_logout_btn">Logout</string>
+
+    <!--Login Fragment-->
+    <string name="user_login_btn">Login</string>
+    <string name="user_no_account_warning">Don\'t have an account?</string>
+    <string name="user_login_successfully_message">Welcome %1s</string>
+
+    <!--Register Fragment-->
+    <string name="user_register_btn">Register</string>
+    <string name="user_register_successfully_message">Account successfully created - not actually</string>
+
+    <!--Categories Fragment-->
+    <string name="category_all_products">All Products</string>
+    <string name="category_name_electronics">Electronics</string>
+    <string name="category_name_jewelery">Jewelery</string>
+    <string name="category_name_mens_clothing">Men\'s clothing</string>
+    <string name="category_name_women_s_clothing">Women\'s clothing</string>
+
+    <!--Product Detail Fragment-->
+    <string name="product_detail_favorites_warning">Product already added to your favorites</string>
+    <string name="product_detail_add_to_cart">Add to cart</string>
+    <string name="product_detail_buy_now">Buy now</string>
+    <string name="product_detail_thanks_for_purchase">Thanks for your purchase</string>
+    <string name="product_detail_available_colors">Select color</string>
+    <string name="product_detail_chip_color_1">Color 1</string>
+    <string name="product_detail_chip_color_2">Color 2</string>
+    <string name="product_detail_chip_color_3">Color 3</string>
+    <string name="product_detail_available_sizes">Size</string>
+    <string name="product_detail_chip_size_1" translatable="false">P</string>
+    <string name="product_detail_chip_size_2" translatable="false">M</string>
+    <string name="product_detail_chip_size_3" translatable="false">G</string>
+    <string name="product_detail_chip_size_4" translatable="false">GG</string>
+    <string name="product_detail_chip_color_warning">Select a color</string>
+    <string name="product_detail_chip_size_warning">Select a size</string>
+    <string name="product_detail_chip_color_and_size_warning">Select a color and a size</string>
+
+    <!--Cart Fragment-->
+    <string name="cart_total_price">Total: %1s</string>
+    <string name="cart_proceed_to_checkout">Proceed to checkout</string>
+    <string name="cart_confirm_purchase_btn">Confirm</string>
+    <string name="cart_cancel_purchase_btn">Cancel</string>
+    <string name="cart_dialog_title">Abandon Cart?</string>
+    <string name="cart_dialog_positive">Abandon</string>
+    <string name="cart_dialog_negative">Cancel</string>
+
+    <!--Order Fragment-->
+    <string name="order_item_id">Order Id: %1s</string>
+    <string name="order_item_date">Date: %1s</string>
+    <string name="order_item_products">Products: %1s</string>
+    <string name="order_item_total_price">Total: %1s</string>
+    <string name="order_status_pendent">Pendent</string>
+    <string name="order_status_paid">Paid</string>
+    <string name="order_status_processed">Processed</string>
+    <string name="order_status_canceled">Canceled</string>
+    <string name="order_method_credit_card">Credit Card</string>
+    <string name="order_method_none">None</string>
+
+    <!--Connection Fragment-->
+    <string name="connection_lost">No Internet connection</string>
+    <string name="connection_re_establish">Connection re-establish</string>
+    <string name="connection_try_again_btn">Try Again</string>
+
+    <!-- Test -->
+    <string name="test_text" translatable="false">Shape resources consist mainly of ShapeAppearance styles.
+        These are analogous to TextAppearance styles for type theming; in this case a “style” only concerned with shape attributes.
+    </string>
+
+</resources>

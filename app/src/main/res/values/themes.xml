@@ -1,0 +1,27 @@
+<resources>
+
+    <style name="Theme.AppCommerce" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+
+        <!--Colors-->
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryVariant">@color/primaryLightColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="colorSecondary">@color/secondaryColor</item>
+        <item name="colorSecondaryVariant">@color/secondaryLightColor</item>
+
+        <item name="colorOnPrimary">@color/onPrimaryColor</item>
+        <item name="colorOnSecondary">@color/onSecondaryColor</item>
+        <item name="colorOnBackground">@color/onBackgroundColor</item>
+        <item name="colorOnSurface">@color/onSurfaceColor</item>
+        <item name="colorOnError">@color/onErrorColor</item>
+
+        <!--Style Overrides-->
+        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
+        <item name="chipStyle">@style/Widget.MaterialComponents.Chip.Choice</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.AppCommerce.MaterialAlertDialog</item>
+        <item name="android:actionMenuTextAppearance">@style/TextAppearance.AppCommerce.Body.Small</item>
+        <item name="actionMenuTextAppearance">@style/TextAppearance.AppCommerce.Body.Small</item>
+
+    </style>
+
+</resources>

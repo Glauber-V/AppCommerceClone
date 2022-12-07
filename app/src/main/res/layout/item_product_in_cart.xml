@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="orderedProduct"
+            type="com.example.appcommerceclone.model.order.OrderedProduct"/>
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="125dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        app:cardElevation="@dimen/small_elevation"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.Right">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/product_image"
+                setProductImageFromUrl="@{orderedProduct.product.imageUrl}"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:scaleType="fitCenter"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/ShapeAppearance.AppCommerce.Image.Cart"
+                tools:src="@drawable/banner_men_s_clothing"/>
+
+            <TextView
+                android:id="@+id/product_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@{orderedProduct.product.name}"
+                android:textAlignment="textStart"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/product_image"
+                app:layout_constraintTop_toTopOf="@+id/product_image"
+                tools:text="Product Name"/>
+
+            <TextView
+                android:id="@+id/product_price"
+                setOrderedProductPrice="@{orderedProduct}"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAlignment="textStart"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/product_image"
+                app:layout_constraintTop_toBottomOf="@+id/product_name"
+                tools:text="R$ 29,90"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cart_decrease_quantity"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                app:icon="@drawable/ic_remove_icon"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconTint="@color/icon_color_black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/product_image"
+                app:layout_constraintTop_toBottomOf="@+id/product_price"/>
+
+            <TextView
+                android:id="@+id/product_quantity"
+                setProductQuantity="@{orderedProduct.quantity}"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Body.Medium"
+                app:layout_constraintBottom_toBottomOf="@+id/cart_decrease_quantity"
+                app:layout_constraintStart_toEndOf="@+id/cart_decrease_quantity"
+                app:layout_constraintTop_toTopOf="@+id/cart_decrease_quantity"
+                tools:text="2"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/cart_increase_quantity"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                app:icon="@drawable/ic_add_icon"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconTint="@color/icon_color_black"
+                app:layout_constraintBottom_toBottomOf="@+id/product_quantity"
+                app:layout_constraintStart_toEndOf="@+id/product_quantity"
+                app:layout_constraintTop_toTopOf="@+id/product_quantity"
+                app:layout_constraintVertical_bias="0.0"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</layout>
