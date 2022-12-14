@@ -32,11 +32,11 @@
                 android:adjustViewBounds="true"
                 android:padding="5dp"
                 android:scaleType="fitXY"
-                android:src="@drawable/ic_profile_icon"
+                android:src="@drawable/ic_baseline_user_24"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.Image.FullSquare"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.Image.RoundedCorners"
                 app:strokeColor="@color/stroke_color_dark"
                 app:strokeWidth="@dimen/stroke_size_small"/>
 
@@ -50,7 +50,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_profile_image"
-                app:startIconDrawable="@drawable/ic_email_icon">
+                app:startIconDrawable="@drawable/ic_baseline_email_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_profile_email_text"
@@ -74,7 +74,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_profile_email"
-                app:startIconDrawable="@drawable/ic_profile_icon">
+                app:startIconDrawable="@drawable/ic_baseline_user_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_profile_username_text"
@@ -148,7 +148,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_profile_first_name"
-                app:startIconDrawable="@drawable/ic_password_icon">
+                app:startIconDrawable="@drawable/ic_baseline_lock_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_profile_password_text"
@@ -172,7 +172,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_profile_password"
-                app:startIconDrawable="@drawable/ic_phone_icon">
+                app:startIconDrawable="@drawable/ic_baseline_phone_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_profile_phone_text"
@@ -219,7 +219,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/user_profile_zipcode"
-                app:startIconDrawable="@drawable/ic_city_icon">
+                app:startIconDrawable="@drawable/ic_baseline_location_city_24">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/user_profile_city_text"

@@ -5,8 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_color"
-    android:padding="4dp">
+    android:background="@color/background_color">
 
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/products_shimmer"
@@ -36,15 +35,15 @@
         android:id="@+id/products_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="true"
+        android:clipToPadding="false"
         android:orientation="vertical"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:itemCount="6"
-        tools:listitem="@layout/item_product"
+        app:layout_constraintVertical_bias="0.0"
         tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

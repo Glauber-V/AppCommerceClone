@@ -5,20 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    android:paddingStart="10dp"
-    android:paddingTop="20dp"
-    android:paddingEnd="20dp">
+    android:paddingTop="@dimen/dimen_size_large"
+    android:paddingEnd="@dimen/dimen_size_large">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/product_category_all"
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginTop="10dp"
-        app:cardElevation="@dimen/small_elevation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.Right">
+        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small">
 
         <TextView
             android:layout_width="wrap_content"
@@ -35,11 +35,12 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginTop="10dp"
-        app:cardElevation="@dimen/small_elevation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_category_all"
-        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.Right">
+        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small">
 
         <TextView
             android:layout_width="wrap_content"
@@ -56,11 +57,12 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginTop="10dp"
-        app:cardElevation="@dimen/small_elevation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_category_electronics"
-        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.Right">
+        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small">
 
         <TextView
             android:layout_width="wrap_content"
@@ -77,11 +79,12 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginTop="10dp"
-        app:cardElevation="@dimen/small_elevation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_category_jewelery"
-        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.Right">
+        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small">
 
         <TextView
             android:layout_width="wrap_content"
@@ -98,11 +101,12 @@
         android:layout_width="match_parent"
         android:layout_height="65dp"
         android:layout_marginTop="10dp"
-        app:cardElevation="@dimen/small_elevation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_category_mens_clothing"
-        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.Right">
+        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small">
 
         <TextView
             android:layout_width="wrap_content"

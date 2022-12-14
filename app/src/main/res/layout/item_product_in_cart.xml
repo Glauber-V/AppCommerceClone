@@ -12,43 +12,51 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="125dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        app:cardElevation="@dimen/small_elevation"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.Right">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_small"
+        android:layout_marginEnd="@dimen/dimen_size_large"
+        android:layout_marginBottom="@dimen/dimen_size_small"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="@dimen/dimen_size_small">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/product_image"
                 setProductImageFromUrl="@{orderedProduct.product.imageUrl}"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="@dimen/dimen_size_medium"
+                android:layout_marginTop="@dimen/dimen_size_small"
+                android:layout_marginBottom="@dimen/dimen_size_small"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearance="@style/ShapeAppearance.AppCommerce.Image.Cart"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.Image.FullRounded"
+                tools:scaleType="centerCrop"
                 tools:src="@drawable/banner_men_s_clothing"/>
 
             <TextView
                 android:id="@+id/product_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginTop="@dimen/dimen_size_small"
+                android:layout_marginStart="@dimen/dimen_size_large"
+                android:layout_marginEnd="@dimen/dimen_size_medium"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:text="@{orderedProduct.product.name}"
                 android:textAlignment="textStart"
-                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Medium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/product_image"
-                app:layout_constraintTop_toTopOf="@+id/product_image"
+                app:layout_constraintTop_toTopOf="parent"
                 tools:text="Product Name"/>
 
             <TextView
@@ -56,14 +64,13 @@
                 setOrderedProductPrice="@{orderedProduct}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/dimen_size_small"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAlignment="textStart"
                 android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/product_image"
+                app:layout_constraintEnd_toEndOf="@+id/product_name"
+                app:layout_constraintStart_toStartOf="@+id/product_name"
                 app:layout_constraintTop_toBottomOf="@+id/product_name"
                 tools:text="R$ 29,90"/>
 
@@ -72,43 +79,44 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="8dp"
-                app:icon="@drawable/ic_remove_icon"
+                android:layout_marginTop="@dimen/dimen_size_small"
+                android:layout_marginBottom="@dimen/dimen_size_small"
+                android:contentDescription="@string/item_cart_decrease_content_description"
+                app:icon="@drawable/ic_baseline_remove_24"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
                 app:iconTint="@color/icon_color_black"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/product_image"
-                app:layout_constraintTop_toBottomOf="@+id/product_price"/>
+                app:layout_constraintStart_toStartOf="@+id/product_price"
+                app:layout_constraintTop_toBottomOf="@+id/product_price"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.Button.FullRounded"/>
 
             <TextView
                 android:id="@+id/product_quantity"
                 setProductQuantity="@{orderedProduct.quantity}"
-                android:layout_width="wrap_content"
-                android:layout_height="48dp"
-                android:layout_marginStart="8dp"
+                android:layout_width="48dp"
+                android:layout_height="0dp"
                 android:gravity="center"
-                android:textAlignment="center"
-                android:textAppearance="@style/TextAppearance.AppCommerce.Body.Medium"
-                app:layout_constraintBottom_toBottomOf="@+id/cart_decrease_quantity"
-                app:layout_constraintStart_toEndOf="@+id/cart_decrease_quantity"
-                app:layout_constraintTop_toTopOf="@+id/cart_decrease_quantity"
+                android:textAlignment="gravity"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Body.Small"
+                app:layout_constraintBottom_toBottomOf="@id/cart_decrease_quantity"
+                app:layout_constraintStart_toEndOf="@id/cart_decrease_quantity"
+                app:layout_constraintTop_toTopOf="@id/cart_decrease_quantity"
                 tools:text="2"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/cart_increase_quantity"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="8dp"
-                app:icon="@drawable/ic_add_icon"
+                android:contentDescription="@string/item_cart_increase_content_description"
+                app:cornerRadius="@dimen/corner_size_large"
+                app:icon="@drawable/ic_baseline_add_24"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
-                app:iconTint="@color/icon_color_black"
-                app:layout_constraintBottom_toBottomOf="@+id/product_quantity"
-                app:layout_constraintStart_toEndOf="@+id/product_quantity"
-                app:layout_constraintTop_toTopOf="@+id/product_quantity"
-                app:layout_constraintVertical_bias="0.0"/>
+                app:iconTint="@color/white_100"
+                app:layout_constraintBottom_toBottomOf="@id/product_quantity"
+                app:layout_constraintStart_toEndOf="@id/product_quantity"
+                app:layout_constraintTop_toTopOf="@+id/product_quantity"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

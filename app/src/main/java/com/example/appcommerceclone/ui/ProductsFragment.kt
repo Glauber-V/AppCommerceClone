@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.appcommerceclone.adapters.ProductsAdapter
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
 import com.example.appcommerceclone.ui.BaseNavigation.navigateToProductDetail
@@ -30,7 +31,7 @@ class ProductsFragment : Fragment() {
         userViewModel.loadSavedUser()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -53,8 +54,9 @@ class ProductsFragment : Fragment() {
             productViewModel.selectProduct(product)
             navigateToProductDetail(product)
         }
+
         binding.productsRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireActivity())
+            layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
             adapter = productsAdapter
         }
 

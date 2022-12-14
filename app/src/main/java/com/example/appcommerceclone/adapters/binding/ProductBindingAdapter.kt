@@ -14,7 +14,7 @@ fun ImageView.setProductImageFromUrl(imageUrl: String?) {
         .load(imageUrl)
         .fitCenter()
         .override(800, 480)
-        .error(R.drawable.ic_broken_image)
+        .error(R.drawable.ic_baseline_broken_image_24)
         .into(this)
 }
 

@@ -86,4 +86,9 @@
     <string name="order_item_products">Produtos: %1s</string>
     <string name="order_item_total_price">Total: %1s</string>
     <string name="connection_re_establish">Conexão restabelecida</string>
+    <string name="item_cart_increase_content_description">Aumentar quantidate desse produto</string>
+    <string name="item_cart_decrease_content_description">Diminuir a quantidate desse produto</string>
+    <string name="no_internet_connection_image_content_description">Sem conexão com a internet</string>
+    <string name="generic_profile_pic_content_description">Icone de perfil genérico</string>
+    <string name="add_to_favorites_fab_content_description">Botão de adicionar aos favoritos</string>
 </resources>

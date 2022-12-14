@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:startIconDrawable="@drawable/ic_email_icon"
+        app:startIconDrawable="@drawable/ic_baseline_email_24"
         app:startIconTint="@color/icon_color_black">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -36,7 +36,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/user_register_email"
-        app:startIconDrawable="@drawable/ic_profile_icon"
+        app:startIconDrawable="@drawable/ic_baseline_user_24"
         app:startIconTint="@color/icon_color_black">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -58,7 +58,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/user_register_username"
-        app:startIconDrawable="@drawable/ic_password_icon"
+        app:startIconDrawable="@drawable/ic_baseline_lock_24"
         app:startIconTint="@color/icon_color_black">
 
         <com.google.android.material.textfield.TextInputEditText

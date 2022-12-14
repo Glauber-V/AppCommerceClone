@@ -11,72 +11,79 @@
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="125dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        app:cardElevation="@dimen/small_elevation"
-        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.Right">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_size_small"
+        android:layout_marginEnd="@dimen/dimen_size_large"
+        android:layout_marginBottom="@dimen/dimen_size_small"
+        android:padding="@dimen/dimen_size_medium"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:padding="@dimen/dimen_size_small">
 
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/product_favorite_image"
                 setProductImageFromUrl="@{product.imageUrl}"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="@dimen/dimen_size_medium"
+                android:layout_marginTop="@dimen/dimen_size_medium"
+                android:layout_marginBottom="@dimen/dimen_size_medium"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearance="@style/ShapeAppearance.AppCommerce.Image.Cart"
+                app:shapeAppearance="@style/ShapeAppearance.AppCommerce.Image.FullRounded"
                 tools:src="@drawable/banner_men_s_clothing"/>
 
             <TextView
                 android:id="@+id/product_favorite_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="@dimen/dimen_size_large"
+                android:layout_marginEnd="@dimen/dimen_size_medium"
                 android:ellipsize="end"
                 android:maxLines="2"
                 android:text="@{product.name}"
                 android:textAlignment="textStart"
-                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Medium"
                 app:layout_constraintEnd_toStartOf="@id/product_favorite_remove_btn"
                 app:layout_constraintStart_toEndOf="@id/product_favorite_image"
                 app:layout_constraintTop_toTopOf="@+id/product_favorite_image"
-                tools:text="Product Name - A incredible piece of gear to use in your adventures"/>
+                tools:text="Product Name - Crafted with some premium material"/>
 
             <TextView
                 android:id="@+id/product_favorite_price"
                 setProductPrice="@{product.price}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/dimen_size_small"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAlignment="textStart"
                 android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
                 app:layout_constraintEnd_toEndOf="@+id/product_favorite_name"
-                app:layout_constraintStart_toEndOf="@+id/product_favorite_image"
+                app:layout_constraintStart_toStartOf="@+id/product_favorite_name"
                 app:layout_constraintTop_toBottomOf="@+id/product_favorite_name"
                 tools:text="R$ 29,90"/>
 
-            <ImageView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/product_favorite_remove_btn"
-                android:layout_width="32dp"
-                android:layout_height="28dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/ic_favorites_icon"
-                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Medium"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginEnd="@dimen/dimen_size_medium"
+                android:src="@drawable/ic_baseline_favorite_24"
+                app:icon="@drawable/ic_baseline_favorite_24"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/product_favorite_name"
-                app:tint="@color/icon_color_red"/>
+                app:layout_constraintTop_toTopOf="@+id/product_favorite_image"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

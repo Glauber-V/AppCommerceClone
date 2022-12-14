@@ -28,7 +28,7 @@ class ProductFullDetailFragment : Fragment() {
     private val cartViewModel by activityViewModels<CartViewModel>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentProductFullDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -104,7 +104,7 @@ class ProductFullDetailFragment : Fragment() {
             group.forEach {
                 val chip = it as Chip
                 if (chip.isChecked) {
-                    chip.setChipStrokeColorResource(R.color.chip_checked_stroke_color_2)
+                    chip.setChipStrokeColorResource(R.color.chip_checked_stroke_color)
                     chip.setChipStrokeWidthResource(R.dimen.chip_checked_stroke_width)
                 } else {
                     chip.setChipStrokeColorResource(R.color.chip_unchecked_stroke_color)

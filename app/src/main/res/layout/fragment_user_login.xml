@@ -26,7 +26,8 @@
         android:id="@+id/user_login_profile"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:src="@drawable/ic_profile_icon"
+        android:contentDescription="@string/generic_profile_pic_content_description"
+        android:src="@drawable/ic_baseline_user_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -42,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/user_login_profile"
-        app:startIconDrawable="@drawable/ic_profile_icon"
+        app:startIconDrawable="@drawable/ic_baseline_user_24"
         app:startIconTint="@color/icon_color_black">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -64,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/user_login_username"
-        app:startIconDrawable="@drawable/ic_password_icon"
+        app:startIconDrawable="@drawable/ic_baseline_lock_24"
         app:startIconTint="@color/icon_color_black">
 
         <com.google.android.material.textfield.TextInputEditText

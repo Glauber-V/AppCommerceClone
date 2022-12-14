@@ -13,58 +13,59 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="@dimen/small_elevation">
+        android:layout_margin="@dimen/dimen_size_small"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.RoundedCorners"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:paddingBottom="@dimen/dimen_size_medium">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/item_product_image"
                 setProductImageFromUrl="@{product.imageUrl}"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
+                android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:scaleType="centerCrop"
                 tools:src="@drawable/banner_men_s_clothing"/>
 
             <TextView
                 android:id="@+id/item_product_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="12dp"
-                android:ellipsize="end"
-                android:gravity="center"
+                android:layout_marginStart="@dimen/dimen_size_medium"
+                android:layout_marginTop="@dimen/dimen_size_small"
+                android:layout_marginEnd="@dimen/dimen_size_medium"
+                android:ellipsize="none"
+                android:gravity="center_horizontal"
                 android:maxLines="2"
                 android:text="@{product.name}"
-                android:textAppearance="@style/TextAppearance.AppCommerce.Headline.Small"
+                android:textAlignment="gravity"
+                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Medium"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_product_image"
-                tools:text="Product Name"/>
+                tools:text="Mens Casual Premium Slim Fit Henley T-Shirts Short Sleeve Lightweight"/>
 
             <TextView
                 android:id="@+id/item_product_price"
                 setProductPrice="@{product.price}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="8dp"
-                android:ellipsize="end"
-                android:gravity="center"
+                android:layout_marginStart="@dimen/dimen_size_medium"
+                android:layout_marginTop="@dimen/dimen_size_small"
+                android:layout_marginEnd="@dimen/dimen_size_medium"
+                android:ellipsize="none"
+                android:gravity="center_horizontal"
                 android:maxLines="1"
+                android:textAlignment="gravity"
                 android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_product_name"
