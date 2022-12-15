@@ -11,18 +11,20 @@
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/item_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        app:cardElevation="@dimen/small_elevation"
-        app:shapeAppearance="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners">
+        android:layout_marginTop="@dimen/dimen_size_small"
+        android:layout_marginEnd="@dimen/dimen_size_medium"
+        android:layout_marginBottom="@dimen/dimen_size_small"
+        app:strokeColor="@color/stroke_color_dark"
+        app:strokeWidth="@dimen/stroke_size_small"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp">
+            android:padding="@dimen/dimen_size_medium">
 
             <TextView
                 android:id="@+id/item_order_id"
@@ -41,11 +43,11 @@
                 setOrderDate="@{order}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/dimen_size_small"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.AppCommerce.Body.Medium"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/item_order_id"
                 app:layout_constraintTop_toBottomOf="@id/item_order_id"
                 tools:text="Date: 25/10/22"/>
 
@@ -54,11 +56,11 @@
                 setOrderProductsList="@{order}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/dimen_size_small"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.AppCommerce.Body.Medium"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/item_order_date"
                 app:layout_constraintTop_toBottomOf="@id/item_order_date"
                 tools:text="Products: Smart TV '50 4K, Home Theater Gold, Orthopedic chair"/>
 
@@ -67,11 +69,11 @@
                 setOrderTotalPrice="@{order}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="@dimen/dimen_size_small"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textAppearance="@style/TextAppearance.AppCommerce.Body.Medium"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/item_order_products"
                 app:layout_constraintTop_toBottomOf="@id/item_order_products"
                 tools:text="Total: $6.436,20"/>
 
