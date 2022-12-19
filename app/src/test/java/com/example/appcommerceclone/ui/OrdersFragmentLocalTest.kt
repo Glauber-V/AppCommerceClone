@@ -3,6 +3,7 @@ package com.example.appcommerceclone.ui
 import androidx.navigation.testing.TestNavHostController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.TestNavHostControllerRule
+import com.example.appcommerceclone.data.user.FakeUserAuthenticator
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule
@@ -14,7 +15,6 @@ import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
 import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -51,7 +51,7 @@ class OrdersFragmentLocalTest {
     @Test
     fun launchOrdersFragment_withUser_ordersSizeShouldBe2() = runTest {
         launchFragmentInHiltContainer<OrdersFragment>(navHostController = navHostController) {
-            userViewModel.login(username = "Orisa", "321")
+            userViewModel.login(username = FakeUserAuthenticator.USERNAME, password = FakeUserAuthenticator.PASSWORD)
             advanceUntilIdle()
 
             val loggedUser = userViewModel.loggedUser.getOrAwaitValue()

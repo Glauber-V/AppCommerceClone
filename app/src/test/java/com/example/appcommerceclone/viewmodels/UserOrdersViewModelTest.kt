@@ -1,7 +1,6 @@
 package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.appcommerceclone.data.dispatcher.FakeDispatcherProvider
 import com.example.appcommerceclone.data.user.FakeUserAuthenticator
 import com.example.appcommerceclone.data.user.FakeUserOrders
 import com.example.appcommerceclone.getOrAwaitValue
@@ -40,7 +39,7 @@ class UserOrdersViewModelTest {
 
     @Test
     fun `refresh user orders with correct user id, return orders list`() = runTest {
-        userOrdersViewModel.refreshUserOrders(1)
+        userOrdersViewModel.refreshUserOrders(FakeUserAuthenticator.ID)
         advanceUntilIdle()
 
         val result = userOrdersViewModel.orders.getOrAwaitValue()

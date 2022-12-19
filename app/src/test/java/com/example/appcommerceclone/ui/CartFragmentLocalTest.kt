@@ -14,7 +14,6 @@ import com.example.appcommerceclone.getOrAwaitValue
 import com.example.appcommerceclone.launchFragmentInHiltContainer
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.util.getOrderedProduct
-import com.example.appcommerceclone.util.noConstraintsClick
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -55,31 +54,62 @@ class CartFragmentLocalTest {
     }
 
     @Test
-    fun clickIncreaseQuantityBtn_orderedProductQuantityShouldBe2() {
+    fun clickIncreaseQuantityBtn_orderedProductQuantityAndPriceShouldReflectThisChange() = runTest {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController) {
-
-            val product = Product()
+            val product = Product(name = "ProductA1", price = 10.0)
             cartViewModel.addToCart(product)
+            advanceUntilIdle()
 
-            onView(withId(R.id.cart_increase_quantity))
-                .perform(noConstraintsClick())
+            onView(withId(R.id.cart_increase_quantity)).perform(click())
+            advanceUntilIdle()
 
-            val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-            val orderedProduct = cartProducts.getOrderedProduct(product)
+            val allOrderedProductsInCart = cartViewModel.cartProducts.getOrAwaitValue()
+            val orderedProduct = allOrderedProductsInCart.getOrderedProduct(product)
 
-            assertThat(orderedProduct.quantity).isEqualTo(2)
+            onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
+            onView(withId(R.id.ordered_product_quantity)).check(matches(withText(orderedProduct.quantity.toString())))
+            onView(withId(R.id.ordered_product_price)).check(matches(withText(orderedProduct.getFormattedPrice())))
         }
     }
 
     @Test
-    fun clickDecreaseQuantityBtn_orderedProductShouldBeRemoved() {
+    fun clickDecreaseQuantityBtn_orderedProductQuantityAndPriceShouldReflectThisChange() = runTest {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController) {
-
-            val product = Product()
+            val product = Product(name = "ProductA1", price = 10.0)
             cartViewModel.addToCart(product)
+            advanceUntilIdle()
 
-            onView(withId(R.id.cart_decrease_quantity))
-                .perform(noConstraintsClick())
+            var allOrderedProductsInCart = cartViewModel.cartProducts.getOrAwaitValue()
+            var orderedProduct = allOrderedProductsInCart.getOrderedProduct(product)
+
+            onView(withId(R.id.cart_increase_quantity)).perform(click())
+            advanceUntilIdle()
+
+            onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
+            onView(withId(R.id.ordered_product_quantity)).check(matches(withText("2")))
+            onView(withId(R.id.ordered_product_price)).check(matches(withText(orderedProduct.getFormattedPrice())))
+
+            onView(withId(R.id.cart_decrease_quantity)).perform(click())
+            advanceUntilIdle()
+
+            allOrderedProductsInCart = cartViewModel.cartProducts.getOrAwaitValue()
+            orderedProduct = allOrderedProductsInCart.getOrderedProduct(product)
+
+            onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
+            onView(withId(R.id.ordered_product_quantity)).check(matches(withText("1")))
+            onView(withId(R.id.ordered_product_price)).check(matches(withText(orderedProduct.getFormattedPrice())))
+        }
+    }
+
+    @Test
+    fun clickDecreaseQuantityBtn_whenQuantityIs1_orderedProductShouldBeRemoved() = runTest {
+        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController) {
+            val product = Product(name = "ProductA1")
+            cartViewModel.addToCart(product)
+            advanceUntilIdle()
+
+            onView(withId(R.id.cart_decrease_quantity)).perform(click())
+            advanceUntilIdle()
 
             val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
             assertThat(cartProducts).isEmpty()
@@ -90,8 +120,7 @@ class CartFragmentLocalTest {
     fun clickAbandonCart_alertDialogShouldBeVisible() {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController)
 
-        onView(withId(R.id.cart_cancel_purchase_btn))
-            .perform(click())
+        onView(withId(R.id.cart_cancel_purchase_btn)).perform(click())
 
         val dialog = ShadowDialog.getLatestDialog()
         assertTrue(dialog.isShowing)
@@ -111,8 +140,7 @@ class CartFragmentLocalTest {
             assertThat(result).isNotNull()
         }
 
-        onView(withId(R.id.cart_confirm_purchase_btn))
-            .perform(click())
+        onView(withId(R.id.cart_confirm_purchase_btn)).perform(click())
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.orders_fragment)
     }

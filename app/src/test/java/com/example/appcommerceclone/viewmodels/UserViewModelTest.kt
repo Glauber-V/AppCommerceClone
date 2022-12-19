@@ -2,7 +2,6 @@ package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import com.example.appcommerceclone.data.dispatcher.FakeDispatcherProvider
 import com.example.appcommerceclone.data.user.FakeUserAuthenticator
 import com.example.appcommerceclone.data.user.FakeUserPreferences
 import com.example.appcommerceclone.data.user.UserPreferencesKeys.USER_PREF_ID_KEY
@@ -11,7 +10,6 @@ import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
@@ -47,8 +45,8 @@ class UserViewModelTest {
     }
 
     @Test
-    fun `failed login with wrong username`() = runTest{
-        userViewModel.login("Oris", "321")
+    fun `failed login with wrong username`() = runTest {
+        userViewModel.login(username = "Oris", password = FakeUserAuthenticator.PASSWORD)
         advanceUntilIdle()
 
         val currentUser = userViewModel.loggedUser.getOrAwaitValue()
@@ -58,7 +56,7 @@ class UserViewModelTest {
 
     @Test
     fun `failed login with wrong password`() = runTest {
-        userViewModel.login("Orisa", "3")
+        userViewModel.login(username = FakeUserAuthenticator.USERNAME, password = "3")
         advanceUntilIdle()
 
         val currentUser = userViewModel.loggedUser.getOrAwaitValue()
@@ -68,19 +66,19 @@ class UserViewModelTest {
 
     @Test
     fun `successfully logged in`() = runTest {
-        userViewModel.login("Orisa", "321")
+        userViewModel.login(username = FakeUserAuthenticator.USERNAME, password = FakeUserAuthenticator.PASSWORD)
         advanceUntilIdle()
 
         val currentUser = userViewModel.loggedUser.getOrAwaitValue()
 
         assertThat(currentUser).isNotNull()
-        assertThat(currentUser?.username).isEqualTo("Orisa")
-        assertThat(currentUser?.password).isEqualTo("321")
+        assertThat(currentUser?.username).isEqualTo(FakeUserAuthenticator.USERNAME)
+        assertThat(currentUser?.password).isEqualTo(FakeUserAuthenticator.PASSWORD)
     }
 
     @Test
     fun `successfully log in by loading saved user id in the datastore`() = runTest {
-        fakeUserPreferences.saveIntValueToKey(USER_PREF_ID_KEY, 1)
+        fakeUserPreferences.saveIntValueToKey(USER_PREF_ID_KEY, FakeUserAuthenticator.ID)
 
         userViewModel.loadSavedUser()
         advanceUntilIdle()
@@ -88,8 +86,8 @@ class UserViewModelTest {
         val currentUser = userViewModel.loggedUser.getOrAwaitValue()
 
         assertThat(currentUser).isNotNull()
-        assertThat(currentUser?.username).isEqualTo("Orisa")
-        assertThat(currentUser?.password).isEqualTo("321")
+        assertThat(currentUser?.username).isEqualTo(FakeUserAuthenticator.USERNAME)
+        assertThat(currentUser?.password).isEqualTo(FakeUserAuthenticator.PASSWORD)
     }
 
     @Test

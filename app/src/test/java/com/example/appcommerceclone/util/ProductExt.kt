@@ -11,5 +11,5 @@ fun MutableList<OrderedProduct>.getOrderedProduct(product: Product): OrderedProd
             orderedProduct = it
         }
     }
-    return orderedProduct!!
+    return orderedProduct ?: OrderedProduct()
 }

@@ -6,6 +6,7 @@ import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.TestNavHostControllerRule
+import com.example.appcommerceclone.data.user.FakeUserAuthenticator
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.getOrAwaitValue
@@ -66,14 +67,30 @@ class UserLoginFragmentLocalTest {
     }
 
     @Test
+    fun clickLoginBtn_wrongUsernameAndPassword_stayInUserLoginFragment() {
+        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController)
+
+        onView(withId(R.id.user_login_username_text))
+            .perform(replaceText("Robert"))
+
+        onView(withId(R.id.user_login_password_text))
+            .perform(replaceText("45687"))
+
+        onView(withId(R.id.user_login_btn))
+            .perform(noConstraintsClick())
+
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+    }
+
+    @Test
     fun clickLoginBtn_withUsernameAndPassword_navigateToMainFragment() = runTest {
         launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
 
             onView(withId(R.id.user_login_username_text))
-                .perform(replaceText("Orisa"))
+                .perform(replaceText(FakeUserAuthenticator.USERNAME))
 
             onView(withId(R.id.user_login_password_text))
-                .perform(replaceText("321"))
+                .perform(replaceText(FakeUserAuthenticator.PASSWORD))
 
             onView(withId(R.id.user_login_btn))
                 .perform(noConstraintsClick())
@@ -82,8 +99,8 @@ class UserLoginFragmentLocalTest {
 
             val user = userViewModel.loggedUser.getOrAwaitValue()
             assertThat(user).isNotNull()
-            assertThat(user?.username).isEqualTo("Orisa")
-            assertThat(user?.password).isEqualTo("321")
+            assertThat(user?.username).isEqualTo(FakeUserAuthenticator.USERNAME)
+            assertThat(user?.password).isEqualTo(FakeUserAuthenticator.PASSWORD)
         }
     }
 

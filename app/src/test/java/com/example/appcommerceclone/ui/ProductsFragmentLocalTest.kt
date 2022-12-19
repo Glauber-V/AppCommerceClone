@@ -4,12 +4,11 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
-import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
+import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.TestNavHostControllerRule
-import com.example.appcommerceclone.adapters.ProductsAdapter.ProductViewHolder
+import com.example.appcommerceclone.adapters.product.ProductViewHolder
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule

@@ -10,11 +10,19 @@ import com.example.appcommerceclone.util.Constants
 class FakeUserOrders : UserOrders {
 
     override suspend fun getOrdersByUserId(userId: Int): MutableList<Order> {
-        if (userId != 1)
+        if (userId != FakeUserAuthenticator.ID)
             return mutableListOf()
 
-        val name = Name(firstname = "Orisa", lastname = "The horse")
-        val user = User(id = 1, name = name, username = "Orisa", password = "321")
+        val name = Name(
+            firstname = FakeUserAuthenticator.FIRSTNAME,
+            lastname = FakeUserAuthenticator.LASTNAME
+        )
+        val user = User(
+            id = FakeUserAuthenticator.ID,
+            name = name,
+            username = FakeUserAuthenticator.USERNAME,
+            password = FakeUserAuthenticator.PASSWORD
+        )
 
         val orders = mutableListOf<Order>()
         val orderedProducts = mutableListOf<OrderedProduct>()
