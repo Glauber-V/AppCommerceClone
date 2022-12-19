@@ -12,6 +12,5 @@ import org.junit.runners.Suite
     ProductViewModelTest::class,
     FavoritesViewModelTest::class,
     CartViewModelTest::class,
-    UserOrdersViewModelTest::class
-)
+    UserOrdersViewModelTest::class)
 class AppViewModelTestSuite
