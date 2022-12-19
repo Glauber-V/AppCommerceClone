@@ -9,7 +9,6 @@ import com.example.appcommerceclone.model.product.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.text.NumberFormat
 import javax.inject.Inject
-import kotlin.random.Random
 
 @HiltViewModel
 class CartViewModel @Inject constructor() : ViewModel() {
@@ -24,12 +23,11 @@ class CartViewModel @Inject constructor() : ViewModel() {
 
 
     fun addToCart(product: Product) {
-        if (compare(product)) {
-            _cartProducts.value?.forEach { orderedProduct ->
-                if (orderedProduct.product.id == product.id)
-                    increaseQuantity(orderedProduct)
+        isProductAlreadyInCart(product).also { orderedProduct ->
+            orderedProduct?.apply {
+                increaseQuantity(this)
+                return
             }
-            return
         }
 
         val newOrderedProduct = OrderedProduct(product)
@@ -38,10 +36,10 @@ class CartViewModel @Inject constructor() : ViewModel() {
         updateTotalPrice()
     }
 
-    private fun compare(product: Product): Boolean {
-        var result = false
+    private fun isProductAlreadyInCart(product: Product): OrderedProduct? {
+        var result: OrderedProduct? = null
         _cartProducts.value?.forEach { orderedProduct ->
-            result = product.id == orderedProduct.id
+            if (product.id == orderedProduct.id) result = orderedProduct
         }
         return result
     }

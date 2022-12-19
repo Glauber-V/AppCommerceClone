@@ -26,7 +26,7 @@ class ProductLessDetailFragment : Fragment() {
     private val cartViewModel by activityViewModels<CartViewModel>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentProductLessDetailBinding.inflate(inflater, container, false)
         return binding.root
     }
