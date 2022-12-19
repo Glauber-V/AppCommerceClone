@@ -7,6 +7,9 @@
         <variable
             name="product"
             type="com.example.appcommerceclone.model.product.Product"/>
+        <variable
+            name="favoriteListener"
+            type="com.example.appcommerceclone.adapters.favorites.FavoriteClickListener"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -78,6 +81,7 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:layout_marginEnd="@dimen/dimen_size_medium"
+                android:onClick="@{() -> favoriteListener.onFavoriteRemoved(product)}"
                 android:src="@drawable/ic_baseline_favorite_24"
                 app:icon="@drawable/ic_baseline_favorite_24"
                 app:iconGravity="textStart"

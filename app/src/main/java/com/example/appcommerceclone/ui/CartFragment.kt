@@ -10,9 +10,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.adapters.CartAdapter
+import com.example.appcommerceclone.adapters.cart.CartAdapter
+import com.example.appcommerceclone.adapters.cart.CartListener
 import com.example.appcommerceclone.databinding.FragmentCartAlertDialogBinding
 import com.example.appcommerceclone.databinding.FragmentCartBinding
+import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.ui.BaseNavigation.navigateToOrdersFragment
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
@@ -21,15 +23,17 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CartFragment : Fragment() {
+class CartFragment : Fragment(), CartListener {
 
     private lateinit var binding: FragmentCartBinding
     val userViewModel by activityViewModels<UserViewModel>()
     val cartViewModel by activityViewModels<CartViewModel>()
-    private val userOrdersViewModel by activityViewModels<UserOrdersViewModel>()
+    val userOrdersViewModel by activityViewModels<UserOrdersViewModel>()
+
+    private lateinit var cartAdapter: CartAdapter
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCartBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -45,7 +49,7 @@ class CartFragment : Fragment() {
 
 
     private fun setupCartProductsRecyclerView() {
-        val cartAdapter = CartAdapter(cartViewModel)
+        cartAdapter = CartAdapter(this)
 
         binding.cartRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -74,6 +78,18 @@ class CartFragment : Fragment() {
         binding.cartCancelPurchaseBtn.setOnClickListener {
             showAbandonCartAlertDialog()
         }
+    }
+
+
+    override fun cartIncreaseQuantity(orderedProduct: OrderedProduct, adapterPosition: Int) {
+        cartViewModel.increaseQuantity(orderedProduct)
+        cartAdapter.notifyItemChanged(adapterPosition)
+    }
+
+    override fun cartDecreaseQuantity(orderedProduct: OrderedProduct, adapterPosition: Int) {
+        cartViewModel.decreaseQuantity(orderedProduct)
+        if (orderedProduct.quantity > 1) cartAdapter.notifyItemChanged(adapterPosition)
+        else cartAdapter.notifyItemRemoved(adapterPosition)
     }
 
 

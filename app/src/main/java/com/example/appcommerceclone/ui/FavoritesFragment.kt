@@ -7,27 +7,29 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.appcommerceclone.adapters.FavoritesAdapter
+import com.example.appcommerceclone.adapters.favorites.FavoriteClickListener
+import com.example.appcommerceclone.adapters.favorites.FavoritesAdapter
 import com.example.appcommerceclone.databinding.FragmentFavoritesBinding
+import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.BaseUser.verifyUserConnectionToProceed
 import com.example.appcommerceclone.ui.BaseUser.verifyUserExistsToProceed
-import com.example.appcommerceclone.util.EspressoIdlingResource.wrapEspressoIdlingResource
-import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavoritesFragment : Fragment() {
+class FavoritesFragment : Fragment(), FavoriteClickListener {
 
     private lateinit var binding: FragmentFavoritesBinding
     val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
     val userViewModel by activityViewModels<UserViewModel>()
-    private val favoritesViewModel by activityViewModels<FavoritesViewModel>()
+    val favoritesViewModel by activityViewModels<FavoritesViewModel>()
+
+    private lateinit var favoritesAdapter: FavoritesAdapter
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,7 +45,7 @@ class FavoritesFragment : Fragment() {
 
 
     private fun setupFavoritesList() {
-        val favoritesAdapter = FavoritesAdapter(favoritesViewModel)
+        favoritesAdapter = FavoritesAdapter(this)
         binding.favoritesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireActivity())
             adapter = favoritesAdapter
@@ -52,5 +54,11 @@ class FavoritesFragment : Fragment() {
         favoritesViewModel.favorites.observe(viewLifecycleOwner) { favorites ->
             favoritesAdapter.submitList(favorites)
         }
+    }
+
+    override fun onFavoriteRemoved(product: Product) {
+        favoritesViewModel.removeFromFavorites(product)
+        val position = favoritesAdapter.currentList.indexOf(product)
+        favoritesAdapter.notifyItemRemoved(position)
     }
 }

@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.appcommerceclone.adapters.OrdersAdapter
+import com.example.appcommerceclone.adapters.order.OrdersAdapter
 import com.example.appcommerceclone.databinding.FragmentOrdersBinding
+import com.example.appcommerceclone.model.order.Order
+import com.example.appcommerceclone.adapters.order.OrderClickListener
 import com.example.appcommerceclone.model.user.User
 import com.example.appcommerceclone.ui.BaseUser.verifyUserConnectionToProceed
 import com.example.appcommerceclone.ui.BaseUser.verifyUserExistsToProceed
@@ -18,7 +20,7 @@ import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class OrdersFragment : Fragment() {
+class OrdersFragment : Fragment(), OrderClickListener {
 
     private lateinit var binding: FragmentOrdersBinding
     val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
@@ -26,7 +28,7 @@ class OrdersFragment : Fragment() {
     val userOrdersViewModel by activityViewModels<UserOrdersViewModel>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentOrdersBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -51,9 +53,7 @@ class OrdersFragment : Fragment() {
     }
 
     private fun setupOrderRecycleView(user: User) {
-        val ordersAdapter = OrdersAdapter { order ->
-            userOrdersViewModel.selectOrder(order)
-        }
+        val ordersAdapter = OrdersAdapter(this)
 
         binding.ordersRecyclerview.apply {
             layoutManager = LinearLayoutManager(requireActivity())
@@ -64,5 +64,9 @@ class OrdersFragment : Fragment() {
             if (orders.isNullOrEmpty()) userOrdersViewModel.refreshUserOrders(user.id)
             ordersAdapter.submitList(orders)
         }
+    }
+
+    override fun onOrderClicked(order: Order) {
+        userOrdersViewModel.selectOrder(order)
     }
 }
