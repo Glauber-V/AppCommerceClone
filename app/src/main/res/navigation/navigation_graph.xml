@@ -7,20 +7,34 @@
 
     <fragment
         android:id="@+id/products_fragment"
-        android:name="com.example.appcommerceclone.ui.ProductsFragment"
+        android:name="com.example.appcommerceclone.ui.product.ProductsFragment"
         android:label="@string/fragment_products_label"
         tools:layout="@layout/fragment_products">
         <action
-            android:id="@+id/action_products_fragment_to_productLessDetailFragment"
-            app:destination="@id/product_less_detail_fragment"/>
+            android:id="@+id/action_products_fragment_to_productDetailFragment"
+            app:destination="@id/product_detail_fragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/product_detail_fragment"
+        android:name="com.example.appcommerceclone.ui.product.ProductDetailFragment"
+        android:label="@string/fragment_product_detail_label"
+        tools:layout="@layout/fragment_product_detail">
         <action
-            android:id="@+id/action_products_fragment_to_productFullDetailFragment"
-            app:destination="@id/product_full_detail_fragment"/>
+            android:id="@+id/action_productDetailFragment_to_cart_fragment"
+            app:destination="@id/cart_fragment"
+            app:popUpTo="@id/product_detail_fragment"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/action_productDetailFragment_to_favorites_fragment"
+            app:destination="@id/favorites_fragment"
+            app:popUpTo="@id/product_detail_fragment"
+            app:popUpToInclusive="true"/>
     </fragment>
 
     <fragment
         android:id="@+id/cart_fragment"
-        android:name="com.example.appcommerceclone.ui.CartFragment"
+        android:name="com.example.appcommerceclone.ui.cart.CartFragment"
         android:label="@string/fragment_cart_label"
         tools:layout="@layout/fragment_cart">
         <action
@@ -31,65 +45,31 @@
 
     <fragment
         android:id="@+id/user_profile_fragment"
-        android:name="com.example.appcommerceclone.ui.UserProfileFragment"
+        android:name="com.example.appcommerceclone.ui.user.UserProfileFragment"
         android:label="@string/fragment_user_profile_label"
         tools:layout="@layout/fragment_user_profile"/>
 
     <fragment
-        android:id="@+id/product_full_detail_fragment"
-        android:name="com.example.appcommerceclone.ui.ProductFullDetailFragment"
-        android:label="@string/fragment_product_detail_label"
-        tools:layout="@layout/fragment_product_full_detail">
-        <action
-            android:id="@+id/action_product_full_detail_fragment_to_cart_fragment"
-            app:destination="@id/cart_fragment"
-            app:popUpTo="@id/product_full_detail_fragment"
-            app:popUpToInclusive="true"/>
-        <action
-            android:id="@+id/action_product_full_detail_fragment_to_favorites_fragment"
-            app:destination="@id/favorites_fragment"
-            app:popUpTo="@id/product_full_detail_fragment"
-            app:popUpToInclusive="true"/>
-    </fragment>
-
-    <fragment
-        android:id="@+id/product_less_detail_fragment"
-        android:name="com.example.appcommerceclone.ui.ProductLessDetailFragment"
-        android:label="@string/fragment_product_detail_label"
-        tools:layout="@layout/fragment_product_less_detail">
-        <action
-            android:id="@+id/action_product_less_detail_fragment_to_cart_fragment"
-            app:destination="@id/cart_fragment"
-            app:popUpTo="@id/product_less_detail_fragment"
-            app:popUpToInclusive="true"/>
-        <action
-            android:id="@+id/action_product_less_detail_fragment_to_favorites_fragment"
-            app:destination="@id/favorites_fragment"
-            app:popUpTo="@id/product_less_detail_fragment"
-            app:popUpToInclusive="true"/>
-    </fragment>
-
-    <fragment
         android:id="@+id/categories_fragment"
-        android:name="com.example.appcommerceclone.ui.CategoriesFragment"
+        android:name="com.example.appcommerceclone.ui.product.CategoriesFragment"
         android:label="@string/fragment_categories_label"
         tools:layout="@layout/fragment_categories"/>
 
     <fragment
         android:id="@+id/orders_fragment"
-        android:name="com.example.appcommerceclone.ui.OrdersFragment"
+        android:name="com.example.appcommerceclone.ui.order.OrdersFragment"
         android:label="@string/fragment_orders_label"
         tools:layout="@layout/fragment_orders"/>
 
     <fragment
         android:id="@+id/favorites_fragment"
-        android:name="com.example.appcommerceclone.ui.FavoritesFragment"
+        android:name="com.example.appcommerceclone.ui.favorites.FavoritesFragment"
         android:label="@string/fragment_favorites_label"
         tools:layout="@layout/fragment_favorites"/>
 
     <fragment
         android:id="@+id/user_login_fragment"
-        android:name="com.example.appcommerceclone.ui.UserLoginFragment"
+        android:name="com.example.appcommerceclone.ui.user.UserLoginFragment"
         android:label="@string/fragment_user_login_label"
         tools:layout="@layout/fragment_user_login">
         <action
@@ -99,7 +79,7 @@
 
     <fragment
         android:id="@+id/user_register_fragment"
-        android:name="com.example.appcommerceclone.ui.UserRegisterFragment"
+        android:name="com.example.appcommerceclone.ui.user.UserRegisterFragment"
         android:label="@string/fragment_user_register_label"
         tools:layout="@layout/fragment_user_register"/>
 

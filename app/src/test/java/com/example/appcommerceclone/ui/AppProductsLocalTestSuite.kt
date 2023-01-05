@@ -10,7 +10,6 @@ import org.junit.runners.Suite
     ProductsFragmentLocalTest::class,
     CategoriesFragmentLocalTest::class,
     FavoritesFragmentLocalTest::class,
-    ProductFullDetailFragmentLocalTest::class,
-    ProductLessDetailFragmentLocalTest::class,
+    ProductDetailFragmentLocalTest::class,
     OrdersFragmentLocalTest::class)
 class AppProductsLocalTestSuite

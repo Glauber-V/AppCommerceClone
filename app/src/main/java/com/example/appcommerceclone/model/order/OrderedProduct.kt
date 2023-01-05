@@ -2,7 +2,6 @@ package com.example.appcommerceclone.model.order
 
 import com.example.appcommerceclone.model.product.Product
 import com.squareup.moshi.Json
-import java.text.NumberFormat
 
 data class OrderedProduct(
     @Json(name = "productId") var id: Int = 0,
@@ -12,6 +11,4 @@ data class OrderedProduct(
 
     constructor(product: Product) : this(product.id, 1, product)
     constructor(product: Product, quantity: Int) : this(product.id, quantity, product)
-
-    fun getFormattedPrice(): String = NumberFormat.getCurrencyInstance().format(product.price * quantity)
 }

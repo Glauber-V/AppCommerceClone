@@ -10,7 +10,7 @@
             type="com.example.appcommerceclone.model.order.OrderedProduct"/>
         <variable
             name="cartListener"
-            type="com.example.appcommerceclone.adapters.cart.CartListener"/>
+            type="com.example.appcommerceclone.ui.cart.CartListener"/>
         <variable
             name="position"
             type="Integer"/>

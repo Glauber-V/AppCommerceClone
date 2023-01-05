@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.util.Constants
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -49,5 +50,9 @@ class ProductViewModel @Inject constructor(private val repository: ProductsRepos
 
     fun selectCategory(categoryName: String) {
         _selectedCategory.value = categoryName
+    }
+
+    fun checkDisplayMethodByProductCategory(product: Product): Boolean {
+        return !(product.category == Constants.CATEGORY_ELECTRONICS || product.category == Constants.CATEGORY_JEWELRY)
     }
 }

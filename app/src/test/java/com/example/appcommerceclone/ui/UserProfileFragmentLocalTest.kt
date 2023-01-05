@@ -11,6 +11,7 @@ import com.example.appcommerceclone.TestNavHostControllerRule
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.launchFragmentInHiltContainer
+import com.example.appcommerceclone.ui.user.UserProfileFragment
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

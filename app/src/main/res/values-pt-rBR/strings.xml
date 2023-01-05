@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">E-Commerce</string>
     <string name="menu_title_profile">Conta</string>
     <string name="menu_title_my_orders">Minhas compras</string>
     <string name="menu_title_categories">Departamentos</string>
     <string name="menu_title_cart">Carrinho</string>
     <string name="menu_title_favorites">Favoritos</string>
-    <string name="fragment_products_label">Produtos</string>
     <string name="fragment_cart_label">Carrinho</string>
     <string name="fragment_user_profile_label">Conta</string>
     <string name="fragment_favorites_label">Meus favoritos</string>

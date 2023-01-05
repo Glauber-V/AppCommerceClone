@@ -8,12 +8,13 @@ import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.TestNavHostControllerRule
-import com.example.appcommerceclone.adapters.product.ProductViewHolder
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.getOrAwaitValue
 import com.example.appcommerceclone.launchFragmentInHiltContainer
+import com.example.appcommerceclone.ui.product.ProductViewHolder
+import com.example.appcommerceclone.ui.product.ProductsFragment
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -76,44 +77,15 @@ class ProductsFragmentLocalTest {
     }
 
     @Test
-    fun clickOnProductFromTheList_navigateToProductLessDetailFragment() = runTest {
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController) {
-            advanceUntilIdle()
-
-            val isConnected = connectionViewModel.isConnected.getOrAwaitValue()
-            assertThat(isConnected).isTrue()
-
-            val products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-        }
+    fun clickOnProductFromTheList_navigateToProductDetailFragment() = runTest {
+        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController)
 
         onView(withId(R.id.products_recycler_view))
-            .perform(scrollToPosition<ProductViewHolder>(1))
+            .perform(scrollToPosition<ProductViewHolder>(0))
 
         onView(withId(R.id.products_recycler_view))
             .perform(actionOnItemAtPosition<ProductViewHolder>(1, click()))
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.product_less_detail_fragment)
-    }
-
-    @Test
-    fun clickOnProductFromTheList_navigateToProductFullDetailFragment() = runTest {
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController) {
-            advanceUntilIdle()
-
-            val isConnected = connectionViewModel.isConnected.getOrAwaitValue()
-            assertThat(isConnected).isTrue()
-
-            val products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-        }
-
-        onView(withId(R.id.products_recycler_view))
-            .perform(scrollToPosition<ProductViewHolder>(3))
-
-        onView(withId(R.id.products_recycler_view))
-            .perform(actionOnItemAtPosition<ProductViewHolder>(3, click()))
-
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.product_full_detail_fragment)
+        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.product_detail_fragment)
     }
 }

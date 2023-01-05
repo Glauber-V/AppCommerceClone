@@ -13,6 +13,8 @@ import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.getOrAwaitValue
 import com.example.appcommerceclone.launchFragmentInHiltContainer
 import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.ui.cart.CartFragment
+import com.example.appcommerceclone.util.getFormattedPrice
 import com.example.appcommerceclone.util.getOrderedProduct
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -68,7 +70,7 @@ class CartFragmentLocalTest {
 
             onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
             onView(withId(R.id.ordered_product_quantity)).check(matches(withText(orderedProduct.quantity.toString())))
-            onView(withId(R.id.ordered_product_price)).check(matches(withText(orderedProduct.getFormattedPrice())))
+            onView(withId(R.id.ordered_product_price)).check(matches(withText(getFormattedPrice(orderedProduct))))
         }
     }
 
@@ -87,7 +89,7 @@ class CartFragmentLocalTest {
 
             onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
             onView(withId(R.id.ordered_product_quantity)).check(matches(withText("2")))
-            onView(withId(R.id.ordered_product_price)).check(matches(withText(orderedProduct.getFormattedPrice())))
+            onView(withId(R.id.ordered_product_price)).check(matches(withText(getFormattedPrice(orderedProduct))))
 
             onView(withId(R.id.cart_decrease_quantity)).perform(click())
             advanceUntilIdle()
@@ -97,7 +99,7 @@ class CartFragmentLocalTest {
 
             onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
             onView(withId(R.id.ordered_product_quantity)).check(matches(withText("1")))
-            onView(withId(R.id.ordered_product_price)).check(matches(withText(orderedProduct.getFormattedPrice())))
+            onView(withId(R.id.ordered_product_price)).check(matches(withText(getFormattedPrice(orderedProduct))))
         }
     }
 

@@ -1,10 +1,10 @@
 <resources>
 
-    <string name="app_name">E-Commerce</string>
+    <string name="app_name" translatable="false">E-Commerce</string>
 
     <!--Fragments Names-->
-    <string name="fragment_products_label">@string/app_name</string>
-    <string name="fragment_product_detail_label" translatable="false">Product Name</string>
+    <string name="fragment_products_label" translatable="false">@string/app_name</string>
+    <string name="fragment_product_detail_label" translatable="false">@string/app_name</string>
     <string name="fragment_user_login_label">Log In</string>
     <string name="fragment_user_profile_label">Profile</string>
     <string name="fragment_user_profile_editable">Profile</string>

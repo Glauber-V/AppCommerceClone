@@ -36,7 +36,7 @@
 
     <color name="shimmer_color">#C8C8C8</color>
 
-    <color name="view_divider">@color/black_900_030</color>
+    <color name="divider_color">@color/black_900_030</color>
 
     <color name="chip_color_1">#FFC107</color>
     <color name="chip_color_2">#03A9F4</color>

@@ -10,7 +10,7 @@
             type="com.example.appcommerceclone.model.order.Order"/>
         <variable
             name="orderClickListener"
-            type="com.example.appcommerceclone.adapters.order.OrderClickListener"/>
+            type="com.example.appcommerceclone.ui.order.OrderClickListener"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
