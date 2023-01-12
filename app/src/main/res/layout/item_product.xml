@@ -8,16 +8,13 @@
         <variable
             name="product"
             type="com.example.appcommerceclone.model.product.Product"/>
-        <variable
-            name="productListener"
-            type="com.example.appcommerceclone.ui.product.ProductClickListener"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/item_product_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_size_small"
-        android:onClick="@{() -> productListener.onProductClicked(product)}"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.RoundedCorners"
         app:strokeColor="@color/stroke_color_dark"
         app:strokeWidth="@dimen/stroke_size_small">

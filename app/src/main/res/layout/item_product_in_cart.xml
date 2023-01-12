@@ -8,12 +8,6 @@
         <variable
             name="orderedProduct"
             type="com.example.appcommerceclone.model.order.OrderedProduct"/>
-        <variable
-            name="cartListener"
-            type="com.example.appcommerceclone.ui.cart.CartListener"/>
-        <variable
-            name="position"
-            type="Integer"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -88,7 +82,6 @@
                 android:layout_marginTop="@dimen/dimen_size_small"
                 android:layout_marginBottom="@dimen/dimen_size_small"
                 android:contentDescription="@string/item_cart_decrease_content_description"
-                android:onClick="@{() -> cartListener.cartDecreaseQuantity(orderedProduct, position)}"
                 app:icon="@drawable/ic_baseline_remove_24"
                 app:iconGravity="textStart"
                 app:iconPadding="0dp"
@@ -116,7 +109,6 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"
                 android:contentDescription="@string/item_cart_increase_content_description"
-                android:onClick="@{() -> cartListener.cartIncreaseQuantity(orderedProduct, position)}"
                 app:cornerRadius="@dimen/corner_size_large"
                 app:icon="@drawable/ic_baseline_add_24"
                 app:iconGravity="textStart"

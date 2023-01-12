@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.adapters.binding
+package com.example.appcommerceclone.ui.product
 
 import android.widget.ImageView
 import android.widget.TextView

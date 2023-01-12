@@ -8,9 +8,6 @@
         <variable
             name="order"
             type="com.example.appcommerceclone.model.order.Order"/>
-        <variable
-            name="orderClickListener"
-            type="com.example.appcommerceclone.ui.order.OrderClickListener"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -20,7 +17,6 @@
         android:layout_marginTop="@dimen/dimen_size_small"
         android:layout_marginEnd="@dimen/dimen_size_medium"
         android:layout_marginBottom="@dimen/dimen_size_small"
-        android:onClick="@{() -> orderClickListener.onOrderClicked(order)}"
         app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
         app:strokeColor="@color/stroke_color_dark"
         app:strokeWidth="@dimen/stroke_size_small">

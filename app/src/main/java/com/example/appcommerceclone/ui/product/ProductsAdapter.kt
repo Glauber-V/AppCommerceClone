@@ -1,18 +1,27 @@
 package com.example.appcommerceclone.ui.product
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.appcommerceclone.databinding.ItemProductBinding
 import com.example.appcommerceclone.model.product.Product
 
 class ProductsAdapter(
-    private val listener: ProductClickListener
-) : ListAdapter<Product, ProductViewHolder>(ProductDiffCallback) {
+    private val onProductClicked: (Product) -> Unit = {}
+) : ListAdapter<Product, ProductsAdapter.ProductViewHolder>(ProductDiffCallback) {
+
+    class ProductViewHolder(val binding: ItemProductBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder {
-        return ProductViewHolder.from(parent, listener)
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemProductBinding.inflate(layoutInflater, parent, false)
+        return ProductViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val product = getItem(position)
+        holder.binding.product = product
+        holder.binding.itemProductCard.setOnClickListener { onProductClicked(product) }
     }
 }

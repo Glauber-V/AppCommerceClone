@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.adapters.binding
+package com.example.appcommerceclone.ui.user
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter

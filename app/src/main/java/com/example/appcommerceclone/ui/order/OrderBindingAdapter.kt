@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.adapters.binding
+package com.example.appcommerceclone.ui.order
 
 import android.view.View
 import android.widget.TextView
@@ -16,15 +16,15 @@ fun TextView.setOrderId(order: Order) {
 
 @BindingAdapter("setOrderDate")
 fun TextView.setOrderDate(order: Order) {
-    if (order.id >= 10) {
-        text = context.getString(R.string.order_item_date, order.date)
+    text = if (order.id >= 10) {
+        context.getString(R.string.order_item_date, order.date)
     } else {
         val oldPattern = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
         val newPattern = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = oldPattern.parse(order.date)
         val formattedDate = date?.let { newPattern.format(it) }
 
-        text = context.getString(R.string.order_item_date, formattedDate)
+        context.getString(R.string.order_item_date, formattedDate)
     }
 }
 

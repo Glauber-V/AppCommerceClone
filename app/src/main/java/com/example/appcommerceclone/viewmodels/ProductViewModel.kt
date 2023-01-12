@@ -14,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductViewModel @Inject constructor(private val repository: ProductsRepository) : ViewModel() {
 
-    private val _products = MutableLiveData<List<Product>>()
+    private val _products = MutableLiveData<List<Product>>(mutableListOf())
     val products: LiveData<List<Product>> = _products
 
     private val _selectedProduct = MutableLiveData<Product?>()

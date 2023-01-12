@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appcommerceclone.databinding.FragmentFavoritesBinding
-import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
 import com.example.appcommerceclone.ui.CommonVerifications.verifyUserExistsToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
@@ -17,7 +16,7 @@ import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavoritesFragment : Fragment(), FavoriteClickListener {
+class FavoritesFragment : Fragment() {
 
     private lateinit var binding: FragmentFavoritesBinding
     val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
@@ -44,7 +43,7 @@ class FavoritesFragment : Fragment(), FavoriteClickListener {
 
 
     private fun setupFavoritesRecyclerView() {
-        favoritesAdapter = FavoritesAdapter(this)
+        favoritesAdapter = FavoritesAdapter(favoritesViewModel)
         binding.favoritesRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireActivity())
             adapter = favoritesAdapter
@@ -55,11 +54,5 @@ class FavoritesFragment : Fragment(), FavoriteClickListener {
         favoritesViewModel.favorites.observe(viewLifecycleOwner) { favorites ->
             favoritesAdapter.submitList(favorites)
         }
-    }
-
-
-    override fun onFavoriteRemoved(product: Product, adapterPosition: Int) {
-        favoritesViewModel.removeFromFavorites(product)
-        favoritesAdapter.notifyItemRemoved(adapterPosition)
     }
 }

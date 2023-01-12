@@ -1,18 +1,28 @@
 package com.example.appcommerceclone.ui.order
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.appcommerceclone.databinding.ItemOrderBinding
 import com.example.appcommerceclone.model.order.Order
+import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 
 class OrdersAdapter(
-    private val listener: OrderClickListener
-) : ListAdapter<Order, OrderViewHolder>(OrderDiffCallback) {
+    private val userOrdersViewModel: UserOrdersViewModel
+) : ListAdapter<Order, OrdersAdapter.OrderViewHolder>(OrderDiffCallback) {
+
+    class OrderViewHolder(val binding: ItemOrderBinding) : RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
-        return OrderViewHolder.from(parent, listener)
+        val layoutInflater = LayoutInflater.from(parent.context)
+        val binding = ItemOrderBinding.inflate(layoutInflater, parent, false)
+        return OrderViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val order = getItem(position)
+        holder.binding.order = order
+        holder.itemView.setOnClickListener { userOrdersViewModel.selectOrder(order) }
     }
 }

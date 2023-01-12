@@ -13,7 +13,7 @@ import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.getOrAwaitValue
 import com.example.appcommerceclone.launchFragmentInHiltContainer
-import com.example.appcommerceclone.ui.product.ProductViewHolder
+import com.example.appcommerceclone.ui.product.ProductsAdapter
 import com.example.appcommerceclone.ui.product.ProductsFragment
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -81,10 +81,10 @@ class ProductsFragmentLocalTest {
         launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController)
 
         onView(withId(R.id.products_recycler_view))
-            .perform(scrollToPosition<ProductViewHolder>(0))
+            .perform(scrollToPosition<ProductsAdapter.ProductViewHolder>(0))
 
         onView(withId(R.id.products_recycler_view))
-            .perform(actionOnItemAtPosition<ProductViewHolder>(1, click()))
+            .perform(actionOnItemAtPosition<ProductsAdapter.ProductViewHolder>(1, click()))
 
         assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.product_detail_fragment)
     }

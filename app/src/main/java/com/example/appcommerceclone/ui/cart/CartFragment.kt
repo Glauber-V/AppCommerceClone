@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentCartAlertDialogBinding
 import com.example.appcommerceclone.databinding.FragmentCartBinding
-import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -21,7 +20,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CartFragment : Fragment(), CartListener {
+class CartFragment : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
     val userViewModel by activityViewModels<UserViewModel>()
@@ -48,22 +47,11 @@ class CartFragment : Fragment(), CartListener {
 
 
     private fun setupCartProductsRecyclerView() {
-        cartAdapter = CartAdapter(this)
+        cartAdapter = CartAdapter(cartViewModel)
         binding.cartRecyclerView.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = cartAdapter
         }
-    }
-
-    override fun cartIncreaseQuantity(orderedProduct: OrderedProduct, adapterPosition: Int) {
-        cartViewModel.increaseQuantity(orderedProduct)
-        cartAdapter.notifyItemChanged(adapterPosition)
-    }
-
-    override fun cartDecreaseQuantity(orderedProduct: OrderedProduct, adapterPosition: Int) {
-        cartViewModel.decreaseQuantity(orderedProduct)
-        if (orderedProduct.quantity >= 1) cartAdapter.notifyItemChanged(adapterPosition)
-        else cartAdapter.notifyItemRemoved(adapterPosition)
     }
 
     private fun observeCartProductsChanges() {

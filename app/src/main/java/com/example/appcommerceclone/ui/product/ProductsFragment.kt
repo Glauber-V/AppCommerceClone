@@ -10,7 +10,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
-import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.ProductViewModel
@@ -18,7 +17,7 @@ import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProductsFragment : Fragment(), ProductClickListener {
+class ProductsFragment : Fragment() {
 
     private lateinit var binding: FragmentProductsBinding
     val connectionViewModel by activityViewModels<ConnectivityViewModel>()
@@ -50,8 +49,10 @@ class ProductsFragment : Fragment(), ProductClickListener {
 
     private fun setupProductsRecyclerView() {
         binding.productsShimmer.startShimmer()
-        productViewModel.refreshProducts()
-        productsAdapter = ProductsAdapter(this)
+        productsAdapter = ProductsAdapter { product ->
+            productViewModel.selectProduct(product)
+            navigateToProductDetailFragment()
+        }
         binding.productsRecyclerView.apply {
             layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
             adapter = productsAdapter
@@ -60,18 +61,15 @@ class ProductsFragment : Fragment(), ProductClickListener {
 
     private fun observeProductsListChanges() {
         productViewModel.products.observe(viewLifecycleOwner) { products ->
-            if (!products.isNullOrEmpty()) {
-                productsAdapter.submitList(products)
+            if (products.isEmpty()) {
+                productViewModel.refreshProducts()
+            } else {
                 binding.productsShimmer.stopShimmer()
                 binding.productsShimmer.visibility = View.GONE
                 binding.productsRecyclerView.visibility = View.VISIBLE
             }
+            productsAdapter.submitList(products)
         }
-    }
-
-    override fun onProductClicked(product: Product) {
-        productViewModel.selectProduct(product)
-        navigateToProductDetailFragment()
     }
 
 
