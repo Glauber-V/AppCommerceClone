@@ -18,12 +18,14 @@ output.json
 # IntelliJ
 *.iml
 .idea/
-.DS_Store
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 .externalNativeBuild
 .cxx
+
+# MacOS files
+.DS_Store
 
 # Keystore files
 *.jks
@@ -35,4 +37,4 @@ google-services.json
 # Android Profiling
 *.hprof
 
-# More templates could be found here: https://github.com/github/gitignore/blob/main/Android.gitignore
+# More templates can be found here: https://github.com/github/gitignore/blob/main/Android.gitignore
