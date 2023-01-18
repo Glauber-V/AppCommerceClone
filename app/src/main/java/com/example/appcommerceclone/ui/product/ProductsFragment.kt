@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
 import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
@@ -53,7 +52,9 @@ class ProductsFragment : Fragment() {
             navigateToProductDetailFragment()
         }
         binding.productsRecyclerView.apply {
-            layoutManager = StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL)
+            val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+            layoutManager = staggeredGridLayoutManager
             adapter = productsAdapter
         }
     }
