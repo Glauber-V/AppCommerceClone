@@ -24,12 +24,4 @@ class FakeProductsRepository : ProductsRepository {
 
         return products
     }
-
-    fun areAllProductsWithTheSameCategory(list: List<Product>, category: String): Boolean {
-        var result = false
-        for (product in list) {
-            result = product.category == category
-        }
-        return result
-    }
 }

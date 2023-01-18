@@ -20,15 +20,11 @@ class ProductViewModel @Inject constructor(private val repository: ProductsRepos
     private val _selectedProduct = MutableLiveData<Product?>()
     val selectedProduct: LiveData<Product?> = _selectedProduct
 
-    private val _selectedCategory = MutableLiveData<String>()
-    val selectedCategory: LiveData<String> = _selectedCategory
 
-
-    fun refreshProducts() {
+    fun updateProductsList(categoryName: String = "") {
         viewModelScope.launch {
             val products = repository.loadProductsList()
-            val category = _selectedCategory.value ?: ""
-            _products.value = prepareProductsList(products, category)
+            _products.value = prepareProductsList(products, categoryName)
         }
     }
 
@@ -48,8 +44,8 @@ class ProductViewModel @Inject constructor(private val repository: ProductsRepos
     }
 
 
-    fun selectCategory(categoryName: String) {
-        _selectedCategory.value = categoryName
+    fun selectCategoryAndUpdateProductsList(categoryName: String) {
+        updateProductsList(categoryName)
     }
 
     fun checkDisplayMethodByProductCategory(product: Product): Boolean {

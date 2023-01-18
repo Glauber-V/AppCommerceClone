@@ -38,15 +38,13 @@ class ProductViewModelTest {
 
     @Test
     fun `select a category and verify if all products in the list belongs to the same category`() = runTest {
-        productViewModel.selectCategory(CATEGORY_ELECTRONICS)
-        productViewModel.refreshProducts()
+        productViewModel.selectCategoryAndUpdateProductsList(CATEGORY_ELECTRONICS)
         advanceUntilIdle()
 
-        val selectedCategory = productViewModel.selectedCategory.getOrAwaitValue()
         val products = productViewModel.products.getOrAwaitValue()
-        val sameCategoryProducts = fakeProductsRepository.areAllProductsWithTheSameCategory(products, selectedCategory)
 
-        assertThat(sameCategoryProducts).isTrue()
+        assertThat(products.size).isEqualTo(1)
+        assertThat(products.first().category).isEqualTo(CATEGORY_ELECTRONICS)
     }
 
     @Test

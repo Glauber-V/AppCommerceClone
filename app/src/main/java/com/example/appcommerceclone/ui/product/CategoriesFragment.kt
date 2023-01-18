@@ -38,7 +38,7 @@ class CategoriesFragment : Fragment() {
     }
 
     private fun selectCategoryAndNavigateBack(categoryName: String) {
-        productViewModel.selectCategory(categoryName)
+        productViewModel.selectCategoryAndUpdateProductsList(categoryName)
         findNavController().navigateUp()
     }
 }

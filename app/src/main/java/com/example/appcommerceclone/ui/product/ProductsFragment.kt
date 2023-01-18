@@ -48,7 +48,6 @@ class ProductsFragment : Fragment() {
 
 
     private fun setupProductsRecyclerView() {
-        binding.productsShimmer.startShimmer()
         productsAdapter = ProductsAdapter { product ->
             productViewModel.selectProduct(product)
             navigateToProductDetailFragment()
@@ -60,15 +59,16 @@ class ProductsFragment : Fragment() {
     }
 
     private fun observeProductsListChanges() {
+        binding.productsShimmer.startShimmer()
         productViewModel.products.observe(viewLifecycleOwner) { products ->
             if (products.isEmpty()) {
-                productViewModel.refreshProducts()
+                productViewModel.updateProductsList()
             } else {
+                productsAdapter.submitList(products)
                 binding.productsShimmer.stopShimmer()
                 binding.productsShimmer.visibility = View.GONE
                 binding.productsRecyclerView.visibility = View.VISIBLE
             }
-            productsAdapter.submitList(products)
         }
     }
 
