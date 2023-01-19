@@ -23,6 +23,8 @@ class UserLoginFragment : Fragment() {
     val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
     val userViewModel by activityViewModels<UserViewModel>()
 
+    private var isLoadingUser = false
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentUserLoginBinding.inflate(inflater, container, false)
@@ -78,6 +80,7 @@ class UserLoginFragment : Fragment() {
     }
 
     private fun startLoginProcess(usernameInput: String, passwordInput: String) {
+        isLoadingUser = true
         ViewExt.hideTextEditor(binding.userLoginUsername, binding.userLoginPassword)
         showProgressBar()
 
@@ -89,8 +92,11 @@ class UserLoginFragment : Fragment() {
             hideProgressBar()
             ViewExt.showTextEditor(binding.userLoginUsername, binding.userLoginPassword)
 
-            if (user == null) ViewExt.showMessage(binding.root, getString(R.string.user_error_not_found))
-            else findNavController().navigateUp()
+            if (isLoadingUser) {
+                if (user == null) ViewExt.showMessage(binding.root, getString(R.string.user_error_not_found))
+                else findNavController().navigateUp()
+                isLoadingUser = false
+            }
         }
     }
 
