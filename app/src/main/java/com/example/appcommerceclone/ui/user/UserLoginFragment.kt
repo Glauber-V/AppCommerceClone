@@ -93,8 +93,12 @@ class UserLoginFragment : Fragment() {
             ViewExt.showTextEditor(binding.userLoginUsername, binding.userLoginPassword)
 
             if (isLoadingUser) {
-                if (user == null) ViewExt.showMessage(binding.root, getString(R.string.user_error_not_found))
-                else findNavController().navigateUp()
+                if (user == null) {
+                    ViewExt.showMessage(binding.root, getString(R.string.user_error_not_found))
+                } else {
+                    ViewExt.showMessage(binding.root, getString(R.string.user_profile_welcome_message, user.username))
+                    findNavController().navigateUp()
+                }
                 isLoadingUser = false
             }
         }
