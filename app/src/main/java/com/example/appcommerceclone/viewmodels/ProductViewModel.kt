@@ -14,6 +14,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ProductViewModel @Inject constructor(private val repository: ProductsRepository) : ViewModel() {
 
+    private var _allProducts: List<Product> = emptyList()
+
     private val _products = MutableLiveData<List<Product>>(mutableListOf())
     val products: LiveData<List<Product>> = _products
 
@@ -23,8 +25,8 @@ class ProductViewModel @Inject constructor(private val repository: ProductsRepos
 
     fun updateProductsList(categoryName: String = "") {
         viewModelScope.launch {
-            val products = repository.loadProductsList()
-            _products.value = prepareProductsList(products, categoryName)
+            _allProducts = repository.loadProductsList()
+            _products.value = prepareProductsList(_allProducts, categoryName)
         }
     }
 
@@ -45,7 +47,7 @@ class ProductViewModel @Inject constructor(private val repository: ProductsRepos
 
 
     fun selectCategoryAndUpdateProductsList(categoryName: String) {
-        updateProductsList(categoryName)
+        _products.value = prepareProductsList(_allProducts, categoryName)
     }
 
     fun checkDisplayMethodByProductCategory(product: Product): Boolean {

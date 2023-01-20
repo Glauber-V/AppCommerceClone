@@ -38,7 +38,7 @@ class ProductViewModelTest {
 
     @Test
     fun `select a category and verify if all products in the list belongs to the same category`() = runTest {
-        productViewModel.selectCategoryAndUpdateProductsList(CATEGORY_ELECTRONICS)
+        productViewModel.updateProductsList(CATEGORY_ELECTRONICS)
         advanceUntilIdle()
 
         val products = productViewModel.products.getOrAwaitValue()
