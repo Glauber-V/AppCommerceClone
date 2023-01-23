@@ -5,14 +5,10 @@ API ([GitHub](https://github.com/keikaavousi/fake-store-api) / [Site](https://fa
 
 ## Screenshots
 
-<img src="screenshots/video_start.gif" width="411" height="891" alt="">
-<img src="screenshots/video_home.gif" width="411" height="891" alt="">
-<img src="screenshots/video_login.gif" width="411" height="891" alt="">
-<img src="screenshots/screenshot_product_detail_full.png" width="411" height="891" alt="">
-<img src="screenshots/screenshot_product_detail_minimal.png" width="411" height="891" alt="">
-<img src="screenshots/screenshot_cart.png" width="411" height="891" alt="">
-<img src="screenshots/screenshot_orders.png" width="411" height="891" alt="">
-<img src="screenshots/screenshot_favorites.png" width="411" height="891" alt="">
+<img src="screenshots/video_start.gif" width="240px" hspace="12" alt="app initializing">
+<img src="screenshots/video_login.gif" width="240px" hspace="12" alt="login process">
+<img src="screenshots/screenshot_product_detail_full.png" width="240px" hspace="12" alt="full product detail">
+<img src="screenshots/screenshot_cart.png" width="240px" hspace="12" alt="cart">
 
 ## Used Libraries
 
