@@ -48,7 +48,7 @@ class ProductDetailFragment : Fragment() {
         productViewModel.selectedProduct.observe(viewLifecycleOwner) { hasProduct ->
             hasProduct?.let { product ->
                 binding.product = product
-                isInFullMode = productViewModel.checkDisplayMethodByProductCategory(product)
+                isInFullMode = productViewModel.checkIfShouldDisplayInFullDetailMode(product)
                 binding.isInFullMode = isInFullMode
             }
         }
@@ -59,7 +59,7 @@ class ProductDetailFragment : Fragment() {
             if (favoritesViewModel.addToFavorites(binding.product!!)) {
                 navigateToFavoritesFragment()
             } else {
-                ViewExt.showMessage(binding.root, getString(R.string.product_detail_favorites_warning))
+                ViewExt.showSnackbar(requireView(), getString(R.string.product_detail_favorites_warning))
             }
         }
     }
@@ -77,7 +77,7 @@ class ProductDetailFragment : Fragment() {
     private fun setupBuyNowBtnListener() {
         binding.productDetailBuyNow.setOnClickListener {
             if (isChipsSelected()) {
-                ViewExt.showMessage(requireView(), getString(R.string.product_detail_thanks_for_purchase))
+                ViewExt.showSnackbar(requireView(), getString(R.string.product_detail_thanks_for_purchase))
             }
         }
     }

@@ -13,6 +13,7 @@ import com.example.appcommerceclone.launchFragmentInHiltContainer
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.product.ProductDetailFragment
 import com.example.appcommerceclone.util.Constants
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_WOMENS_CLOTHING
 import com.example.appcommerceclone.util.getFormattedPrice
 import com.example.appcommerceclone.util.getOrderedProduct
 import com.google.common.truth.Truth.*
@@ -53,7 +54,7 @@ class ProductDetailFragmentLocalTest {
             name = "Product D4",
             price = 20.0,
             description = "DDD",
-            category = Constants.CATEGORY_WOMENS_CLOTHING,
+            category = CATEGORY_NAME_WOMENS_CLOTHING,
             imageUrl = ""
         )
     }
@@ -93,7 +94,7 @@ class ProductDetailFragmentLocalTest {
     @Test
     fun clickAddToCart_whenNotInFullMode_shouldNavigateToCartFragment() {
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
-            val productFromDifferentCategory = product.copy(category = Constants.CATEGORY_JEWELRY)
+            val productFromDifferentCategory = product.copy(category = Constants.CATEGORY_NAME_JEWELRY)
             productViewModel.selectProduct(productFromDifferentCategory)
 
             onView(withId(R.id.product_detail_colors_chip_group))

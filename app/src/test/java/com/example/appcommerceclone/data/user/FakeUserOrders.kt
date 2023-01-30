@@ -5,7 +5,10 @@ import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.model.user.Name
 import com.example.appcommerceclone.model.user.User
-import com.example.appcommerceclone.util.Constants
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_JEWELRY
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_MENS_CLOTHING
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_WOMENS_CLOTHING
 
 class FakeUserOrders : UserOrders {
 
@@ -27,11 +30,11 @@ class FakeUserOrders : UserOrders {
         val orders = mutableListOf<Order>()
         val orderedProducts = mutableListOf<OrderedProduct>()
 
-        val product1 = Product(id = 1, price = 5.0, category = Constants.CATEGORY_JEWELRY)
-        val product2 = Product(id = 2, price = 10.0, category = Constants.CATEGORY_ELECTRONICS)
-        val product3 = Product(id = 3, price = 15.0, category = Constants.CATEGORY_MENS_CLOTHING)
-        val product4 = Product(id = 4, price = 20.0, category = Constants.CATEGORY_WOMENS_CLOTHING)
-        val product5 = Product(id = 5, price = 25.0, category = Constants.CATEGORY_ELECTRONICS)
+        val product1 = Product(id = 1, price = 5.0, category = CATEGORY_NAME_JEWELRY)
+        val product2 = Product(id = 2, price = 10.0, category = CATEGORY_NAME_ELECTRONICS)
+        val product3 = Product(id = 3, price = 15.0, category = CATEGORY_NAME_MENS_CLOTHING)
+        val product4 = Product(id = 4, price = 20.0, category = CATEGORY_NAME_WOMENS_CLOTHING)
+        val product5 = Product(id = 5, price = 25.0, category = CATEGORY_NAME_ELECTRONICS)
 
         val orderedProduct1 = OrderedProduct(product = product1, quantity = 4)
         val orderedProduct2 = OrderedProduct(product = product2, quantity = 6)

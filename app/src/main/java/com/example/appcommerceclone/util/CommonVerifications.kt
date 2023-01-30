@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.ui
+package com.example.appcommerceclone.util
 
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController

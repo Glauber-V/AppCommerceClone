@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentUserRegisterBinding
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
 import com.example.appcommerceclone.util.ViewExt
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -44,14 +44,14 @@ class UserRegisterFragment : Fragment() {
     }
 
     private fun validateRegister(): Boolean {
-        val isValid1 = ViewExt.prepareEditText(binding.userRegisterEmail, binding.userRegisterEmailText, getString(R.string.user_error_no_email))
-        val isValid2 = ViewExt.prepareEditText(binding.userRegisterUsername, binding.userRegisterUsernameText, getString(R.string.user_error_no_username))
-        val isValid3 = ViewExt.prepareEditText(binding.userRegisterPassword, binding.userRegisterPasswordText, getString(R.string.user_error_no_password))
+        val isValid1 = ViewExt.validateEditText(binding.userRegisterEmail, binding.userRegisterEmailText, getString(R.string.user_error_no_email))
+        val isValid2 = ViewExt.validateEditText(binding.userRegisterUsername, binding.userRegisterUsernameText, getString(R.string.user_error_no_username))
+        val isValid3 = ViewExt.validateEditText(binding.userRegisterPassword, binding.userRegisterPasswordText, getString(R.string.user_error_no_password))
         return isValid1 && isValid2 && isValid3
     }
 
     private fun startRegisterProcess() {
-        ViewExt.showMessage(binding.root, getString(R.string.user_register_successfully_message))
+        ViewExt.showSnackbar(binding.root, getString(R.string.user_register_successfully_message))
         findNavController().navigateUp()
     }
 }

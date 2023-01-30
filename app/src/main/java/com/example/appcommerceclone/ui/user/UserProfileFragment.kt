@@ -11,8 +11,8 @@ import com.example.appcommerceclone.databinding.FragmentUserProfileBinding
 import com.example.appcommerceclone.model.user.Address
 import com.example.appcommerceclone.model.user.Name
 import com.example.appcommerceclone.model.user.User
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserExistsToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserExistsToProceed
 import com.example.appcommerceclone.util.ViewExt
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -79,9 +79,9 @@ class UserProfileFragment : Fragment() {
     }
 
     private fun validateUpdatedUserInfo(): Boolean {
-        val isValid1 = ViewExt.prepareEditText(binding.userProfileEmail, binding.userProfileEmailText, getString(R.string.user_error_no_email))
-        val isValid2 = ViewExt.prepareEditText(binding.userProfileUsername, binding.userProfileUsernameText, getString(R.string.user_error_no_username))
-        val isValid3 = ViewExt.prepareEditText(binding.userProfilePassword, binding.userProfilePasswordText, getString(R.string.user_error_no_password))
+        val isValid1 = ViewExt.validateEditText(binding.userProfileEmail, binding.userProfileEmailText, getString(R.string.user_error_no_email))
+        val isValid2 = ViewExt.validateEditText(binding.userProfileUsername, binding.userProfileUsernameText, getString(R.string.user_error_no_username))
+        val isValid3 = ViewExt.validateEditText(binding.userProfilePassword, binding.userProfilePasswordText, getString(R.string.user_error_no_password))
         return isValid1 && isValid2 && isValid3
     }
 
@@ -107,7 +107,7 @@ class UserProfileFragment : Fragment() {
             userViewModel.updateUser(updatedUser)
 
             finishUserUpdateProcess()
-            ViewExt.showMessage(binding.root, getString(R.string.user_profile_updated_message))
+            ViewExt.showSnackbar(binding.root, getString(R.string.user_profile_updated_message))
         }
     }
 

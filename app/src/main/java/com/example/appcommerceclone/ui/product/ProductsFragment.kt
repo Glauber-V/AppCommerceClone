@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel

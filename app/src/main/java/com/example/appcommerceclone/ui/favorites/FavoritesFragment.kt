@@ -8,8 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appcommerceclone.databinding.FragmentFavoritesBinding
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserExistsToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserExistsToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel

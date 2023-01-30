@@ -85,7 +85,7 @@
 
     <fragment
         android:id="@+id/connection_fragment"
-        android:name="com.example.appcommerceclone.ui.ConnectionFragment"
+        android:name="com.example.appcommerceclone.ui.connection.ConnectionFragment"
         android:label="@string/fragment_connection_label"
         tools:layout="@layout/fragment_connection"/>
 

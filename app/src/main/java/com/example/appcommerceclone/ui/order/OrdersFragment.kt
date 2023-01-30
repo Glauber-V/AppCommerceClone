@@ -9,8 +9,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appcommerceclone.databinding.FragmentOrdersBinding
 import com.example.appcommerceclone.model.user.User
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserExistsToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserExistsToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel

@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.databinding.FragmentCategoriesBinding
-import com.example.appcommerceclone.util.Constants.CATEGORY_ELECTRONICS
-import com.example.appcommerceclone.util.Constants.CATEGORY_JEWELRY
-import com.example.appcommerceclone.util.Constants.CATEGORY_MENS_CLOTHING
-import com.example.appcommerceclone.util.Constants.CATEGORY_WOMENS_CLOTHING
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_JEWELRY
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_MENS_CLOTHING
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_WOMENS_CLOTHING
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -31,10 +31,10 @@ class CategoriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.productCategoryAll.setOnClickListener { selectCategoryAndNavigateBack("") }
-        binding.productCategoryElectronics.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_ELECTRONICS) }
-        binding.productCategoryJewelery.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_JEWELRY) }
-        binding.productCategoryMensClothing.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_MENS_CLOTHING) }
-        binding.productCategoryWomensClothing.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_WOMENS_CLOTHING) }
+        binding.productCategoryElectronics.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_ELECTRONICS) }
+        binding.productCategoryJewelery.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_JEWELRY) }
+        binding.productCategoryMensClothing.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_MENS_CLOTHING) }
+        binding.productCategoryWomensClothing.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_WOMENS_CLOTHING) }
     }
 
     private fun selectCategoryAndNavigateBack(categoryName: String) {

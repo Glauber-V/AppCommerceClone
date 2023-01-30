@@ -9,7 +9,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentUserLoginBinding
-import com.example.appcommerceclone.ui.CommonVerifications.verifyUserConnectionToProceed
+import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
 import com.example.appcommerceclone.util.ViewExt
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -74,8 +74,8 @@ class UserLoginFragment : Fragment() {
 
 
     private fun validateLogin(): Boolean {
-        val isValid1 = ViewExt.prepareEditText(binding.userLoginUsername, binding.userLoginUsernameText, getString(R.string.user_error_no_username))
-        val isValid2 = ViewExt.prepareEditText(binding.userLoginPassword, binding.userLoginPasswordText, getString(R.string.user_error_no_password))
+        val isValid1 = ViewExt.validateEditText(binding.userLoginUsername, binding.userLoginUsernameText, getString(R.string.user_error_no_username))
+        val isValid2 = ViewExt.validateEditText(binding.userLoginPassword, binding.userLoginPasswordText, getString(R.string.user_error_no_password))
         return isValid1 && isValid2
     }
 
@@ -94,9 +94,9 @@ class UserLoginFragment : Fragment() {
 
             if (isLoadingUser) {
                 if (user == null) {
-                    ViewExt.showMessage(binding.root, getString(R.string.user_error_not_found))
+                    ViewExt.showSnackbar(binding.root, getString(R.string.user_error_not_found))
                 } else {
-                    ViewExt.showMessage(binding.root, getString(R.string.user_profile_welcome_message, user.username))
+                    ViewExt.showSnackbar(binding.root, getString(R.string.user_profile_welcome_message, user.username))
                     findNavController().navigateUp()
                 }
                 isLoadingUser = false

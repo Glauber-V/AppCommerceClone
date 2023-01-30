@@ -4,6 +4,7 @@ import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.DefaultProductsRepository
 import com.example.appcommerceclone.data.product.ProductsProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
+import com.example.appcommerceclone.util.Constants.FAKE_STORE_API_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -21,15 +22,13 @@ object ProductsModule {
     @Singleton
     @Provides
     fun provideProductsApi(): ProductsProvider {
-        val baseUrl = "https://fakestoreapi.com/"
-
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .build()
 
         val retrofit = Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .baseUrl(baseUrl)
+            .baseUrl(FAKE_STORE_API_URL)
             .build()
 
         return retrofit.create(ProductsProvider::class.java)

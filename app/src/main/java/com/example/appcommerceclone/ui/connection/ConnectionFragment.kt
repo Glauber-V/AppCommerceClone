@@ -1,16 +1,16 @@
-package com.example.appcommerceclone.ui
+package com.example.appcommerceclone.ui.connection
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentConnectionBinding
+import com.example.appcommerceclone.ui.MainActivity
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 
 class ConnectionFragment : Fragment() {
@@ -19,7 +19,7 @@ class ConnectionFragment : Fragment() {
     private val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
 
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentConnectionBinding.inflate(inflater, container, false)
         return binding.root
     }

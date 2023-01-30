@@ -4,8 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.product.FakeProductsRepository
 import com.example.appcommerceclone.getOrAwaitValue
 import com.example.appcommerceclone.model.product.Product
-import com.example.appcommerceclone.util.Constants.CATEGORY_ELECTRONICS
-import com.example.appcommerceclone.util.Constants.CATEGORY_JEWELRY
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_JEWELRY
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,18 +38,18 @@ class ProductViewModelTest {
 
     @Test
     fun `select a category and verify if all products in the list belongs to the same category`() = runTest {
-        productViewModel.updateProductsList(CATEGORY_ELECTRONICS)
+        productViewModel.updateProductsList(CATEGORY_NAME_ELECTRONICS)
         advanceUntilIdle()
 
         val products = productViewModel.products.getOrAwaitValue()
 
         assertThat(products.size).isEqualTo(1)
-        assertThat(products.first().category).isEqualTo(CATEGORY_ELECTRONICS)
+        assertThat(products.first().category).isEqualTo(CATEGORY_NAME_ELECTRONICS)
     }
 
     @Test
     fun `verify product was selected and returns true`() {
-        val product = Product(id = 1, name = "A1", price = 5.0, description = "AAA", category = CATEGORY_JEWELRY, imageUrl = "")
+        val product = Product(id = 1, name = "A1", price = 5.0, description = "AAA", category = CATEGORY_NAME_JEWELRY, imageUrl = "")
         productViewModel.selectProduct(product)
 
         val result = productViewModel.selectedProduct.getOrAwaitValue()
@@ -59,7 +59,7 @@ class ProductViewModelTest {
 
     @Test
     fun `verify selected product is not needed and returns null`() {
-        val product = Product(id = 1, name = "A1", price = 5.0, description = "AAA", category = CATEGORY_JEWELRY, imageUrl = "")
+        val product = Product(id = 1, name = "A1", price = 5.0, description = "AAA", category = CATEGORY_NAME_JEWELRY, imageUrl = "")
         productViewModel.selectProduct(product)
         productViewModel.onSelectedProductFinish()
 
