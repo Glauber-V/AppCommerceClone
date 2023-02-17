@@ -14,10 +14,7 @@ class DefaultUserAuthenticator @Inject constructor(
         return runCatching {
             withContext(dispatcher.io) {
                 val users = usersProvider.getAllUsers()
-                var user: User? = null
-                users.forEach {
-                    if (it.username == username && it.password == password) user = it
-                }
+                val user = users.firstOrNull { it.username == username && it.password == password }
                 user
             }
         }.getOrNull()

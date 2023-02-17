@@ -52,6 +52,10 @@ class ProductViewModel @Inject constructor(private val repository: ProductsRepos
     }
 
     fun checkIfShouldDisplayInFullDetailMode(product: Product): Boolean {
-        return !(product.category == CATEGORY_NAME_ELECTRONICS || product.category == CATEGORY_NAME_JEWELRY)
+        return when (product.category) {
+            CATEGORY_NAME_ELECTRONICS -> { false }
+            CATEGORY_NAME_JEWELRY -> { false }
+            else -> true
+        }
     }
 }
