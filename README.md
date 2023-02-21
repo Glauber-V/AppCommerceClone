@@ -24,14 +24,13 @@ more organized.
 
 ## Testing
 
-Tests are written with [Robolectric](https://robolectric.org/) framework to reduce the waiting time for each build to finish compiling, also you can
-run all tests with a single click using [Suite](https://junit.org/junit4/javadoc/4.13/org/junit/runners/Suite.html) class. The data layer components
-are defined following the [Dependency Inversion Principle](https://pt.wikipedia.org/wiki/Princ%C3%ADpio_da_invers%C3%A3o_de_depend%C3%AAncia) where
-each repository extends an interface and different implementations can be created for the production and testing code. Said implementations can be
-found with the"
-Default-" and "Fake-" prefixes. This project also makes extensive use of rules and custom functions that allows testing fragments while using Hilt
-dependency injection and waiting for a new LiveData value to be set. Coroutine dispatchers are also injectable with Hilt to increase consistency in
-test results.
+Tests are written with [Espresso](https://developer.android.com/training/testing/espresso) and [Robolectric](https://robolectric.org/), also you can
+run all tests together using [Suite](https://junit.org/junit4/javadoc/4.13/org/junit/runners/Suite.html) classes. The data layer components are
+defined following the [Dependency Inversion Principles](https://pt.wikipedia.org/wiki/Princ%C3%ADpio_da_invers%C3%A3o_de_depend%C3%AAncia)
+where each repository extends an interface and different implementations can be created for the production and testing code. Said implementations can
+be found with the "Default-" and "Fake-" prefixes. This project also makes extensive use of rules and custom functions that allows testing fragments
+while using Hilt dependency injection and waiting for a new LiveData value to be set. Coroutine dispatchers are also injectable with Hilt to increase
+consistency in test results.
 
 ## Used Libraries
 
