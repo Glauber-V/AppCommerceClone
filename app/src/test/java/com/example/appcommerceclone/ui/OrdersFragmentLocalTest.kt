@@ -2,7 +2,7 @@ package com.example.appcommerceclone.ui
 
 import androidx.navigation.testing.TestNavHostController
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.user.FakeUserAuthenticator
+import com.example.appcommerceclone.data.user.FakeUserAuthenticator.Companion.firstUser
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule
@@ -52,7 +52,7 @@ class OrdersFragmentLocalTest {
     @Test
     fun launchOrdersFragment_withUser_ordersSizeShouldBe2() = runTest {
         launchFragmentInHiltContainer<OrdersFragment>(navHostController = navHostController) {
-            userViewModel.login(username = FakeUserAuthenticator.USERNAME, password = FakeUserAuthenticator.PASSWORD)
+            userViewModel.login(username = firstUser.username, password = firstUser.password)
             advanceUntilIdle()
 
             val loggedUser = userViewModel.loggedUser.getOrAwaitValue()
@@ -65,8 +65,8 @@ class OrdersFragmentLocalTest {
 
     @Test
     fun launchOrdersFragments_withNoUser_shouldNavigateToLoginFragment() {
-        launchFragmentInHiltContainer<OrdersFragment>(navHostController = navHostController)
-
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+        launchFragmentInHiltContainer<OrdersFragment>(navHostController = navHostController) {
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+        }
     }
 }

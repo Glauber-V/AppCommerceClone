@@ -5,7 +5,7 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.user.FakeUserAuthenticator
+import com.example.appcommerceclone.data.user.FakeUserAuthenticator.Companion.firstUser
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.ui.user.UserLoginFragment
@@ -53,34 +53,36 @@ class UserLoginFragmentLocalTest {
 
     @Test
     fun clickLoginBtn_noUsernameAndPassword_stayInUserLoginFragment() {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController)
+        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
 
-        onView(withId(R.id.user_login_username_text))
-            .perform(replaceText(""))
+            onView(withId(R.id.user_login_username_text))
+                .perform(replaceText(""))
 
-        onView(withId(R.id.user_login_password_text))
-            .perform(replaceText(""))
+            onView(withId(R.id.user_login_password_text))
+                .perform(replaceText(""))
 
-        onView(withId(R.id.user_login_btn))
-            .perform(noConstraintsClick())
+            onView(withId(R.id.user_login_btn))
+                .perform(noConstraintsClick())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+        }
     }
 
     @Test
     fun clickLoginBtn_wrongUsernameAndPassword_stayInUserLoginFragment() {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController)
+        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
 
-        onView(withId(R.id.user_login_username_text))
-            .perform(replaceText("Robert"))
+            onView(withId(R.id.user_login_username_text))
+                .perform(replaceText("Robert"))
 
-        onView(withId(R.id.user_login_password_text))
-            .perform(replaceText("45687"))
+            onView(withId(R.id.user_login_password_text))
+                .perform(replaceText("45687"))
 
-        onView(withId(R.id.user_login_btn))
-            .perform(noConstraintsClick())
+            onView(withId(R.id.user_login_btn))
+                .perform(noConstraintsClick())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+        }
     }
 
     @Test
@@ -88,10 +90,10 @@ class UserLoginFragmentLocalTest {
         launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
 
             onView(withId(R.id.user_login_username_text))
-                .perform(replaceText(FakeUserAuthenticator.USERNAME))
+                .perform(replaceText(firstUser.username))
 
             onView(withId(R.id.user_login_password_text))
-                .perform(replaceText(FakeUserAuthenticator.PASSWORD))
+                .perform(replaceText(firstUser.password))
 
             onView(withId(R.id.user_login_btn))
                 .perform(noConstraintsClick())
@@ -100,18 +102,19 @@ class UserLoginFragmentLocalTest {
 
             val user = userViewModel.loggedUser.getOrAwaitValue()
             assertThat(user).isNotNull()
-            assertThat(user?.username).isEqualTo(FakeUserAuthenticator.USERNAME)
-            assertThat(user?.password).isEqualTo(FakeUserAuthenticator.PASSWORD)
+            assertThat(user?.username).isEqualTo(firstUser.username)
+            assertThat(user?.password).isEqualTo(firstUser.password)
         }
     }
 
     @Test
     fun clickRegisterBtn_navigateToRegisterFragment() {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController)
+        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
 
-        onView(withId(R.id.user_login_register_btn))
-            .perform(noConstraintsClick())
+            onView(withId(R.id.user_login_register_btn))
+                .perform(noConstraintsClick())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_register_fragment)
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_register_fragment)
+        }
     }
 }

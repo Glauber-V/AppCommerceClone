@@ -6,11 +6,12 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
+import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productElectronic
+import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productWomensClothing
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.product.ProductDetailFragment
 import com.example.appcommerceclone.util.*
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_WOMENS_CLOTHING
 import com.google.common.truth.Truth.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -38,59 +39,53 @@ class ProductDetailFragmentLocalTest {
     var testNavHostControllerRule = TestNavHostControllerRule(R.id.product_detail_fragment)
 
     private lateinit var navHostController: TestNavHostController
-    private lateinit var product: Product
+    private lateinit var productInFullMode: Product
+    private lateinit var productNotInFullMode: Product
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
-        product = Product(
-            id = 4,
-            name = "Product D4",
-            price = 20.0,
-            description = "DDD",
-            category = CATEGORY_NAME_WOMENS_CLOTHING,
-            imageUrl = ""
-        )
+        productInFullMode = productWomensClothing
+        productNotInFullMode = productElectronic
     }
 
     @Test
-    fun verifyProductWasLoaded_ShouldPass() {
+    fun verifyProductWasLoaded_notInFullMode_shouldPass() {
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
-            productViewModel.selectProduct(product)
+            productViewModel.selectProduct(productNotInFullMode)
+
+            onView(withId(R.id.product_detail_name))
+                .check(matches(withText(productNotInFullMode.name)))
+
+            onView(withId(R.id.product_detail_price))
+                .check(matches(withText(getFormattedPrice(productNotInFullMode))))
+
+            onView(withId(R.id.product_detail_description))
+                .check(matches(withText(productNotInFullMode.description)))
         }
-
-        onView(withId(R.id.product_detail_name))
-            .check(matches(withText(product.name)))
-
-        onView(withId(R.id.product_detail_price))
-            .check(matches(withText(getFormattedPrice(product))))
-
-        onView(withId(R.id.product_detail_description))
-            .check(matches(withText(product.description)))
     }
 
     @Test
-    fun clickAddToFavorites_shouldNavigateToFavoritesFragment() {
+    fun clickAddToFavorites_notInFullMode_shouldNavigateToFavoritesFragment() {
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
-            productViewModel.selectProduct(product)
+            productViewModel.selectProduct(productNotInFullMode)
 
             onView(withId(R.id.product_detail_add_to_favorites))
                 .perform(scrollTo())
                 .perform(click())
 
             val favorites = favoritesViewModel.favorites.getOrAwaitValue()
-            assertThat(favorites).contains(product)
+            assertThat(favorites).contains(productNotInFullMode)
 
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.favorites_fragment)
         }
     }
 
     @Test
-    fun clickAddToCart_whenNotInFullMode_shouldNavigateToCartFragment() {
+    fun clickAddToCart_notInFullMode_shouldNavigateToCartFragment() {
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
-            val productFromDifferentCategory = product.copy(category = Constants.CATEGORY_NAME_JEWELRY)
-            productViewModel.selectProduct(productFromDifferentCategory)
+            productViewModel.selectProduct(productNotInFullMode)
 
             onView(withId(R.id.product_detail_colors_chip_group))
                 .check(matches(withEffectiveVisibility(Visibility.GONE)))
@@ -102,74 +97,73 @@ class ProductDetailFragmentLocalTest {
                 .perform(scrollTo())
                 .perform(click())
 
-            val orderedProducts = cartViewModel.cartProducts.getOrAwaitValue()
-            val orderedProduct = orderedProducts.getOrderedProduct(productFromDifferentCategory)
-            assertThat(orderedProducts).contains(orderedProduct)
+            val orderedProduct = cartViewModel.getOrderedProduct(productNotInFullMode)
+            assertThat(cartViewModel.getOrderedProducts()).contains(orderedProduct)
 
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
         }
     }
 
     @Test
-    fun clickAddToCart_whenInFullMode_shouldNavigateToCartFragment() {
+    fun clickAddToCart_inFullMode_shouldNavigateToCartFragment() {
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
-            productViewModel.selectProduct(product)
+            productViewModel.selectProduct(productInFullMode)
+
+            onView(withId(R.id.product_detail_colors_chip_group))
+                .perform(scrollTo())
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+            onView(withId(R.id.chip_color_1))
+                .perform(scrollTo())
+                .perform(click())
+                .check(matches(isChecked()))
+
+            onView(withId(R.id.product_detail_sizes_chip_group))
+                .perform(scrollTo())
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+            onView(withId(R.id.chip_size_1))
+                .perform(scrollTo())
+                .perform(click())
+                .check(matches(isChecked()))
+
+            onView(withId(R.id.product_detail_add_to_cart))
+                .perform(scrollTo())
+                .perform(click())
+
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
         }
-
-        onView(withId(R.id.product_detail_colors_chip_group))
-            .perform(scrollTo())
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
-        onView(withId(R.id.chip_color_1))
-            .perform(scrollTo())
-            .perform(click())
-            .check(matches(isChecked()))
-
-        onView(withId(R.id.product_detail_sizes_chip_group))
-            .perform(scrollTo())
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
-        onView(withId(R.id.chip_size_1))
-            .perform(scrollTo())
-            .perform(click())
-            .check(matches(isChecked()))
-
-        onView(withId(R.id.product_detail_add_to_cart))
-            .perform(scrollTo())
-            .perform(click())
-
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
     }
 
     @Test
-    fun clickBuyNow_whenInFullMode_snackbarShouldBeVisible() {
+    fun clickBuyNow_inFullMode_snackbarShouldBeVisible() {
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
-            productViewModel.selectProduct(product)
+            productViewModel.selectProduct(productInFullMode)
+
+            onView(withId(R.id.product_detail_colors_chip_group))
+                .perform(scrollTo())
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+            onView(withId(R.id.chip_color_1))
+                .perform(scrollTo())
+                .perform(click())
+                .check(matches(isChecked()))
+
+            onView(withId(R.id.product_detail_sizes_chip_group))
+                .perform(scrollTo())
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+            onView(withId(R.id.chip_size_1))
+                .perform(scrollTo())
+                .perform(click())
+                .check(matches(isChecked()))
+
+            onView(withId(R.id.product_detail_buy_now))
+                .perform(scrollTo())
+                .perform(click())
+
+            onView(withId(com.google.android.material.R.id.snackbar_text))
+                .check(matches(withText(R.string.product_detail_thanks_for_purchase)))
         }
-
-        onView(withId(R.id.product_detail_colors_chip_group))
-            .perform(scrollTo())
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
-        onView(withId(R.id.chip_color_1))
-            .perform(scrollTo())
-            .perform(click())
-            .check(matches(isChecked()))
-
-        onView(withId(R.id.product_detail_sizes_chip_group))
-            .perform(scrollTo())
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
-        onView(withId(R.id.chip_size_1))
-            .perform(scrollTo())
-            .perform(click())
-            .check(matches(isChecked()))
-
-        onView(withId(R.id.product_detail_buy_now))
-            .perform(scrollTo())
-            .perform(click())
-
-        onView(withId(com.google.android.material.R.id.snackbar_text))
-            .check(matches(withText(R.string.product_detail_thanks_for_purchase)))
     }
 }

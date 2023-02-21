@@ -7,9 +7,10 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
+import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productJewelery
+import com.example.appcommerceclone.data.user.FakeUserAuthenticator.Companion.firstUser
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule
-import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.cart.CartFragment
 import com.example.appcommerceclone.util.*
 import com.google.common.truth.Truth.assertThat
@@ -54,15 +55,13 @@ class CartFragmentLocalTest {
     @Test
     fun clickIncreaseQuantityBtn_orderedProductQuantityAndPriceShouldReflectThisChange() = runTest {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController) {
-            val product = Product(name = "ProductA1", price = 10.0)
-            cartViewModel.addToCart(product)
+            cartViewModel.addToCart(productJewelery)
             advanceUntilIdle()
 
             onView(withId(R.id.cart_increase_quantity)).perform(click())
             advanceUntilIdle()
 
-            val allOrderedProductsInCart = cartViewModel.cartProducts.getOrAwaitValue()
-            val orderedProduct = allOrderedProductsInCart.getOrderedProduct(product)
+            val orderedProduct = cartViewModel.getOrderedProduct(productJewelery)
 
             onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
             onView(withId(R.id.ordered_product_quantity)).check(matches(withText(orderedProduct.quantity.toString())))
@@ -73,28 +72,25 @@ class CartFragmentLocalTest {
     @Test
     fun clickDecreaseQuantityBtn_orderedProductQuantityAndPriceShouldReflectThisChange() = runTest {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController) {
-            val product = Product(name = "ProductA1", price = 10.0)
-            cartViewModel.addToCart(product)
+            cartViewModel.addToCart(productJewelery)
             advanceUntilIdle()
 
-            var allOrderedProductsInCart = cartViewModel.cartProducts.getOrAwaitValue()
-            var orderedProduct = allOrderedProductsInCart.getOrderedProduct(product)
+            var orderedProduct = cartViewModel.getOrderedProduct(productJewelery)
 
             onView(withId(R.id.cart_increase_quantity)).perform(click())
             advanceUntilIdle()
 
             onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
-            onView(withId(R.id.ordered_product_quantity)).check(matches(withText("2")))
+            onView(withId(R.id.ordered_product_quantity)).check(matches(withText(orderedProduct.quantity.toString())))
             onView(withId(R.id.ordered_product_price)).check(matches(withText(getFormattedPrice(orderedProduct))))
 
             onView(withId(R.id.cart_decrease_quantity)).perform(click())
             advanceUntilIdle()
 
-            allOrderedProductsInCart = cartViewModel.cartProducts.getOrAwaitValue()
-            orderedProduct = allOrderedProductsInCart.getOrderedProduct(product)
+            orderedProduct = cartViewModel.getOrderedProduct(productJewelery)
 
             onView(withId(R.id.ordered_product_name)).check(matches(withText(orderedProduct.product.name)))
-            onView(withId(R.id.ordered_product_quantity)).check(matches(withText("1")))
+            onView(withId(R.id.ordered_product_quantity)).check(matches(withText(orderedProduct.quantity.toString())))
             onView(withId(R.id.ordered_product_price)).check(matches(withText(getFormattedPrice(orderedProduct))))
         }
     }
@@ -102,44 +98,44 @@ class CartFragmentLocalTest {
     @Test
     fun clickDecreaseQuantityBtn_whenQuantityIs1_orderedProductShouldBeRemoved() = runTest {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController) {
-            val product = Product(name = "ProductA1")
-            cartViewModel.addToCart(product)
+            cartViewModel.addToCart(productJewelery)
             advanceUntilIdle()
 
             onView(withId(R.id.cart_decrease_quantity)).perform(click())
             advanceUntilIdle()
 
-            val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
+            val cartProducts = cartViewModel.getOrderedProducts()
             assertThat(cartProducts).isEmpty()
         }
     }
 
     @Test
     fun clickAbandonCart_alertDialogShouldBeVisible() {
-        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController)
+        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController) {
 
-        onView(withId(R.id.cart_cancel_purchase_btn)).perform(click())
+            onView(withId(R.id.cart_cancel_purchase_btn)).perform(click())
 
-        val dialog = ShadowDialog.getLatestDialog()
-        assertTrue(dialog.isShowing)
+            val dialog = ShadowDialog.getLatestDialog()
+            assertTrue(dialog.isShowing)
 
-        onView(withText(R.string.cart_dialog_title))
-            .inRoot(isDialog())
-            .check(matches(isDisplayed()))
+            onView(withText(R.string.cart_dialog_title))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+        }
     }
 
     @Test
-    fun clickConfirm_navigateToOrdersFragment() = runTest {
+    fun clickConfirmPurchase_navigateToOrdersFragment() = runTest {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController) {
-            launch { userViewModel.login("Orisa", "321") }
+            launch { userViewModel.login(username = firstUser.username, password = firstUser.password) }
             advanceUntilIdle()
 
             val result = userViewModel.loggedUser.getOrAwaitValue()
             assertThat(result).isNotNull()
+
+            onView(withId(R.id.cart_confirm_purchase_btn)).perform(click())
+
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.orders_fragment)
         }
-
-        onView(withId(R.id.cart_confirm_purchase_btn)).perform(click())
-
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.orders_fragment)
     }
 }

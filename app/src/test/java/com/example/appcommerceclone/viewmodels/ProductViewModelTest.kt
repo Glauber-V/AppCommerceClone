@@ -2,9 +2,9 @@ package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.product.FakeProductsRepository
+import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productJewelery
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_JEWELRY
 import com.example.appcommerceclone.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
@@ -23,12 +23,14 @@ class ProductViewModelTest {
 
     private lateinit var fakeProductsRepository: FakeProductsRepository
     private lateinit var productViewModel: ProductViewModel
+    private lateinit var product: Product
 
     @Before
     fun setup() {
         Dispatchers.setMain(StandardTestDispatcher())
         fakeProductsRepository = FakeProductsRepository()
         productViewModel = ProductViewModel(fakeProductsRepository)
+        product = productJewelery
     }
 
     @After
@@ -37,7 +39,7 @@ class ProductViewModelTest {
     }
 
     @Test
-    fun `select a category and verify if all products in the list belongs to the same category`() = runTest {
+    fun selectCategory_verifyAllProductsHaveTheSameCategory() = runTest {
         productViewModel.updateProductsList(CATEGORY_NAME_ELECTRONICS)
         advanceUntilIdle()
 
@@ -48,23 +50,22 @@ class ProductViewModelTest {
     }
 
     @Test
-    fun `verify product was selected and returns true`() {
-        val product = Product(id = 1, name = "A1", price = 5.0, description = "AAA", category = CATEGORY_NAME_JEWELRY, imageUrl = "")
+    fun selectProduct_confirmSelectedProduct() {
         productViewModel.selectProduct(product)
 
-        val result = productViewModel.selectedProduct.getOrAwaitValue()
+        val selectedProduct = productViewModel.selectedProduct.getOrAwaitValue()
 
-        assertThat(result).isEqualTo(product)
+        assertThat(selectedProduct).isEqualTo(product)
     }
 
     @Test
-    fun `verify selected product is not needed and returns null`() {
-        val product = Product(id = 1, name = "A1", price = 5.0, description = "AAA", category = CATEGORY_NAME_JEWELRY, imageUrl = "")
+    fun selectProduct_verifyOnSelectedProductFinishCompletesWithNullValue() {
         productViewModel.selectProduct(product)
+        val firstCheck = productViewModel.selectedProduct.getOrAwaitValue()
+        assertThat(firstCheck).isEqualTo(product)
+
         productViewModel.onSelectedProductFinish()
-
-        val result = productViewModel.selectedProduct.getOrAwaitValue()
-
-        assertThat(result).isNull()
+        val secondCheck = productViewModel.selectedProduct.getOrAwaitValue()
+        assertThat(secondCheck).isNull()
     }
 }

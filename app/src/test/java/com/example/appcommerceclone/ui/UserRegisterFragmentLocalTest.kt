@@ -48,39 +48,41 @@ class UserRegisterFragmentLocalTest {
 
     @Test
     fun clickRegisterBtn_noCredentials_stayInRegisterFragment() {
-        launchFragmentInHiltContainer<UserRegisterFragment>(navHostController = navHostController)
+        launchFragmentInHiltContainer<UserRegisterFragment>(navHostController = navHostController) {
 
-        onView(withId(R.id.user_register_email_text))
-            .perform(replaceText(""))
+            onView(withId(R.id.user_register_email_text))
+                .perform(replaceText(""))
 
-        onView(withId(R.id.user_register_username_text))
-            .perform(replaceText(""))
+            onView(withId(R.id.user_register_username_text))
+                .perform(replaceText(""))
 
-        onView(withId(R.id.user_register_password_text))
-            .perform(replaceText(""))
+            onView(withId(R.id.user_register_password_text))
+                .perform(replaceText(""))
 
-        onView(withId(R.id.user_register_btn))
-            .perform(click())
+            onView(withId(R.id.user_register_btn))
+                .perform(click())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_register_fragment)
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_register_fragment)
+        }
     }
 
     @Test
     fun clickRegisterBtn_withCredentials_shouldNavigateBackToUserLoginFragment() {
-        launchFragmentInHiltContainer<UserRegisterFragment>(navHostController = navHostController)
+        launchFragmentInHiltContainer<UserRegisterFragment>(navHostController = navHostController) {
 
-        onView(withId(R.id.user_register_email_text))
-            .perform(replaceText("random_2022@hotmail.com"))
+            onView(withId(R.id.user_register_email_text))
+                .perform(replaceText("random_2022@hotmail.com"))
 
-        onView(withId(R.id.user_register_username_text))
-            .perform(replaceText("RandomUser22"))
+            onView(withId(R.id.user_register_username_text))
+                .perform(replaceText("RandomUser22"))
 
-        onView(withId(R.id.user_register_password_text))
-            .perform(replaceText("12322"))
+            onView(withId(R.id.user_register_password_text))
+                .perform(replaceText("12322"))
 
-        onView(withId(R.id.user_register_btn))
-            .perform(click())
+            onView(withId(R.id.user_register_btn))
+                .perform(click())
 
-        assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_register_fragment)
+            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_register_fragment)
+        }
     }
 }

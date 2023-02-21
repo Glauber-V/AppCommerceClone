@@ -44,12 +44,13 @@ class CategoriesFragmentLocalTest {
     }
 
     @Test
-    fun selectCategory_NavigateToProductsFragment() {
-        launchFragmentInHiltContainer<CategoriesFragment>(navHostController = navHostController)
+    fun selectCategory_navigateToProductsFragment() {
+        launchFragmentInHiltContainer<CategoriesFragment>(navHostController = navHostController) {
 
-        onView(withId(R.id.product_category_electronics))
-            .perform(click())
+            onView(withId(R.id.product_category_electronics))
+                .perform(click())
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.products_fragment)
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.products_fragment)
+        }
     }
 }

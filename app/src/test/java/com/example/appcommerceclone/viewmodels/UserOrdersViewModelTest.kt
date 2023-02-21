@@ -2,6 +2,7 @@ package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.user.FakeUserAuthenticator
+import com.example.appcommerceclone.data.user.FakeUserAuthenticator.Companion.firstUser
 import com.example.appcommerceclone.data.user.FakeUserOrders
 import com.example.appcommerceclone.model.order.Order
 import com.example.appcommerceclone.util.getOrAwaitValue
@@ -38,8 +39,8 @@ class UserOrdersViewModelTest {
     }
 
     @Test
-    fun `refresh user orders with correct user id, return orders list`() = runTest {
-        userOrdersViewModel.refreshUserOrders(FakeUserAuthenticator.ID)
+    fun refreshUserOrders_withCorrectUserId_ordersListShouldNotBeEmpty() = runTest {
+        userOrdersViewModel.refreshUserOrders(firstUser.id)
         advanceUntilIdle()
 
         val result = userOrdersViewModel.orders.getOrAwaitValue()
@@ -48,8 +49,8 @@ class UserOrdersViewModelTest {
     }
 
     @Test
-    fun `try refresh user orders with wrong user id, return empty list`() = runTest {
-        userOrdersViewModel.refreshUserOrders(4)
+    fun refreshUserOrders_withWrongUserId_orderListShouldBeEmpty() = runTest {
+        userOrdersViewModel.refreshUserOrders(99)
         advanceUntilIdle()
 
         val result = userOrdersViewModel.orders.getOrAwaitValue()
@@ -58,7 +59,7 @@ class UserOrdersViewModelTest {
     }
 
     @Test
-    fun `receive order and verify is not null`() {
+    fun receiveOrder_orderIsNotNull() {
         userOrdersViewModel.receiveOrder(Order())
 
         val result = userOrdersViewModel.order.getOrAwaitValue()
@@ -67,17 +68,18 @@ class UserOrdersViewModelTest {
     }
 
     @Test
-    fun `process an order and verify it was added the orders list`() {
+    fun processOrder_verifyOrderWasAddedToOrdersList() {
         val order = Order()
-        userOrdersViewModel.processOrder(order, 2)
+        userOrdersViewModel.processOrder(order, firstUser.id)
 
         val orders = userOrdersViewModel.orders.getOrAwaitValue()
 
         assertThat(orders).contains(order)
+        assertThat(orders.first().userId).isEqualTo(firstUser.id)
     }
 
     @Test
-    fun `select an order and complete selection`() {
+    fun selectOrder_verifyOrderIsCompletedWithNullValue() {
         val order = Order()
 
         userOrdersViewModel.selectOrder(order)

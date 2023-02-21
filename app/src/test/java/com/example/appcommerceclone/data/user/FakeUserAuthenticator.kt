@@ -1,28 +1,48 @@
 package com.example.appcommerceclone.data.user
 
+import com.example.appcommerceclone.model.user.Address
 import com.example.appcommerceclone.model.user.Name
 import com.example.appcommerceclone.model.user.User
 
 class FakeUserAuthenticator : UserAuthenticator {
 
-    companion object {
-        const val ID = 3
-        const val FIRSTNAME = "Orisa"
-        const val LASTNAME = "Horse"
-        const val USERNAME = "Terra_Surge"
-        const val PASSWORD = "041022"
-    }
-
-    private val name = Name(firstname = FIRSTNAME, lastname = LASTNAME)
-    private val user = User(id = ID, name = name, username = USERNAME, password = PASSWORD)
+    private val users = listOf(firstUser, secondUser)
 
 
     override suspend fun getUserByUsernameAndPassword(username: String, password: String): User? {
-        return if (username == user.username && password == user.password) user
-        else null
+        return users.firstOrNull { it.username == username && it.password == password }
     }
 
     override suspend fun getUserById(userId: Int): User? {
-        return if (userId == user.id) user else null
+        return users.firstOrNull { it.id == userId }
+    }
+
+
+    companion object {
+        val firstUser = User(
+            id = 1,
+            name = Name(
+                firstname = "User1FirstName",
+                lastname = "User1LastName"
+            ),
+            username = "User1",
+            password = "123",
+            email = "user1@hotmail.com",
+            phone = "55 99876-5432",
+            address = Address()
+        )
+
+        val secondUser = User(
+            id = 2,
+            name = Name(
+                firstname = "User2FirstName",
+                lastname = "User2LastName"
+            ),
+            username = "User2",
+            password = "321",
+            email = "user2@hotmail.com",
+            phone = "55 91234-5678",
+            address = Address()
+        )
     }
 }

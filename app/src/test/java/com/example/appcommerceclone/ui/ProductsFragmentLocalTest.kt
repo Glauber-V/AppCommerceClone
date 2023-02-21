@@ -64,28 +64,29 @@ class ProductsFragmentLocalTest {
 
             val products = productViewModel.products.getOrAwaitValue()
             assertThat(products).isNotEmpty()
+
+            assertThat(navHostController.currentDestination?.id)
+                .isEqualTo(R.id.products_fragment)
+
+            onView(withId(R.id.products_shimmer))
+                .check(matches(withEffectiveVisibility(Visibility.GONE)))
+
+            onView(withId(R.id.products_recycler_view))
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         }
-
-        assertThat(navHostController.currentDestination?.id)
-            .isEqualTo(R.id.products_fragment)
-
-        onView(withId(R.id.products_shimmer))
-            .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
-        onView(withId(R.id.products_recycler_view))
-            .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 
     @Test
     fun clickOnProductFromTheList_navigateToProductDetailFragment() = runTest {
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController)
+        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController) {
 
-        onView(withId(R.id.products_recycler_view))
-            .perform(scrollToPosition<ProductsAdapter.ProductViewHolder>(0))
+            onView(withId(R.id.products_recycler_view))
+                .perform(scrollToPosition<ProductsAdapter.ProductViewHolder>(0))
 
-        onView(withId(R.id.products_recycler_view))
-            .perform(actionOnItemAtPosition<ProductsAdapter.ProductViewHolder>(1, click()))
+            onView(withId(R.id.products_recycler_view))
+                .perform(actionOnItemAtPosition<ProductsAdapter.ProductViewHolder>(1, click()))
 
-        assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.product_detail_fragment)
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.product_detail_fragment)
+        }
     }
 }

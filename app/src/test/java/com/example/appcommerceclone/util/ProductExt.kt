@@ -2,11 +2,17 @@ package com.example.appcommerceclone.util
 
 import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.viewmodels.CartViewModel
 import java.text.NumberFormat
 
-/** Utility function to retrieve a [OrderedProduct] from a list using a [Product]. Make sure the list is not empty. */
-fun MutableList<OrderedProduct>.getOrderedProduct(product: Product): OrderedProduct {
-    return firstOrNull { it.product.id == product.id } ?: OrderedProduct()
+/** Get [CartViewModel]'s most updated list of [OrderedProduct] */
+fun CartViewModel.getOrderedProducts(): List<OrderedProduct> {
+    return cartProducts.getOrAwaitValue()
+}
+
+/** Get the most updated [OrderedProduct] from a [CartViewModel] using a [Product] as parameter */
+fun CartViewModel.getOrderedProduct(product: Product): OrderedProduct {
+    return cartProducts.getOrAwaitValue().firstOrNull { it.product.id == product.id } ?: OrderedProduct()
 }
 
 fun getFormattedPrice(product: Product): String =

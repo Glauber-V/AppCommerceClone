@@ -1,9 +1,8 @@
 package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.appcommerceclone.model.product.Product
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_JEWELRY
+import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productElectronic
+import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productJewelery
 import com.example.appcommerceclone.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -23,42 +22,40 @@ class FavoritesViewModelTest {
         favoritesViewModel = FavoritesViewModel()
     }
 
-
     @Test
-    fun `add product to favorite list and return true if product was added`() {
-        val product = Product(id = 1, name = "A1", price = 5.0, description = "AAA", category = CATEGORY_NAME_JEWELRY, imageUrl = "")
-        favoritesViewModel.addToFavorites(product)
+    fun addProductToFavoriteList_returnTrueIfProductWasAdded() {
+        favoritesViewModel.addToFavorites(productJewelery)
 
         val favorites = favoritesViewModel.favorites.getOrAwaitValue()
 
-        assertThat(favorites).contains(product)
+        assertThat(favorites).contains(productJewelery)
     }
 
     @Test
-    fun `remove product from favorite list and return true if product was removed`() {
-        val product = Product(id = 1, name = "A1", price = 5.0, description = "AAA", category = CATEGORY_NAME_JEWELRY, imageUrl = "")
-        favoritesViewModel.addToFavorites(product)
-        favoritesViewModel.removeFromFavorites(product)
+    fun removeProductFromFavoriteList_returnTrueIfProductWasRemoved() {
+        favoritesViewModel.addToFavorites(productJewelery)
+        favoritesViewModel.removeFromFavorites(productJewelery)
 
         val result = favoritesViewModel.favorites.getOrAwaitValue()
 
-        assertThat(result).doesNotContain(product)
+        assertThat(result).doesNotContain(productJewelery)
     }
 
     @Test
-    fun `remove all products from the list`() {
-        val product1 = Product(id = 1, name = "A1", price = 10.0, description = "AAA", category = CATEGORY_NAME_JEWELRY, imageUrl = "")
-        val product2 = Product(id = 2, name = "B2", price = 20.0, description = "BBB", category = CATEGORY_NAME_ELECTRONICS, imageUrl = "")
-        favoritesViewModel.addToFavorites(product1)
-        favoritesViewModel.addToFavorites(product2)
+    fun removeAllProductsFromTheList_favoritesListShouldBeEmpty() {
+        favoritesViewModel.addToFavorites(productJewelery)
+        favoritesViewModel.addToFavorites(productElectronic)
+
+        val firstCheck = favoritesViewModel.favorites.getOrAwaitValue()
+        assertThat(firstCheck).isNotEmpty()
+        assertThat(firstCheck).contains(productJewelery)
+        assertThat(firstCheck).contains(productElectronic)
 
         favoritesViewModel.removeAllFromFavorites()
 
-        val result = favoritesViewModel.favorites.getOrAwaitValue()
-
-        assertThat(result).isEmpty()
-        assertThat(result).doesNotContain(product1)
-        assertThat(result).doesNotContain(product2)
+        val secondCheck = favoritesViewModel.favorites.getOrAwaitValue()
+        assertThat(secondCheck).isEmpty()
+        assertThat(secondCheck).doesNotContain(productJewelery)
+        assertThat(secondCheck).doesNotContain(productElectronic)
     }
-
 }
