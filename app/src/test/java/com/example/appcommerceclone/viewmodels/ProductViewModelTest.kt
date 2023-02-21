@@ -2,10 +2,10 @@ package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.product.FakeProductsRepository
-import com.example.appcommerceclone.getOrAwaitValue
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
 import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_JEWELRY
+import com.example.appcommerceclone.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

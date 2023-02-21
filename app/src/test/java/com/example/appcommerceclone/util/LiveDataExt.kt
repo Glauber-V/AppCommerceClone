@@ -1,4 +1,4 @@
-package com.example.appcommerceclone
+package com.example.appcommerceclone.util
 
 /*
  * Copyright (C) 2019 The Android Open Source Project

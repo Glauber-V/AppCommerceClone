@@ -1,7 +1,8 @@
-package com.example.appcommerceclone
+package com.example.appcommerceclone.util
 
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
+import com.example.appcommerceclone.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description

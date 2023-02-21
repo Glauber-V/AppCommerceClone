@@ -7,14 +7,14 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.TestNavHostControllerRule
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule
-import com.example.appcommerceclone.getOrAwaitValue
-import com.example.appcommerceclone.launchFragmentInHiltContainer
 import com.example.appcommerceclone.ui.product.ProductsAdapter
 import com.example.appcommerceclone.ui.product.ProductsFragment
+import com.example.appcommerceclone.util.TestNavHostControllerRule
+import com.example.appcommerceclone.util.getOrAwaitValue
+import com.example.appcommerceclone.util.launchFragmentInHiltContainer
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

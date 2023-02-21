@@ -7,15 +7,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.TestNavHostControllerRule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule
-import com.example.appcommerceclone.getOrAwaitValue
-import com.example.appcommerceclone.launchFragmentInHiltContainer
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.cart.CartFragment
-import com.example.appcommerceclone.util.getFormattedPrice
-import com.example.appcommerceclone.util.getOrderedProduct
+import com.example.appcommerceclone.util.*
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

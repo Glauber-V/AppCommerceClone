@@ -1,8 +1,8 @@
 package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.appcommerceclone.getOrAwaitValue
 import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.util.getOrAwaitValue
 import com.example.appcommerceclone.util.getOrderedProduct
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before

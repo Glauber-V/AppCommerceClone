@@ -4,14 +4,13 @@ import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.TestNavHostControllerRule
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.UsersModule
-import com.example.appcommerceclone.launchFragmentInHiltContainer
 import com.example.appcommerceclone.ui.user.UserProfileFragment
+import com.example.appcommerceclone.util.TestNavHostControllerRule
+import com.example.appcommerceclone.util.launchFragmentInHiltContainer
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

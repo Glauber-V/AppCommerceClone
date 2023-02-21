@@ -5,7 +5,7 @@ import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import com.example.appcommerceclone.data.user.FakeUserAuthenticator
 import com.example.appcommerceclone.data.user.FakeUserPreferences
 import com.example.appcommerceclone.data.user.UserPreferencesKeys.USER_PREF_ID_KEY
-import com.example.appcommerceclone.getOrAwaitValue
+import com.example.appcommerceclone.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltTestApplication
 import kotlinx.coroutines.Dispatchers

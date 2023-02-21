@@ -5,13 +5,13 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.TestNavHostControllerRule
 import com.example.appcommerceclone.data.user.FakeUserAuthenticator
 import com.example.appcommerceclone.di.ConnectivityModule
 import com.example.appcommerceclone.di.UsersModule
-import com.example.appcommerceclone.getOrAwaitValue
-import com.example.appcommerceclone.launchFragmentInHiltContainer
 import com.example.appcommerceclone.ui.user.UserLoginFragment
+import com.example.appcommerceclone.util.TestNavHostControllerRule
+import com.example.appcommerceclone.util.getOrAwaitValue
+import com.example.appcommerceclone.util.launchFragmentInHiltContainer
 import com.example.appcommerceclone.util.noConstraintsClick
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule

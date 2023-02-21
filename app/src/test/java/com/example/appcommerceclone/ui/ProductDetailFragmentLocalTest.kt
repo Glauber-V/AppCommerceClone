@@ -6,16 +6,11 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.TestNavHostControllerRule
 import com.example.appcommerceclone.di.ProductsModule
-import com.example.appcommerceclone.getOrAwaitValue
-import com.example.appcommerceclone.launchFragmentInHiltContainer
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.product.ProductDetailFragment
-import com.example.appcommerceclone.util.Constants
+import com.example.appcommerceclone.util.*
 import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_WOMENS_CLOTHING
-import com.example.appcommerceclone.util.getFormattedPrice
-import com.example.appcommerceclone.util.getOrderedProduct
 import com.google.common.truth.Truth.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

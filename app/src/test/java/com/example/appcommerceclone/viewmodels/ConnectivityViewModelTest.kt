@@ -1,7 +1,7 @@
 package com.example.appcommerceclone.viewmodels
 
 import com.example.appcommerceclone.data.connection.FakeConnectivityObserver
-import com.example.appcommerceclone.getOrAwaitValue
+import com.example.appcommerceclone.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
