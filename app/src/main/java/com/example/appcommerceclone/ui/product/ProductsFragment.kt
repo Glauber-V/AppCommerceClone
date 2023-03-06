@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
 import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
@@ -16,7 +17,7 @@ import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProductsFragment : Fragment() {
+class ProductsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var binding: FragmentProductsBinding
     val connectionViewModel by activityViewModels<ConnectivityViewModel>()
@@ -39,8 +40,11 @@ class ProductsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.productsSwipeRefreshLayout.setOnRefreshListener(this)
+        setupProductsRecyclerView()
+
         verifyUserConnectionToProceed(connectionViewModel) {
-            setupProductsRecyclerView()
+            observeLoadingProcess()
             observeProductsListChanges()
         }
     }
@@ -59,23 +63,41 @@ class ProductsFragment : Fragment() {
         }
     }
 
-    private fun observeProductsListChanges() {
-        binding.productsShimmer.startShimmer()
-        productViewModel.products.observe(viewLifecycleOwner) { products ->
-            if (products.isEmpty()) {
-                productViewModel.updateProductsList()
-            } else {
-                productsAdapter.submitList(products)
-                binding.productsShimmer.stopShimmer()
-                binding.productsShimmer.visibility = View.GONE
-                binding.productsRecyclerView.visibility = View.VISIBLE
-            }
+    private fun observeLoadingProcess() {
+        productViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) startShimmer()
+            else stopShimmer()
         }
+    }
+
+    private fun observeProductsListChanges() {
+        productViewModel.products.observe(viewLifecycleOwner) { products ->
+            if (products.isEmpty()) productViewModel.updateProductsList()
+            else productsAdapter.submitList(products)
+        }
+    }
+
+
+    private fun startShimmer() {
+        binding.productsShimmer.startShimmer()
+        binding.productsShimmer.visibility = View.VISIBLE
+        binding.productsSwipeRefreshLayout.visibility = View.GONE
+    }
+
+    private fun stopShimmer() {
+        binding.productsShimmer.stopShimmer()
+        binding.productsShimmer.visibility = View.GONE
+        binding.productsSwipeRefreshLayout.visibility = View.VISIBLE
+        binding.productsSwipeRefreshLayout.isRefreshing = false
     }
 
 
     private fun navigateToProductDetailFragment() {
         val toDestination = ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
         findNavController().navigate(toDestination)
+    }
+
+    override fun onRefresh() {
+        productViewModel.updateProductsList()
     }
 }

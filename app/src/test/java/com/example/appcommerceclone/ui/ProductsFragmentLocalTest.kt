@@ -2,7 +2,7 @@ package com.example.appcommerceclone.ui
 
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -12,6 +12,7 @@ import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.ui.product.ProductsAdapter
 import com.example.appcommerceclone.ui.product.ProductsFragment
+import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
 import com.example.appcommerceclone.util.TestNavHostControllerRule
 import com.example.appcommerceclone.util.getOrAwaitValue
 import com.example.appcommerceclone.util.launchFragmentInHiltContainer
@@ -73,6 +74,31 @@ class ProductsFragmentLocalTest {
 
             onView(withId(R.id.products_recycler_view))
                 .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        }
+    }
+
+    @Test
+    fun launchProductsFragment_reloadListWithSelectedCategory_verifySwipeToRefreshResetsList() = runTest {
+        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController) {
+            advanceUntilIdle()
+
+            val selectedCategory = CATEGORY_NAME_ELECTRONICS
+
+            var products = productViewModel.products.getOrAwaitValue()
+            assertThat(products).hasSize(4)
+
+            productViewModel.selectCategoryAndUpdateProductsList(selectedCategory)
+            products = productViewModel.products.getOrAwaitValue()
+            assertThat(products).hasSize(1)
+            assertThat(products.first().category).isEqualTo(selectedCategory)
+
+            // This action won't have any effect while using robolectric: onView(withId(R.id.products_swipe_refresh_layout)).perform(swipeDown())
+            // https://stackoverflow.com/questions/55517269/android-espresso-testing-swiperefreshlayout-onrefresh-not-been-triggered-on-swip
+            productViewModel.updateProductsList()
+            advanceUntilIdle()
+
+            products = productViewModel.products.getOrAwaitValue()
+            assertThat(products).hasSize(4)
         }
     }
 

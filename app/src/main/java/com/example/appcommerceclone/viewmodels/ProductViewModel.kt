@@ -23,11 +23,16 @@ class ProductViewModel @Inject constructor(private val repository: ProductsRepos
     private val _selectedProduct = MutableLiveData<Product?>()
     val selectedProduct: LiveData<Product?> = _selectedProduct
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
 
     fun updateProductsList(categoryName: String = "") {
         viewModelScope.launch {
+            _isLoading.value = true
             _allProducts = repository.loadProductsList()
             _products.value = prepareProductsList(_allProducts, categoryName)
+            _isLoading.value = false
         }
     }
 

@@ -8,19 +8,9 @@ import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_WOMENS_CLOTHING
 
 class FakeProductsRepository : ProductsRepository {
 
-    private val products = mutableListOf<Product>()
+    private val products = listOf(productJewelery, productElectronic, productMensClothing, productWomensClothing)
 
-    override suspend fun loadProductsList(): List<Product> {
-        products.apply {
-            add(0, productJewelery)
-            add(1, productElectronic)
-            add(2, productMensClothing)
-            add(3, productWomensClothing)
-        }
-
-        return products
-    }
-
+    override suspend fun loadProductsList(): List<Product> = products
 
     companion object {
         val productJewelery = Product(id = 1, name = "Jewelery", price = 5.0, category = CATEGORY_NAME_JEWELRY)
