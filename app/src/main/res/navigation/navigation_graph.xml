@@ -47,7 +47,17 @@
         android:id="@+id/user_profile_fragment"
         android:name="com.example.appcommerceclone.ui.user.UserProfileFragment"
         android:label="@string/fragment_user_profile_label"
-        tools:layout="@layout/fragment_user_profile"/>
+        tools:layout="@layout/fragment_user_profile">
+        <action
+            android:id="@+id/action_user_profile_fragment_to_picture_chooser_dialog_fragment"
+            app:destination="@id/picture_chooser_dialog_fragment"/>
+    </fragment>
+
+    <dialog
+        android:id="@+id/picture_chooser_dialog_fragment"
+        android:name="com.example.appcommerceclone.ui.user.PictureChooserDialogFragment"
+        android:label="@string/fragment_picture_chooser_dialog_label"
+        tools:layout="@layout/fragment_picture_chooser_dialog"/>
 
     <fragment
         android:id="@+id/categories_fragment"

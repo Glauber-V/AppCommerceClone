@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentUserProfileBinding
 import com.example.appcommerceclone.model.user.Address
@@ -39,12 +41,34 @@ class UserProfileFragment : Fragment() {
         verifyUserConnectionToProceed(connectivityViewModel)
         verifyUserExistsToProceed(userViewModel) { user ->
             binding.user = user
+            observeProfilePictureChanges()
+            setupProfilePictureUpdateClickListener()
             setupSaveUpdateBtnClickListener(user)
             setupCancelBtnClickListener()
             setupLogoutBtnClickListener()
         }
     }
 
+
+    private fun observeProfilePictureChanges() {
+        userViewModel.userProfilePic.observe(viewLifecycleOwner) { hasUri ->
+            hasUri?.let { uri ->
+                Glide.with(requireActivity())
+                    .load(uri)
+                    .fitCenter()
+                    .sizeMultiplier(0.25f)
+                    .into(binding.userProfileImage)
+            }
+        }
+    }
+
+
+    private fun setupProfilePictureUpdateClickListener() {
+        binding.userProfileUpdateProfilePicture.setOnClickListener {
+            val toDestination = UserProfileFragmentDirections.actionUserProfileFragmentToPictureChooserDialogFragment()
+            findNavController().navigate(toDestination)
+        }
+    }
 
     private fun setupSaveUpdateBtnClickListener(user: User) {
         binding.userProfileSaveOrUpdateBtn.setOnClickListener {

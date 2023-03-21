@@ -12,6 +12,13 @@
     <dimen name="dimen_size_medium">8dp</dimen>
     <dimen name="dimen_size_large">16dp</dimen>
 
+    <dimen name="margin_size_small">8dp</dimen>
+    <dimen name="margin_size_medium">10dp</dimen>
+    <dimen name="margin_size_large">20dp</dimen>
+
+    <dimen name="padding_medium">10dp</dimen>
+    <dimen name="padding_large">20dp</dimen>
+
     <dimen name="corner_size_small">8dp</dimen>
     <dimen name="corner_size_normal">10dp</dimen>
     <dimen name="corner_size_large">20dp</dimen>
@@ -29,5 +36,7 @@
     <dimen name="small_elevation">2dp</dimen>
     <dimen name="medium_elevation">4dp</dimen>
     <dimen name="high_elevation">6dp</dimen>
+
+    <dimen name="icon_size">24dp</dimen>
 
 </resources>

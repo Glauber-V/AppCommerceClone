@@ -1,5 +1,7 @@
 package com.example.appcommerceclone.viewmodels
 
+import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,6 +23,9 @@ class UserViewModel @Inject constructor(
     private val _loggedUser = MutableLiveData<User?>(null)
     val loggedUser: LiveData<User?> = _loggedUser
 
+    private val _userProfilePic = MutableLiveData<Uri?>()
+    val userProfilePic: LiveData<Uri?> = _userProfilePic
+
 
     fun loadSavedUser() {
         viewModelScope.launch {
@@ -37,9 +42,13 @@ class UserViewModel @Inject constructor(
         }
     }
 
+    fun updateUserProfilePicture(uri: Uri?) {
+        _userProfilePic.value = uri
+    }
+
     fun updateUser(updatedUser: User) {
         viewModelScope.launch {
-
+            Log.d("User", updatedUser.toString())
         }
     }
 

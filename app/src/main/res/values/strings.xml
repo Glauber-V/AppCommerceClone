@@ -14,6 +14,7 @@
     <string name="fragment_cart_label">Cart</string>
     <string name="fragment_favorites_label">My favorites</string>
     <string name="fragment_connection_label">Connection Status</string>
+    <string name="fragment_picture_chooser_dialog_label" translatable="false">Picture Chooser Dialog</string>
 
     <!--Menu Options-->
     <string name="menu_title_home">Home</string>
@@ -43,7 +44,7 @@
     <string name="user_hint_address_zipcode">Zipcode</string>
 
     <!--User Errors-->
-    <string name="user_error_not_found">User doesn\'t exist</string>
+    <string name="user_error_not_found">User does not exist</string>
     <string name="user_error_account_already_exist">Account already exist</string>
     <string name="user_error_no_email">Type your email</string>
     <string name="user_error_no_username">Type your username</string>
@@ -56,6 +57,9 @@
     <string name="user_profile_cancel_update_btn">Cancel</string>
     <string name="user_profile_save_update_btn">Save</string>
     <string name="user_profile_logout_btn">Logout</string>
+    <string name="user_profile_dialog_title">Select a picture from:</string>
+    <string name="user_profile_dialog_opt_gallery">Gallery</string>
+    <string name="user_profile_dialog_opt_camera">Camera</string>
 
     <!--Login Fragment-->
     <string name="user_login_btn">Login</string>
@@ -68,8 +72,8 @@
 
     <!--Categories Fragment-->
     <string name="category_all_products">All Products</string>
-    <string name="category_name_electronics">Electronics</string>
     <string name="category_name_jewelery">Jewelery</string>
+    <string name="category_name_electronics">Electronics</string>
     <string name="category_name_mens_clothing">Men\'s clothing</string>
     <string name="category_name_women_s_clothing">Women\'s clothing</string>
 
@@ -123,6 +127,9 @@
     <string name="no_internet_connection_image_content_description">No Internet connection</string>
     <string name="generic_profile_pic_content_description">Generic profile pic</string>
     <string name="add_to_favorites_fab_content_description">Add to favorites button</string>
+    <string name="update_profile_pic_content_description">Update your profile picture</string>
+    <string name="get_picture_from_your_gallery_content_description">get picture from your gallery</string>
+    <string name="take_a_picture_content_description">take a picture</string>
 
     <!-- Test -->
     <string name="test_text" translatable="false">Shape resources consist mainly of ShapeAppearance styles.

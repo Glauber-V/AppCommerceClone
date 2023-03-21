@@ -6,10 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appcommerceclone.data.user.UserOrders
 import com.example.appcommerceclone.model.order.Order
+import com.example.appcommerceclone.util.TimeExt
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -40,17 +39,10 @@ class UserOrdersViewModel @Inject constructor(private val userOrders: UserOrders
     fun processOrder(order: Order, userId: Int) {
         order.id = Random.nextInt(from = 10, until = 999)
         order.userId = userId
-        order.date = getDate()
+        order.date = TimeExt.getCurrentTime()
 
         _orders.value?.add(order)
         onProcessOrderComplete()
-    }
-
-    private fun getDate(): String {
-        val currentTime = LocalDateTime.now()
-        val pattern = "yyyy-MM-dd HH:mm:ss"
-        val formatter = DateTimeFormatter.ofPattern(pattern)
-        return formatter.format(currentTime)
     }
 
     private fun onProcessOrderComplete() {

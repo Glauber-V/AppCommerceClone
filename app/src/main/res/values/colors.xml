@@ -51,5 +51,6 @@
     <color name="progress_indicator_color">@color/primaryColor</color>
 
     <color name="icon_color_black">#2D2D2D</color>
+    <color name="icon_color_white">#ffffff</color>
 
 </resources>
