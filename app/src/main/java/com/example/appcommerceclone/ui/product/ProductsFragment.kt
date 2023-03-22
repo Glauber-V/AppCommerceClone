@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
 import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
@@ -55,12 +54,7 @@ class ProductsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             productViewModel.selectProduct(product)
             navigateToProductDetailFragment()
         }
-        binding.productsRecyclerView.apply {
-            val staggeredGridLayoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-            staggeredGridLayoutManager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
-            layoutManager = staggeredGridLayoutManager
-            adapter = productsAdapter
-        }
+        binding.productsRecyclerView.adapter = productsAdapter
     }
 
     private fun observeLoadingProcess() {

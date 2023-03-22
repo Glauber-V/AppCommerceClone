@@ -13,7 +13,7 @@ fun ImageView.setProductImageFromUrl(imageUrl: String?) {
     Glide.with(context)
         .load(imageUrl)
         .fitCenter()
-        .override(800, 480)
+        .placeholder(R.drawable.place_holder)
         .error(R.drawable.ic_baseline_broken_image_24)
         .into(this)
 }
