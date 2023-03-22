@@ -23,21 +23,20 @@
             android:layout_height="wrap_content"
             android:background="@color/background_color">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <ImageView
                 android:id="@+id/product_detail_image"
                 setProductImageFromUrl="@{product.imageUrl}"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="300dp"
                 android:layout_marginStart="@dimen/dimen_size_large"
                 android:layout_marginTop="@dimen/dimen_size_large"
                 android:layout_marginEnd="@dimen/dimen_size_large"
                 android:adjustViewBounds="true"
-                android:elevation="@dimen/small_elevation"
+                android:contentDescription="@string/product_detail_content_description"
                 android:scaleType="fitCenter"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearance="@style/ShapeAppearance.AppCommerce.Image.RoundedCorners"
                 tools:src="@drawable/banner_men_s_clothing"/>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -121,5 +121,6 @@
     <string name="update_profile_pic_content_description">Atualizar foto de perfil</string>
     <string name="get_picture_from_your_gallery_content_description">Pegar foto da galeria</string>
     <string name="take_a_picture_content_description">Tirar foto</string>
+    <string name="product_detail_content_description">Foto do produto</string>
 
 </resources>

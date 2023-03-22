@@ -130,6 +130,7 @@
     <string name="update_profile_pic_content_description">Update your profile picture</string>
     <string name="get_picture_from_your_gallery_content_description">get picture from your gallery</string>
     <string name="take_a_picture_content_description">take a picture</string>
+    <string name="product_detail_content_description">Product picture</string>
 
     <!-- Test -->
     <string name="test_text" translatable="false">Shape resources consist mainly of ShapeAppearance styles.
