@@ -13,8 +13,7 @@ import com.example.appcommerceclone.databinding.FragmentUserProfileBinding
 import com.example.appcommerceclone.model.user.Address
 import com.example.appcommerceclone.model.user.Name
 import com.example.appcommerceclone.model.user.User
-import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
-import com.example.appcommerceclone.util.CommonVerifications.verifyUserExistsToProceed
+import com.example.appcommerceclone.util.UserExt.verifyUserExistsToProceed
 import com.example.appcommerceclone.util.ViewExt
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -38,7 +37,6 @@ class UserProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        verifyUserConnectionToProceed(connectivityViewModel)
         verifyUserExistsToProceed(userViewModel) { user ->
             binding.user = user
             observeProfilePictureChanges()

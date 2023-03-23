@@ -6,10 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appcommerceclone.databinding.FragmentFavoritesBinding
-import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
-import com.example.appcommerceclone.util.CommonVerifications.verifyUserExistsToProceed
+import com.example.appcommerceclone.util.UserExt.verifyUserExistsToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -34,7 +32,6 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        verifyUserConnectionToProceed(connectivityViewModel)
         verifyUserExistsToProceed(userViewModel) {
             setupFavoritesRecyclerView()
             observeFavoritesListChanges()
@@ -44,10 +41,8 @@ class FavoritesFragment : Fragment() {
 
     private fun setupFavoritesRecyclerView() {
         favoritesAdapter = FavoritesAdapter(favoritesViewModel)
-        binding.favoritesRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireActivity())
-            adapter = favoritesAdapter
-        }
+        binding.favoritesRecyclerView.adapter = favoritesAdapter
+
     }
 
     private fun observeFavoritesListChanges() {

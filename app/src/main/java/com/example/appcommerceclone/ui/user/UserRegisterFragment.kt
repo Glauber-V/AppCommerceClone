@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentUserRegisterBinding
-import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
 import com.example.appcommerceclone.util.ViewExt
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -31,9 +30,7 @@ class UserRegisterFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        verifyUserConnectionToProceed(connectivityViewModel) {
-            setupRegisterBtn()
-        }
+        setupRegisterBtn()
     }
 
 

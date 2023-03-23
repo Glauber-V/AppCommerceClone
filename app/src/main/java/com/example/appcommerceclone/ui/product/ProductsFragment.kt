@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
-import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -26,11 +25,6 @@ class ProductsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var productsAdapter: ProductsAdapter
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        userViewModel.loadSavedUser()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
         return binding.root
@@ -41,11 +35,8 @@ class ProductsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
         binding.productsSwipeRefreshLayout.setOnRefreshListener(this)
         setupProductsRecyclerView()
-
-        verifyUserConnectionToProceed(connectionViewModel) {
-            observeLoadingProcess()
-            observeProductsListChanges()
-        }
+        observeLoadingProcess()
+        observeProductsListChanges()
     }
 
 

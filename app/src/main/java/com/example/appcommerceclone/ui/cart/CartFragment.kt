@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentCartAlertDialogBinding
 import com.example.appcommerceclone.databinding.FragmentCartBinding
@@ -48,10 +47,7 @@ class CartFragment : Fragment() {
 
     private fun setupCartProductsRecyclerView() {
         cartAdapter = CartAdapter(cartViewModel)
-        binding.cartRecyclerView.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = cartAdapter
-        }
+        binding.cartRecyclerView.adapter = cartAdapter
     }
 
     private fun observeCartProductsChanges() {

@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.appcommerceclone.databinding.FragmentOrdersBinding
 import com.example.appcommerceclone.model.user.User
-import com.example.appcommerceclone.util.CommonVerifications.verifyUserConnectionToProceed
-import com.example.appcommerceclone.util.CommonVerifications.verifyUserExistsToProceed
+import com.example.appcommerceclone.util.UserExt.verifyUserExistsToProceed
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -35,7 +33,6 @@ class OrdersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        verifyUserConnectionToProceed(connectivityViewModel)
         verifyUserExistsToProceed(userViewModel) { user ->
             processUnfinishedOrders(user)
             setupOrderRecycleView()
@@ -54,10 +51,7 @@ class OrdersFragment : Fragment() {
 
     private fun setupOrderRecycleView() {
         ordersAdapter = OrdersAdapter(userOrdersViewModel)
-        binding.ordersRecyclerview.apply {
-            layoutManager = LinearLayoutManager(requireActivity())
-            adapter = ordersAdapter
-        }
+        binding.ordersRecyclerview.adapter = ordersAdapter
     }
 
     private fun observeOrdersListChanges(user: User) {

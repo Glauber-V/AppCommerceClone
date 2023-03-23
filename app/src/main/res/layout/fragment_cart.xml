@@ -13,6 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/linearLayoutCompat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +55,7 @@
                 style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginEnd="5dp"
+                android:layout_marginEnd="@dimen/margin_size_small"
                 android:layout_weight="1"
                 android:text="@string/cart_cancel_purchase_btn"
                 android:textAppearance="@style/TextAppearance.AppCommerce.Button.Small"/>
@@ -62,7 +64,6 @@
                 android:id="@+id/cart_confirm_purchase_btn"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="5dp"
                 android:layout_weight="2"
                 android:text="@string/cart_confirm_purchase_btn"
                 android:textAppearance="@style/TextAppearance.AppCommerce.Button.Small"/>
