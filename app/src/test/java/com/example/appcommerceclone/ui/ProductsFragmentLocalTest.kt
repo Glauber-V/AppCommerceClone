@@ -7,20 +7,15 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.di.ConnectivityModule
-import com.example.appcommerceclone.di.ProductsModule
-import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.ui.product.ProductsAdapter
 import com.example.appcommerceclone.ui.product.ProductsFragment
+import com.example.appcommerceclone.util.*
 import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
-import com.example.appcommerceclone.util.TestNavHostControllerRule
-import com.example.appcommerceclone.util.getOrAwaitValue
-import com.example.appcommerceclone.util.launchFragmentInHiltContainer
+import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -31,10 +26,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-@UninstallModules(
-    ConnectivityModule::class,
-    UsersModule::class,
-    ProductsModule::class)
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
@@ -47,27 +38,28 @@ class ProductsFragmentLocalTest {
     @get:Rule(order = 1)
     var testNavHostControllerRule = TestNavHostControllerRule(R.id.products_fragment)
 
+    @get:Rule(order = 2)
+    var testFragmentFactoryRule = TestFragmentFactoryRule()
+
     private lateinit var navHostController: TestNavHostController
+    private lateinit var productViewModel: ProductViewModel
+    private lateinit var factory: TestFragmentFactory
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
+        productViewModel = testFragmentFactoryRule.productViewModel!!
+        factory = testFragmentFactoryRule.factory!!
     }
 
     @Test
-    fun launchProductsFragment_shimmerVisibilityGone_recyclerviewVisibilityVisible() = runTest {
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController) {
-            advanceUntilIdle()
-
-            val isConnected = connectionViewModel.isConnected.getOrAwaitValue()
-            assertThat(isConnected).isTrue()
+    fun launchProductsFragment_shimmerVisibilityGone_recyclerviewVisibilityVisible() {
+        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             val products = productViewModel.products.getOrAwaitValue()
             assertThat(products).isNotEmpty()
-
-            assertThat(navHostController.currentDestination?.id)
-                .isEqualTo(R.id.products_fragment)
+            assertThat(products).hasSize(4)
 
             onView(withId(R.id.products_shimmer))
                 .check(matches(withEffectiveVisibility(Visibility.GONE)))
@@ -79,16 +71,17 @@ class ProductsFragmentLocalTest {
 
     @Test
     fun launchProductsFragment_reloadListWithSelectedCategory_verifySwipeToRefreshResetsList() = runTest {
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController) {
-            advanceUntilIdle()
+        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             val selectedCategory = CATEGORY_NAME_ELECTRONICS
 
             var products = productViewModel.products.getOrAwaitValue()
+            assertThat(products).isNotEmpty()
             assertThat(products).hasSize(4)
 
             productViewModel.selectCategoryAndUpdateProductsList(selectedCategory)
             products = productViewModel.products.getOrAwaitValue()
+            assertThat(products).isNotEmpty()
             assertThat(products).hasSize(1)
             assertThat(products.first().category).isEqualTo(selectedCategory)
 
@@ -103,8 +96,8 @@ class ProductsFragmentLocalTest {
     }
 
     @Test
-    fun clickOnProductFromTheList_navigateToProductDetailFragment() = runTest {
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController) {
+    fun clickOnProductFromTheList_navigateToProductDetailFragment() {
+        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             onView(withId(R.id.products_recycler_view))
                 .perform(scrollToPosition<ProductsAdapter.ProductViewHolder>(0))

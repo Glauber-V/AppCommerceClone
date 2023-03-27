@@ -26,6 +26,9 @@ class UserViewModel @Inject constructor(
     private val _userProfilePic = MutableLiveData<Uri?>()
     val userProfilePic: LiveData<Uri?> = _userProfilePic
 
+    init {
+        loadSavedUser()
+    }
 
     fun loadSavedUser() {
         viewModelScope.launch {

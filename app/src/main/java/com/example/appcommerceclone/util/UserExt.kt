@@ -2,8 +2,7 @@ package com.example.appcommerceclone.util
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.NavigationGraphDirections
 import com.example.appcommerceclone.model.user.User
@@ -12,10 +11,10 @@ import com.example.appcommerceclone.viewmodels.UserViewModel
 
 object UserExt {
 
-    fun AppCompatActivity.verifyUserConnection(navHost: NavHostFragment, connection: ConnectivityViewModel) {
+    fun AppCompatActivity.observeUserConnectionStatus(navController: NavController, connection: ConnectivityViewModel) {
         val toDestination = NavigationGraphDirections.actionGlobalConnectionFragment()
         connection.isConnected.observe(this) { isConnected ->
-            if (!isConnected) findNavController(navHost.id).navigate(toDestination)
+            if (!isConnected) navController.navigate(toDestination)
         }
     }
 

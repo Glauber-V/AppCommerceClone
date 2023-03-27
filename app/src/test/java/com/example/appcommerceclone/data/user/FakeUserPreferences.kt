@@ -4,13 +4,16 @@ import android.content.Context
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.preferencesDataStore
+import androidx.test.core.app.ApplicationProvider
 import com.example.appcommerceclone.data.user.UserPreferencesKeys.TEST_USER_PREFERENCES_DATASTORE_NAME
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 @ExperimentalCoroutinesApi
-class FakeUserPreferences(private val context: Context) : UserPreferences {
+class FakeUserPreferences(
+    private val context: Context = ApplicationProvider.getApplicationContext()
+) : UserPreferences {
 
     private val Context.testUserPreferencesDataStore by preferencesDataStore(
         name = TEST_USER_PREFERENCES_DATASTORE_NAME

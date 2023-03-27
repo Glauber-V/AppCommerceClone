@@ -13,7 +13,7 @@
     <string name="fragment_orders_label">My Orders</string>
     <string name="fragment_cart_label">Cart</string>
     <string name="fragment_favorites_label">My favorites</string>
-    <string name="fragment_connection_label">Connection Status</string>
+    <string name="fragment_connection_label">@string/app_name</string>
     <string name="fragment_picture_chooser_dialog_label" translatable="false">Picture Chooser Dialog</string>
 
     <!--Menu Options-->

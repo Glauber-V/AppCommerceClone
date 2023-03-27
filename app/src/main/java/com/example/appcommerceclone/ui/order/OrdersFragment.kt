@@ -5,22 +5,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.example.appcommerceclone.databinding.FragmentOrdersBinding
 import com.example.appcommerceclone.model.user.User
 import com.example.appcommerceclone.util.UserExt.verifyUserExistsToProceed
-import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class OrdersFragment : Fragment() {
+class OrdersFragment(
+    private val userViewModel: UserViewModel,
+    private val userOrdersViewModel: UserOrdersViewModel
+) : Fragment() {
 
     private lateinit var binding: FragmentOrdersBinding
-    val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
-    val userViewModel by activityViewModels<UserViewModel>()
-    val userOrdersViewModel by activityViewModels<UserOrdersViewModel>()
 
     private lateinit var ordersAdapter: OrdersAdapter
 

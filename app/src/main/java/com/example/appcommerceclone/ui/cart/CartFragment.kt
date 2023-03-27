@@ -7,24 +7,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentCartAlertDialogBinding
 import com.example.appcommerceclone.databinding.FragmentCartBinding
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
-import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CartFragment : Fragment() {
+class CartFragment(
+    private val cartViewModel: CartViewModel,
+    private val userOrdersViewModel: UserOrdersViewModel
+) : Fragment() {
 
     private lateinit var binding: FragmentCartBinding
-    val userViewModel by activityViewModels<UserViewModel>()
-    val cartViewModel by activityViewModels<CartViewModel>()
-    val userOrdersViewModel by activityViewModels<UserOrdersViewModel>()
 
     private lateinit var cartAdapter: CartAdapter
 

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentProductDetailBinding
@@ -17,12 +16,13 @@ import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.google.android.material.chip.Chip
 
-class ProductDetailFragment : Fragment() {
+class ProductDetailFragment(
+    private val productViewModel: ProductViewModel,
+    private val favoritesViewModel: FavoritesViewModel,
+    private val cartViewModel: CartViewModel
+) : Fragment() {
 
     private lateinit var binding: FragmentProductDetailBinding
-    val productViewModel by activityViewModels<ProductViewModel>()
-    val favoritesViewModel by activityViewModels<FavoritesViewModel>()
-    val cartViewModel by activityViewModels<CartViewModel>()
 
     private var isInFullMode = false
 

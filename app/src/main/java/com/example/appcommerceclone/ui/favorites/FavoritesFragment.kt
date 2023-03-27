@@ -5,21 +5,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import com.example.appcommerceclone.databinding.FragmentFavoritesBinding
 import com.example.appcommerceclone.util.UserExt.verifyUserExistsToProceed
-import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavoritesFragment : Fragment() {
+class FavoritesFragment(
+    private val userViewModel: UserViewModel,
+    private val favoritesViewModel: FavoritesViewModel
+) : Fragment() {
 
     private lateinit var binding: FragmentFavoritesBinding
-    val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
-    val userViewModel by activityViewModels<UserViewModel>()
-    val favoritesViewModel by activityViewModels<FavoritesViewModel>()
 
     private lateinit var favoritesAdapter: FavoritesAdapter
 

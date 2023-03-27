@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.databinding.FragmentCategoriesBinding
 import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
@@ -16,10 +15,9 @@ import com.example.appcommerceclone.viewmodels.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CategoriesFragment : Fragment() {
+class CategoriesFragment(private val productViewModel: ProductViewModel) : Fragment() {
 
     private lateinit var binding: FragmentCategoriesBinding
-    private val productViewModel by activityViewModels<ProductViewModel>()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -36,6 +34,7 @@ class CategoriesFragment : Fragment() {
         binding.productCategoryMensClothing.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_MENS_CLOTHING) }
         binding.productCategoryWomensClothing.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_WOMENS_CLOTHING) }
     }
+
 
     private fun selectCategoryAndNavigateBack(categoryName: String) {
         productViewModel.selectCategoryAndUpdateProductsList(categoryName)

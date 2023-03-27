@@ -8,15 +8,16 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productElectronic
 import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productWomensClothing
-import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.product.ProductDetailFragment
 import com.example.appcommerceclone.util.*
+import com.example.appcommerceclone.viewmodels.CartViewModel
+import com.example.appcommerceclone.viewmodels.FavoritesViewModel
+import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.google.common.truth.Truth.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +26,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-@UninstallModules(ProductsModule::class)
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
@@ -38,7 +38,14 @@ class ProductDetailFragmentLocalTest {
     @get:Rule(order = 1)
     var testNavHostControllerRule = TestNavHostControllerRule(R.id.product_detail_fragment)
 
+    @get:Rule(order = 2)
+    var testFragmentFactoryRule = TestFragmentFactoryRule()
+
     private lateinit var navHostController: TestNavHostController
+    private lateinit var productViewModel: ProductViewModel
+    private lateinit var favoritesViewModel: FavoritesViewModel
+    private lateinit var cartViewModel: CartViewModel
+    private lateinit var factory: TestFragmentFactory
     private lateinit var productInFullMode: Product
     private lateinit var productNotInFullMode: Product
 
@@ -46,17 +53,28 @@ class ProductDetailFragmentLocalTest {
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
+        productViewModel = testFragmentFactoryRule.productViewModel!!
+        favoritesViewModel = testFragmentFactoryRule.favoritesViewModel!!
+        cartViewModel = testFragmentFactoryRule.cartViewModel!!
+        factory = testFragmentFactoryRule.factory!!
         productInFullMode = productWomensClothing
         productNotInFullMode = productElectronic
     }
 
     @Test
     fun verifyProductWasLoaded_notInFullMode_shouldPass() {
-        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
+
             productViewModel.selectProduct(productNotInFullMode)
 
             onView(withId(R.id.product_detail_name))
                 .check(matches(withText(productNotInFullMode.name)))
+
+            onView(withId(R.id.product_detail_colors_chip_group))
+                .check(matches(withEffectiveVisibility(Visibility.GONE)))
+
+            onView(withId(R.id.product_detail_sizes_chip_group))
+                .check(matches(withEffectiveVisibility(Visibility.GONE)))
 
             onView(withId(R.id.product_detail_price))
                 .check(matches(withText(getFormattedPrice(productNotInFullMode))))
@@ -68,7 +86,8 @@ class ProductDetailFragmentLocalTest {
 
     @Test
     fun clickAddToFavorites_notInFullMode_shouldNavigateToFavoritesFragment() {
-        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
+
             productViewModel.selectProduct(productNotInFullMode)
 
             onView(withId(R.id.product_detail_add_to_favorites))
@@ -84,7 +103,8 @@ class ProductDetailFragmentLocalTest {
 
     @Test
     fun clickAddToCart_notInFullMode_shouldNavigateToCartFragment() {
-        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
+
             productViewModel.selectProduct(productNotInFullMode)
 
             onView(withId(R.id.product_detail_colors_chip_group))
@@ -106,7 +126,8 @@ class ProductDetailFragmentLocalTest {
 
     @Test
     fun clickAddToCart_inFullMode_shouldNavigateToCartFragment() {
-        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
+
             productViewModel.selectProduct(productInFullMode)
 
             onView(withId(R.id.product_detail_colors_chip_group))
@@ -137,7 +158,8 @@ class ProductDetailFragmentLocalTest {
 
     @Test
     fun clickBuyNow_inFullMode_snackbarShouldBeVisible() {
-        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
+
             productViewModel.selectProduct(productInFullMode)
 
             onView(withId(R.id.product_detail_colors_chip_group))

@@ -5,22 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentUserLoginBinding
 import com.example.appcommerceclone.util.ViewExt
-import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.android.material.progressindicator.BaseProgressIndicator.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UserLoginFragment : Fragment() {
+class UserLoginFragment(private val userViewModel: UserViewModel) : Fragment() {
 
     private lateinit var binding: FragmentUserLoginBinding
-    val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
-    val userViewModel by activityViewModels<UserViewModel>()
 
     private var isLoadingUser = false
 
@@ -33,6 +29,7 @@ class UserLoginFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        observeLoginProcess()
         setupProgressBar()
         setupUserLoginBtnListener()
         setupRegisterBtnListener()
@@ -49,9 +46,8 @@ class UserLoginFragment : Fragment() {
         binding.userLoginBtn.setOnClickListener {
             val usernameInput = binding.userLoginUsernameText.text.toString()
             val passwordInput = binding.userLoginPasswordText.text.toString()
-            if (validateLogin()) startLoginProcess(usernameInput, passwordInput)
+            if (validateLoginCredentials()) startLoginProcess(usernameInput, passwordInput)
         }
-        observeLoginProcess()
     }
 
     private fun setupRegisterBtnListener() {
@@ -70,20 +66,6 @@ class UserLoginFragment : Fragment() {
     }
 
 
-    private fun validateLogin(): Boolean {
-        val isValid1 = ViewExt.validateEditText(binding.userLoginUsername, binding.userLoginUsernameText, getString(R.string.user_error_no_username))
-        val isValid2 = ViewExt.validateEditText(binding.userLoginPassword, binding.userLoginPasswordText, getString(R.string.user_error_no_password))
-        return isValid1 && isValid2
-    }
-
-    private fun startLoginProcess(usernameInput: String, passwordInput: String) {
-        isLoadingUser = true
-        ViewExt.hideTextEditor(binding.userLoginUsername, binding.userLoginPassword)
-        showProgressBar()
-
-        userViewModel.login(usernameInput, passwordInput)
-    }
-
     private fun observeLoginProcess() {
         userViewModel.loggedUser.observe(viewLifecycleOwner) { user ->
             hideProgressBar()
@@ -99,6 +81,20 @@ class UserLoginFragment : Fragment() {
                 isLoadingUser = false
             }
         }
+    }
+
+    private fun validateLoginCredentials(): Boolean {
+        val isValid1 = ViewExt.validateEditText(binding.userLoginUsername, binding.userLoginUsernameText, getString(R.string.user_error_no_username))
+        val isValid2 = ViewExt.validateEditText(binding.userLoginPassword, binding.userLoginPasswordText, getString(R.string.user_error_no_password))
+        return isValid1 && isValid2
+    }
+
+    private fun startLoginProcess(usernameInput: String, passwordInput: String) {
+        isLoadingUser = true
+        ViewExt.hideTextEditor(binding.userLoginUsername, binding.userLoginPassword)
+        showProgressBar()
+
+        userViewModel.login(usernameInput, passwordInput)
     }
 
 

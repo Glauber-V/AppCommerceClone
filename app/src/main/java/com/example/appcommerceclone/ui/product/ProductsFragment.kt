@@ -5,22 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
-import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.ProductViewModel
-import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProductsFragment : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class ProductsFragment(private val productViewModel: ProductViewModel) : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var binding: FragmentProductsBinding
-    val connectionViewModel by activityViewModels<ConnectivityViewModel>()
-    val userViewModel by activityViewModels<UserViewModel>()
-    val productViewModel by activityViewModels<ProductViewModel>()
 
     private lateinit var productsAdapter: ProductsAdapter
 

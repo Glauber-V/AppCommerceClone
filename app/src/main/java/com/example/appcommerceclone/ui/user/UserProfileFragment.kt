@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.appcommerceclone.R
@@ -15,16 +14,13 @@ import com.example.appcommerceclone.model.user.Name
 import com.example.appcommerceclone.model.user.User
 import com.example.appcommerceclone.util.UserExt.verifyUserExistsToProceed
 import com.example.appcommerceclone.util.ViewExt
-import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class UserProfileFragment : Fragment() {
+class UserProfileFragment(private val userViewModel: UserViewModel) : Fragment() {
 
     private lateinit var binding: FragmentUserProfileBinding
-    val connectivityViewModel by activityViewModels<ConnectivityViewModel>()
-    val userViewModel by activityViewModels<UserViewModel>()
 
     private var isEditMode = false
 
@@ -54,7 +50,7 @@ class UserProfileFragment : Fragment() {
                 Glide.with(requireActivity())
                     .load(uri)
                     .fitCenter()
-                    .sizeMultiplier(0.25f)
+                    .placeholder(R.drawable.place_holder)
                     .into(binding.userProfileImage)
             }
         }

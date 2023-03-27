@@ -6,18 +6,13 @@ import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.user.FakeUserAuthenticator.Companion.firstUser
-import com.example.appcommerceclone.di.ConnectivityModule
-import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.ui.user.UserLoginFragment
-import com.example.appcommerceclone.util.TestNavHostControllerRule
-import com.example.appcommerceclone.util.getOrAwaitValue
-import com.example.appcommerceclone.util.launchFragmentInHiltContainer
-import com.example.appcommerceclone.util.noConstraintsClick
+import com.example.appcommerceclone.util.*
+import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -28,9 +23,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 
-@UninstallModules(
-    ConnectivityModule::class,
-    UsersModule::class)
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
@@ -43,17 +35,24 @@ class UserLoginFragmentLocalTest {
     @get:Rule(order = 1)
     var testNavHostControllerRule = TestNavHostControllerRule(R.id.user_login_fragment)
 
+    @get:Rule(order = 2)
+    var testFragmentFactoryRule = TestFragmentFactoryRule()
+
     private lateinit var navHostController: TestNavHostController
+    private lateinit var userViewModel: UserViewModel
+    private lateinit var factory: TestFragmentFactory
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
+        userViewModel = testFragmentFactoryRule.userViewModel!!
+        factory = testFragmentFactoryRule.factory!!
     }
 
     @Test
     fun clickLoginBtn_noUsernameAndPassword_stayInUserLoginFragment() {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             onView(withId(R.id.user_login_username_text))
                 .perform(replaceText(""))
@@ -70,7 +69,7 @@ class UserLoginFragmentLocalTest {
 
     @Test
     fun clickLoginBtn_wrongUsernameAndPassword_stayInUserLoginFragment() {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             onView(withId(R.id.user_login_username_text))
                 .perform(replaceText("Robert"))
@@ -87,7 +86,7 @@ class UserLoginFragmentLocalTest {
 
     @Test
     fun clickLoginBtn_withUsernameAndPassword_navigateToMainFragment() = runTest {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             onView(withId(R.id.user_login_username_text))
                 .perform(replaceText(firstUser.username))
@@ -109,10 +108,9 @@ class UserLoginFragmentLocalTest {
 
     @Test
     fun clickRegisterBtn_navigateToRegisterFragment() {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController) {
+        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
-            onView(withId(R.id.user_login_register_btn))
-                .perform(noConstraintsClick())
+            onView(withId(R.id.user_login_register_btn)).perform(noConstraintsClick())
 
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_register_fragment)
         }
