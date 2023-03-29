@@ -2,46 +2,46 @@
 <resources>
 
     <!--Card-->
-    <style name="ShapeAppearance.AppCommerce.CardView.RightRoundedCorners" parent="Widget.MaterialComponents.CardView">
+    <style name="AppCommerce.ShapeAppearance.CardView" parent="Widget.MaterialComponents.CardView">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">0%</item>
-        <item name="cornerSizeTopRight">10%</item>
-        <item name="cornerSizeBottomLeft">0%</item>
-        <item name="cornerSizeBottomRight">10%</item>
+        <item name="cornerSize">@dimen/corner_size_small</item>
     </style>
 
-    <style name="ShapeAppearance.AppCommerce.CardView.RoundedCorners" parent="Widget.MaterialComponents.CardView">
+    <style name="AppCommerce.ShapeAppearance.CardView.RightRoundedCorners" parent="Widget.MaterialComponents.CardView">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">5%</item>
-        <item name="cornerSizeTopRight">5%</item>
-        <item name="cornerSizeBottomLeft">5%</item>
-        <item name="cornerSizeBottomRight">5%</item>
+        <item name="cornerSizeTopLeft">0%</item>
+        <item name="cornerSizeTopRight">@dimen/corner_size_small</item>
+        <item name="cornerSizeBottomLeft">0%</item>
+        <item name="cornerSizeBottomRight">@dimen/corner_size_small</item>
     </style>
 
     <!--ShapeableImageView-->
-    <style name="ShapeAppearance.AppCommerce.Image.RoundedCorners" parent="">
+    <style name="AppCommerce.ShapeAppearance.ImageView.RoundedCorners" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopLeft">10%</item>
-        <item name="cornerSizeTopRight">10%</item>
-        <item name="cornerSizeBottomLeft">10%</item>
-        <item name="cornerSizeBottomRight">10%</item>
+        <item name="cornerSize">10%</item>
     </style>
 
-    <style name="ShapeAppearance.AppCommerce.Image.FullRounded" parent="">
+    <style name="AppCommerce.ShapeAppearance.ImageView.FullRounded" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="AppCommerce.ShapeAppearance.ImageView.UpRoundedCorners" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerFamilyTopLeft">@dimen/corner_size_small</item>
+        <item name="cornerFamilyTopRight">@dimen/corner_size_small</item>
+    </style>
+
     <!--Button-->
-    <style name="ShapeAppearance.AppCommerce.Button.FullRounded" parent="">
+    <style name="AppCommerce.ShapeAppearance.Button.FullRounded" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/corner_size_large</item>
     </style>
 
     <!--Material Alert Dialog-->
-    <style name="ShapeAppearance.AppCommerce.Dialog.Rounded" parent="">
+    <style name="AppCommerce.ShapeAppearance.Dialog.Rounded" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/corner_size_normal</item>
+        <item name="cornerSize">@dimen/corner_size_small</item>
     </style>
 
 </resources>

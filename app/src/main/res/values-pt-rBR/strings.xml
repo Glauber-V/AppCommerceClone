@@ -113,14 +113,14 @@
     <string name="connection_try_again_btn">Tente novamente</string>
 
     <!-- Content Description -->
-    <string name="item_cart_increase_content_description">Aumentar quantidate desse produto</string>
-    <string name="item_cart_decrease_content_description">Diminuir a quantidate desse produto</string>
-    <string name="no_internet_connection_image_content_description">Sem conexão com a internet</string>
-    <string name="generic_profile_pic_content_description">Icone de perfil genérico</string>
-    <string name="add_to_favorites_fab_content_description">Botão de adicionar aos favoritos</string>
-    <string name="update_profile_pic_content_description">Atualizar foto de perfil</string>
-    <string name="get_picture_from_your_gallery_content_description">Pegar foto da galeria</string>
-    <string name="take_a_picture_content_description">Tirar foto</string>
-    <string name="product_detail_content_description">Foto do produto</string>
+    <string name="content_desc_no_internet_connection_image">Sem conexão com a internet</string>
+    <string name="content_desc_add_to_favorites_btn">Add to favorites button</string>
+    <string name="content_desc_remove_from_favorites_btn">Remove product from favorites</string>
+    <string name="content_desc_product_detail_name">Foto do produto</string>
+    <string name="content_desc_item_cart_increase_btn">Aumentar quantidate desse produto</string>
+    <string name="content_desc_item_cart_decrease_btn">Diminuir a quantidate desse produto</string>
+    <string name="content_desc_update_profile_pic_btn">Atualizar foto de perfil</string>
+    <string name="content_desc_get_picture_from_gallery_btn">Pegar foto da galeria</string>
+    <string name="content_desc_get_picture_from_camera_btn">Tirar foto</string>
 
 </resources>

@@ -1,42 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!--Material Alert Dialog-->
-    <style name="ThemeOverlay.AppCommerce.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
-        <item name="alertDialogStyle">@style/MaterialAlertDialog.AppCommerce.Dialog</item>
-        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.AppCommerce.Title.Text</item>
-        <item name="buttonBarPositiveButtonStyle">@style/MaterialAlertDialog.AppCommerce.Button.Positive</item>
-        <item name="buttonBarNegativeButtonStyle">@style/MaterialAlertDialog.AppCommerce.Button.Negative</item>
-        <item name="materialAlertDialogButtonSpacerVisibility">2</item>
-    </style>
-
     <!-- Material Alert Dialog - Dialog -->
-    <style name="MaterialAlertDialog.AppCommerce.Dialog" parent="MaterialAlertDialog.MaterialComponents">
-        <item name="shapeAppearance">@style/ShapeAppearance.AppCommerce.Dialog.Rounded</item>
+    <style name="AppCommerce.Style.MaterialAlertDialog.Dialog" parent="MaterialAlertDialog.MaterialComponents">
+        <item name="shapeAppearance">@style/AppCommerce.ShapeAppearance.Dialog.Rounded</item>
     </style>
 
     <!--Material Alert Dialog - Title-->
-    <style name="MaterialAlertDialog.AppCommerce.Title.Text" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
-        <item name="android:textAppearance">@style/TextAppearance.AppCommerce.Button.Small</item>
+    <style name="MaterialAlertDialog.AppCommerce.Title" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="android:textAppearance">@style/AppCommerce.TextAppearance.Button</item>
     </style>
 
-    <!--Material Alert Dialog - Button-->
+    <!--Material Alert Dialog - Buttons-->
     <style name="MaterialAlertDialog.AppCommerce.Button.Positive" parent="Widget.MaterialComponents.Button">
-        <item name="android:textAppearance">@style/TextAppearance.AppCommerce.Button.Small</item>
-        <item name="android:layout_marginStart">5dp</item>
-        <item name="android:layout_marginEnd">10dp</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">2</item>
-        <item name="android:maxWidth">@null</item>
+        <item name="android:textAppearance">@style/AppCommerce.TextAppearance.Button</item>
     </style>
 
     <style name="MaterialAlertDialog.AppCommerce.Button.Negative" parent="Widget.MaterialComponents.Button.OutlinedButton">
-        <item name="android:textAppearance">@style/TextAppearance.AppCommerce.Button.Small</item>
-        <item name="android:layout_marginStart">10dp</item>
-        <item name="android:layout_marginEnd">5dp</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:maxWidth">@null</item>
+        <item name="android:textAppearance">@style/AppCommerce.TextAppearance.Button</item>
+    </style>
+
+    <!--Material Alert Dialog-->
+    <style name="AppCommerce.Style.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="alertDialogStyle">@style/AppCommerce.Style.MaterialAlertDialog.Dialog</item>
+        <item name="materialAlertDialogTitleTextStyle">@style/MaterialAlertDialog.AppCommerce.Title</item>
+        <item name="buttonBarPositiveButtonStyle">@style/MaterialAlertDialog.AppCommerce.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/MaterialAlertDialog.AppCommerce.Button.Negative</item>
+        <item name="materialAlertDialogButtonSpacerVisibility">2</item>
     </style>
 
 </resources>

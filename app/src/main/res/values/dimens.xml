@@ -7,20 +7,17 @@
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_extra_large">22sp</dimen>
 
-    <dimen name="dimen_size_extra_small">2dp</dimen>
-    <dimen name="dimen_size_small">4dp</dimen>
-    <dimen name="dimen_size_medium">8dp</dimen>
-    <dimen name="dimen_size_large">16dp</dimen>
+    <dimen name="margin_size_small">4dp</dimen>
+    <dimen name="margin_size_medium">8dp</dimen>
+    <dimen name="margin_size_large">10dp</dimen>
+    <dimen name="margin_size_extra_large">20dp</dimen>
 
-    <dimen name="margin_size_small">8dp</dimen>
-    <dimen name="margin_size_medium">10dp</dimen>
-    <dimen name="margin_size_large">20dp</dimen>
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_medium">8dp</dimen>
+    <dimen name="padding_large">10dp</dimen>
+    <dimen name="padding_extra_large">20dp</dimen>
 
-    <dimen name="padding_medium">10dp</dimen>
-    <dimen name="padding_large">20dp</dimen>
-
-    <dimen name="corner_size_small">8dp</dimen>
-    <dimen name="corner_size_normal">10dp</dimen>
+    <dimen name="corner_size_small">10dp</dimen>
     <dimen name="corner_size_large">20dp</dimen>
 
     <dimen name="stroke_size_small">1dp</dimen>
@@ -33,10 +30,12 @@
     <dimen name="chip_unchecked_stroke_width">1dp</dimen>
     <dimen name="chip_checked_stroke_width">2dp</dimen>
 
-    <dimen name="small_elevation">2dp</dimen>
-    <dimen name="medium_elevation">4dp</dimen>
-    <dimen name="high_elevation">6dp</dimen>
+    <dimen name="elevation_small">4dp</dimen>
+    <dimen name="elevation_medium">6dp</dimen>
+    <dimen name="elevation_high">8dp</dimen>
 
     <dimen name="icon_size">24dp</dimen>
+    <dimen name="btn_min_width_size">96dp</dimen>
+    <dimen name="btn_min_height_size">48dp</dimen>
 
 </resources>

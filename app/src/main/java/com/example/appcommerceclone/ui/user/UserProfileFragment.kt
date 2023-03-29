@@ -14,6 +14,7 @@ import com.example.appcommerceclone.model.user.Name
 import com.example.appcommerceclone.model.user.User
 import com.example.appcommerceclone.util.UserExt.verifyUserExistsToProceed
 import com.example.appcommerceclone.util.ViewExt
+import com.example.appcommerceclone.util.ViewExt.hideKeyboard
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -132,7 +133,10 @@ class UserProfileFragment(private val userViewModel: UserViewModel) : Fragment()
     private fun finishUserUpdateProcess() {
         binding.userProfileCancelBtn.visibility = View.GONE
         binding.userProfileSaveOrUpdateBtn.text = getString(R.string.user_profile_start_update_btn)
+
+        hideKeyboard()
         isEditMode = false
+
         changeEditMode()
     }
 }

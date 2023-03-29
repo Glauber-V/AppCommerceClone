@@ -70,7 +70,8 @@ class CartFragment(
 
     private fun setupCancelPurchaseBtnListener() {
         binding.cartCancelPurchaseBtn.setOnClickListener {
-            showAbandonCartAlertDialog()
+            if (!cartViewModel.cartProducts.value.isNullOrEmpty()) showAbandonCartAlertDialog()
+            else findNavController().navigateUp()
         }
     }
 

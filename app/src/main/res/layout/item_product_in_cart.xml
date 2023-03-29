@@ -1,122 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
-            name="orderedProduct"
-            type="com.example.appcommerceclone.model.order.OrderedProduct"/>
+                name="orderedProduct"
+                type="com.example.appcommerceclone.model.order.OrderedProduct"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_size_small"
-        android:layout_marginEnd="@dimen/dimen_size_large"
-        android:layout_marginBottom="@dimen/dimen_size_small"
-        app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.CardView.RightRoundedCorners"
-        app:strokeColor="@color/stroke_color_dark"
-        app:strokeWidth="@dimen/stroke_size_small">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_small"
+            android:layout_marginEnd="@dimen/margin_size_extra_large"
+            app:shapeAppearance="@style/AppCommerce.ShapeAppearance.CardView.RightRoundedCorners"
+            app:strokeColor="@color/stroke_color_dark"
+            app:strokeWidth="@dimen/stroke_size_small">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="@dimen/dimen_size_small">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="@dimen/margin_size_medium">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/ordered_product_image"
-                setProductImageFromUrl="@{orderedProduct.product.imageUrl}"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginStart="@dimen/dimen_size_medium"
-                android:layout_marginTop="@dimen/dimen_size_small"
-                android:layout_marginBottom="@dimen/dimen_size_small"
-                android:adjustViewBounds="true"
-                android:scaleType="fitCenter"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.Image.FullRounded"
-                tools:scaleType="centerCrop"
-                tools:src="@drawable/banner_men_s_clothing"/>
+                    android:id="@+id/ordered_product_image"
+                    setProductImageFromUrl="@{orderedProduct.product.imageUrl}"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="@dimen/margin_size_medium"
+                    android:layout_marginTop="@dimen/margin_size_medium"
+                    android:layout_marginBottom="@dimen/margin_size_medium"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:shapeAppearance="@style/AppCommerce.ShapeAppearance.ImageView.FullRounded"
+                    tools:src="@drawable/banner_men_s_clothing"/>
 
             <TextView
-                android:id="@+id/ordered_product_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/dimen_size_large"
-                android:layout_marginTop="@dimen/dimen_size_small"
-                android:layout_marginEnd="@dimen/dimen_size_medium"
-                android:ellipsize="end"
-                android:maxLines="2"
-                android:text="@{orderedProduct.product.name}"
-                android:textAlignment="textStart"
-                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Medium"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ordered_product_image"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Product Name"/>
+                    android:id="@+id/ordered_product_name"
+                    style="@style/AppCommerce.TextAppearance.CardView.LeftToRight.Headline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/margin_size_medium"
+                    android:layout_marginTop="@dimen/margin_size_medium"
+                    android:layout_marginEnd="@dimen/margin_size_medium"
+                    android:text="@{orderedProduct.product.name}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/ordered_product_image"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="Product Name - Crafted with some premium material"/>
 
             <TextView
-                android:id="@+id/ordered_product_price"
-                setOrderedProductPrice="@{orderedProduct}"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_size_small"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAlignment="textStart"
-                android:textAppearance="@style/TextAppearance.AppCommerce.Subtitle.Small"
-                app:layout_constraintEnd_toEndOf="@+id/ordered_product_name"
-                app:layout_constraintStart_toStartOf="@+id/ordered_product_name"
-                app:layout_constraintTop_toBottomOf="@+id/ordered_product_name"
-                tools:text="R$ 29,90"/>
+                    android:id="@+id/ordered_product_price"
+                    style="@style/AppCommerce.TextAppearance.CardView.LeftToRight.Subtitle"
+                    setOrderedProductPrice="@{orderedProduct}"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_size_small"
+                    app:layout_constraintEnd_toEndOf="@+id/ordered_product_name"
+                    app:layout_constraintStart_toStartOf="@+id/ordered_product_name"
+                    app:layout_constraintTop_toBottomOf="@+id/ordered_product_name"
+                    tools:text="R$ 29,90"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/cart_decrease_quantity"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="@dimen/dimen_size_small"
-                android:layout_marginBottom="@dimen/dimen_size_small"
-                android:contentDescription="@string/item_cart_decrease_content_description"
-                app:icon="@drawable/ic_baseline_remove_24"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp"
-                app:iconTint="@color/icon_color_black"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/ordered_product_price"
-                app:layout_constraintTop_toBottomOf="@+id/ordered_product_price"
-                app:shapeAppearanceOverlay="@style/ShapeAppearance.AppCommerce.Button.FullRounded"/>
+                    android:id="@+id/cart_decrease_quantity"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="@dimen/btn_min_height_size"
+                    android:layout_height="@dimen/btn_min_height_size"
+                    android:layout_marginTop="@dimen/margin_size_small"
+                    android:layout_marginBottom="@dimen/margin_size_small"
+                    android:contentDescription="@string/content_desc_item_cart_decrease_btn"
+                    app:icon="@drawable/ic_baseline_remove_24"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="@color/icon_color_black"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/ordered_product_price"
+                    app:layout_constraintTop_toBottomOf="@+id/ordered_product_price"
+                    app:shapeAppearance="@style/AppCommerce.ShapeAppearance.Button.FullRounded"/>
 
             <TextView
-                android:id="@+id/ordered_product_quantity"
-                setProductQuantity="@{orderedProduct.quantity}"
-                android:layout_width="48dp"
-                android:layout_height="0dp"
-                android:gravity="center"
-                android:textAlignment="gravity"
-                android:textAppearance="@style/TextAppearance.AppCommerce.Body.Small"
-                app:layout_constraintBottom_toBottomOf="@id/cart_decrease_quantity"
-                app:layout_constraintStart_toEndOf="@id/cart_decrease_quantity"
-                app:layout_constraintTop_toTopOf="@id/cart_decrease_quantity"
-                tools:text="2"/>
+                    android:id="@+id/ordered_product_quantity"
+                    style="@style/AppCommerce.TextAppearance.Body"
+                    setProductQuantity="@{orderedProduct.quantity}"
+                    android:layout_width="@dimen/btn_min_height_size"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:textAlignment="gravity"
+                    app:layout_constraintBottom_toBottomOf="@id/cart_decrease_quantity"
+                    app:layout_constraintStart_toEndOf="@id/cart_decrease_quantity"
+                    app:layout_constraintTop_toTopOf="@id/cart_decrease_quantity"
+                    tools:text="2"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/cart_increase_quantity"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:contentDescription="@string/item_cart_increase_content_description"
-                app:cornerRadius="@dimen/corner_size_large"
-                app:icon="@drawable/ic_baseline_add_24"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp"
-                app:iconTint="@color/white_100"
-                app:layout_constraintBottom_toBottomOf="@id/ordered_product_quantity"
-                app:layout_constraintStart_toEndOf="@id/ordered_product_quantity"
-                app:layout_constraintTop_toTopOf="@+id/ordered_product_quantity"/>
+                    android:id="@+id/cart_increase_quantity"
+                    android:layout_width="@dimen/btn_min_height_size"
+                    android:layout_height="@dimen/btn_min_height_size"
+                    android:contentDescription="@string/content_desc_item_cart_increase_btn"
+                    app:cornerRadius="@dimen/corner_size_large"
+                    app:icon="@drawable/ic_baseline_add_24"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="@color/white_100"
+                    app:layout_constraintBottom_toBottomOf="@id/ordered_product_quantity"
+                    app:layout_constraintStart_toEndOf="@id/ordered_product_quantity"
+                    app:layout_constraintTop_toTopOf="@+id/ordered_product_quantity"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
