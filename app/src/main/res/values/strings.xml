@@ -123,7 +123,9 @@
 
     <!-- Content Description -->
     <string name="content_desc_no_internet_connection_image">No Internet connection</string>
-    <string name="content_desc_add_to_favorites_btn">Add to favorites button</string>
+    <string name="content_desc_add_to_favorites_btn">Add to favorites</string>
+    <string name="content_desc_add_to_cart_btn">Add to cart</string>
+    <string name="content_desc_buy_now">Buy now</string>
     <string name="content_desc_remove_from_favorites_btn">Remove product from favorites</string>
     <string name="content_desc_product_detail_name">Product picture</string>
     <string name="content_desc_item_cart_increase_btn">Increase product quantity</string>
