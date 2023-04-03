@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.UserOrders
 import com.example.appcommerceclone.model.order.Order
 import com.example.appcommerceclone.util.TimeExt
@@ -13,7 +14,10 @@ import javax.inject.Inject
 import kotlin.random.Random
 
 @HiltViewModel
-class UserOrdersViewModel @Inject constructor(private val userOrders: UserOrders) : ViewModel() {
+class UserOrdersViewModel @Inject constructor(
+    private val userOrders: UserOrders,
+    private val dispatcherProvider: DispatcherProvider
+) : ViewModel() {
 
     private val _orders = MutableLiveData<MutableList<Order>>(mutableListOf())
     val orders: LiveData<MutableList<Order>> = _orders
@@ -26,7 +30,7 @@ class UserOrdersViewModel @Inject constructor(private val userOrders: UserOrders
 
 
     fun refreshUserOrders(userId: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.main) {
             _orders.value = userOrders.getOrdersByUserId(userId)
         }
     }

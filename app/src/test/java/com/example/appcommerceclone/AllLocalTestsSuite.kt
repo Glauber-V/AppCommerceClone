@@ -9,18 +9,19 @@ import org.junit.runners.Suite
 @ExperimentalCoroutinesApi
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-    ConnectivityViewModelTest::class,
-    UserViewModelTest::class,
-    ProductViewModelTest::class,
-    FavoritesViewModelTest::class,
     CartViewModelTest::class,
+    FavoritesViewModelTest::class,
+    ProductViewModelTest::class,
     UserOrdersViewModelTest::class,
-    ProductsFragmentLocalTest::class,
+    UserViewModelTest::class,
+    CartFragmentLocalTest::class,
     CategoriesFragmentLocalTest::class,
     FavoritesFragmentLocalTest::class,
-    ProductDetailFragmentLocalTest::class,
     OrdersFragmentLocalTest::class,
+    ProductDetailFragmentLocalTest::class,
+    ProductsFragmentLocalTest::class,
     UserLoginFragmentLocalTest::class,
     UserProfileFragmentLocalTest::class,
-    UserRegisterFragmentLocalTest::class)
+    UserRegisterFragmentLocalTest::class
+)
 class AllLocalTestsSuite

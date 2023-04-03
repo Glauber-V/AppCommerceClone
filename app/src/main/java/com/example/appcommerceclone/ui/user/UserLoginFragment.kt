@@ -8,7 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentUserLoginBinding
-import com.example.appcommerceclone.util.ViewExt
+import com.example.appcommerceclone.util.ViewExt.hideTextEditor
+import com.example.appcommerceclone.util.ViewExt.showSnackbar
+import com.example.appcommerceclone.util.ViewExt.showTextEditor
+import com.example.appcommerceclone.util.ViewExt.validateEditText
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.android.material.progressindicator.BaseProgressIndicator.*
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,13 +72,13 @@ class UserLoginFragment(private val userViewModel: UserViewModel) : Fragment() {
     private fun observeLoginProcess() {
         userViewModel.loggedUser.observe(viewLifecycleOwner) { user ->
             hideProgressBar()
-            ViewExt.showTextEditor(binding.userLoginUsername, binding.userLoginPassword)
+            showTextEditor(binding.userLoginUsername, binding.userLoginPassword)
 
             if (isLoadingUser) {
                 if (user == null) {
-                    ViewExt.showSnackbar(binding.root, getString(R.string.user_error_not_found))
+                    showSnackbar(binding.root, getString(R.string.user_error_not_found))
                 } else {
-                    ViewExt.showSnackbar(binding.root, getString(R.string.user_profile_welcome_message, user.username))
+                    showSnackbar(binding.root, getString(R.string.user_profile_welcome_message, user.username))
                     findNavController().navigateUp()
                 }
                 isLoadingUser = false
@@ -84,14 +87,14 @@ class UserLoginFragment(private val userViewModel: UserViewModel) : Fragment() {
     }
 
     private fun validateLoginCredentials(): Boolean {
-        val isValid1 = ViewExt.validateEditText(binding.userLoginUsername, binding.userLoginUsernameText, getString(R.string.user_error_no_username))
-        val isValid2 = ViewExt.validateEditText(binding.userLoginPassword, binding.userLoginPasswordText, getString(R.string.user_error_no_password))
+        val isValid1 = validateEditText(binding.userLoginUsername, binding.userLoginUsernameText, getString(R.string.user_error_no_username))
+        val isValid2 = validateEditText(binding.userLoginPassword, binding.userLoginPasswordText, getString(R.string.user_error_no_password))
         return isValid1 && isValid2
     }
 
     private fun startLoginProcess(usernameInput: String, passwordInput: String) {
         isLoadingUser = true
-        ViewExt.hideTextEditor(binding.userLoginUsername, binding.userLoginPassword)
+        hideTextEditor(binding.userLoginUsername, binding.userLoginPassword)
         showProgressBar()
 
         userViewModel.login(usernameInput, passwordInput)

@@ -2,17 +2,17 @@ package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
-import com.example.appcommerceclone.data.user.FakeUserAuthenticator
-import com.example.appcommerceclone.data.user.FakeUserAuthenticator.Companion.firstUser
-import com.example.appcommerceclone.data.user.FakeUserPreferences
+import com.example.appcommerceclone.data.dispatcher.FakeDispatcherProvider
+import com.example.appcommerceclone.data.user.*
+import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
+import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.secondUser
 import com.example.appcommerceclone.data.user.UserPreferencesKeys.USER_PREF_ID_KEY
+import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltTestApplication
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -25,85 +25,129 @@ import org.robolectric.annotation.Config
 @Config(application = HiltTestApplication::class)
 class UserViewModelTest {
 
-    @get:Rule
-    var instantTaskExecutorRule = InstantTaskExecutorRule()
+    @get:Rule(order = 0)
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private lateinit var fakeUserAuthenticator: FakeUserAuthenticator
-    private lateinit var fakeUserPreferences: FakeUserPreferences
+    @get:Rule(order = 1)
+    val testMainDispatcherRule = TestMainDispatcherRule()
+
+    private lateinit var usersProvider: FakeUserProvider
+    private lateinit var dispatcherProvider: FakeDispatcherProvider
+    private lateinit var userAuthenticator: FakeUserAuthenticator
+    private lateinit var userPreferences: FakeUserPreferences
     private lateinit var userViewModel: UserViewModel
 
     @Before
     fun setup() {
-        Dispatchers.setMain(StandardTestDispatcher())
-        fakeUserAuthenticator = FakeUserAuthenticator()
-        fakeUserPreferences = FakeUserPreferences(getApplicationContext())
-        userViewModel = UserViewModel(fakeUserAuthenticator, fakeUserPreferences)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
+        usersProvider = FakeUserProvider()
+        dispatcherProvider = FakeDispatcherProvider()
+        userAuthenticator = FakeUserAuthenticator(usersProvider, dispatcherProvider)
+        userPreferences = FakeUserPreferences(getApplicationContext(), dispatcherProvider)
+        userViewModel = UserViewModel(userAuthenticator, userPreferences, dispatcherProvider)
     }
 
     @Test
-    fun loginFailed_wrongUsername_userNull() = runTest {
-        userViewModel.login(username = "Oris", password = firstUser.password)
+    fun loginFailed_wrongUsername_userIsNull() = runTest {
+        var user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
+
+        userViewModel.login(username = "invalid username", password = firstUser.password)
         advanceUntilIdle()
 
-        val currentUser = userViewModel.loggedUser.getOrAwaitValue()
-
-        assertThat(currentUser).isNull()
+        user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
     }
 
     @Test
-    fun loginFailed_wrongPassword_userNull() = runTest {
-        userViewModel.login(username = firstUser.username, password = "3")
+    fun loginFailed_wrongPassword_userIsNull() = runTest {
+        var user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
+
+        userViewModel.login(username = firstUser.username, password = "invalid password")
         advanceUntilIdle()
 
-        val currentUser = userViewModel.loggedUser.getOrAwaitValue()
-
-        assertThat(currentUser).isNull()
+        user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
     }
 
     @Test
-    fun loginSuccess_userFound() = runTest {
+    fun loginSuccess_userFound_1stUser_userIsNotNull() = runTest {
+        var user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
+
         userViewModel.login(username = firstUser.username, password = firstUser.password)
         advanceUntilIdle()
 
-        val currentUser = userViewModel.loggedUser.getOrAwaitValue()
+        user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNotNull()
+        assertThat(user?.id).isEqualTo(1)
+        assertThat(user?.username).isEqualTo(firstUser.username)
+        assertThat(user?.password).isEqualTo(firstUser.password)
 
-        assertThat(currentUser).isNotNull()
-        assertThat(currentUser?.username).isEqualTo(firstUser.username)
-        assertThat(currentUser?.password).isEqualTo(firstUser.password)
+        val userKey = userPreferences.getIntValueFromKey(USER_PREF_ID_KEY)
+        advanceUntilIdle()
+        assertThat(userKey).isEqualTo(user?.id)
     }
 
     @Test
-    fun loginSuccess_withSavedUser() = runTest {
-        fakeUserPreferences.saveIntValueToKey(USER_PREF_ID_KEY, firstUser.id)
+    fun loginSuccess_userFound_2ndUser_userIsNotNull() = runTest {
+        var user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
+
+        userViewModel.login(username = secondUser.username, password = secondUser.password)
+        advanceUntilIdle()
+
+        user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNotNull()
+        assertThat(user?.id).isEqualTo(2)
+        assertThat(user?.username).isEqualTo(secondUser.username)
+        assertThat(user?.password).isEqualTo(secondUser.password)
+
+        val userKey = userPreferences.getIntValueFromKey(USER_PREF_ID_KEY)
+        advanceUntilIdle()
+        assertThat(userKey).isEqualTo(user?.id)
+    }
+
+    @Test
+    fun loginSuccess_userFound_withSavedUser() = runTest {
+        var user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
+
+        userPreferences.saveIntValueToKey(USER_PREF_ID_KEY, firstUser.id)
+        advanceUntilIdle()
 
         userViewModel.loadSavedUser()
         advanceUntilIdle()
 
-        val currentUser = userViewModel.loggedUser.getOrAwaitValue()
+        user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNotNull()
+        assertThat(user?.username).isEqualTo(firstUser.username)
+        assertThat(user?.password).isEqualTo(firstUser.password)
 
-        assertThat(currentUser).isNotNull()
-        assertThat(currentUser?.username).isEqualTo(firstUser.username)
-        assertThat(currentUser?.password).isEqualTo(firstUser.password)
+        val userKey = userPreferences.getIntValueFromKey(USER_PREF_ID_KEY)
+        advanceUntilIdle()
+        assertThat(userKey).isEqualTo(user?.id)
     }
 
     @Test
-    fun logoutSuccess_saveUserValueIsEqualTo0() = runTest {
-        // Can't use this here right now: userViewModel.login("Orisa", "321")
-        // Apparently there is an issue with datastore if a value is updated
-        // more than once in unit tests:
-        // https://github.com/googlecodelabs/android-datastore/issues/48
+    fun loginSuccess_userFound_logout_userIsNull() = runTest {
+        var user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
+
+        userViewModel.login(username = firstUser.username, password = firstUser.password)
+        advanceUntilIdle()
+
+        user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNotNull()
+        assertThat(user).isEqualTo(firstUser)
 
         userViewModel.logout()
+        advanceUntilIdle()
 
-        val currentUser = userViewModel.loggedUser.getOrAwaitValue()
-        assertThat(currentUser).isNull()
+        user = userViewModel.loggedUser.getOrAwaitValue()
+        assertThat(user).isNull()
 
-        val userIdPref = fakeUserPreferences.getIntValueFromKey(USER_PREF_ID_KEY)
-        assertThat(userIdPref).isEqualTo(0)
+        // This test succeeds but causes an IOException when running in local JVM
+        // https://github.com/googlecodelabs/android-datastore/issues/48
     }
 }

@@ -13,8 +13,9 @@ import com.example.appcommerceclone.model.user.Address
 import com.example.appcommerceclone.model.user.Name
 import com.example.appcommerceclone.model.user.User
 import com.example.appcommerceclone.util.UserExt.verifyUserExistsToProceed
-import com.example.appcommerceclone.util.ViewExt
 import com.example.appcommerceclone.util.ViewExt.hideKeyboard
+import com.example.appcommerceclone.util.ViewExt.showSnackbar
+import com.example.appcommerceclone.util.ViewExt.validateEditText
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -98,9 +99,9 @@ class UserProfileFragment(private val userViewModel: UserViewModel) : Fragment()
     }
 
     private fun validateUpdatedUserInfo(): Boolean {
-        val isValid1 = ViewExt.validateEditText(binding.userProfileEmail, binding.userProfileEmailText, getString(R.string.user_error_no_email))
-        val isValid2 = ViewExt.validateEditText(binding.userProfileUsername, binding.userProfileUsernameText, getString(R.string.user_error_no_username))
-        val isValid3 = ViewExt.validateEditText(binding.userProfilePassword, binding.userProfilePasswordText, getString(R.string.user_error_no_password))
+        val isValid1 = validateEditText(binding.userProfileEmail, binding.userProfileEmailText, getString(R.string.user_error_no_email))
+        val isValid2 = validateEditText(binding.userProfileUsername, binding.userProfileUsernameText, getString(R.string.user_error_no_username))
+        val isValid3 = validateEditText(binding.userProfilePassword, binding.userProfilePasswordText, getString(R.string.user_error_no_password))
         return isValid1 && isValid2 && isValid3
     }
 
@@ -126,7 +127,7 @@ class UserProfileFragment(private val userViewModel: UserViewModel) : Fragment()
             userViewModel.updateUser(updatedUser)
 
             finishUserUpdateProcess()
-            ViewExt.showSnackbar(binding.root, getString(R.string.user_profile_updated_message))
+            showSnackbar(binding.root, getString(R.string.user_profile_updated_message))
         }
     }
 

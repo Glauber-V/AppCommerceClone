@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
@@ -13,7 +14,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ProductViewModel @Inject constructor(private val repository: ProductsRepository) : ViewModel() {
+class ProductViewModel @Inject constructor(
+    private val repository: ProductsRepository,
+    private val dispatcherProvider: DispatcherProvider
+) : ViewModel() {
 
     private var _allProducts: List<Product> = emptyList()
 
@@ -28,7 +32,7 @@ class ProductViewModel @Inject constructor(private val repository: ProductsRepos
 
 
     fun updateProductsList(categoryName: String = "") {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.main) {
             _isLoading.value = true
             _allProducts = repository.loadProductsList()
             _products.value = prepareProductsList(_allProducts, categoryName)

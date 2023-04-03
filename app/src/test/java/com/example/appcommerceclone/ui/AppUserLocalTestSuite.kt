@@ -9,5 +9,6 @@ import org.junit.runners.Suite
 @Suite.SuiteClasses(
     UserLoginFragmentLocalTest::class,
     UserProfileFragmentLocalTest::class,
-    UserRegisterFragmentLocalTest::class)
+    UserRegisterFragmentLocalTest::class
+)
 class AppUserLocalTestSuite

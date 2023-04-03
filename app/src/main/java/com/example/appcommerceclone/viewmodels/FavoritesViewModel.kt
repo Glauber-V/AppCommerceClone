@@ -26,8 +26,4 @@ class FavoritesViewModel @Inject constructor() : ViewModel() {
     fun removeFromFavorites(product: Product) {
         _favorites.value?.remove(product)
     }
-
-    fun removeAllFromFavorites() {
-        _favorites.value = mutableListOf()
-    }
 }

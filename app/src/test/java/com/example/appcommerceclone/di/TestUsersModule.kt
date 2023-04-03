@@ -1,10 +1,7 @@
 package com.example.appcommerceclone.di
 
 import android.content.Context
-import com.example.appcommerceclone.data.connection.ConnectivityObserver
-import com.example.appcommerceclone.data.connection.FakeConnectivityObserver
-import com.example.appcommerceclone.data.product.FakeProductsRepository
-import com.example.appcommerceclone.data.product.ProductsRepository
+import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.*
 import dagger.Module
 import dagger.Provides
@@ -20,20 +17,30 @@ object TestUsersModule {
 
     @Singleton
     @Provides
-    fun provideUserAuthenticator(): UserAuthenticator {
-        return FakeUserAuthenticator()
-    }
+    fun provideUserApi(): UsersProvider = FakeUserProvider()
+
+    @Singleton
+    @Provides
+    fun provideUserAuthenticator(
+        usersProvider: UsersProvider,
+        dispatcherProvider: DispatcherProvider
+    ): UserAuthenticator = FakeUserAuthenticator(usersProvider, dispatcherProvider)
+
 
     @ExperimentalCoroutinesApi
     @Singleton
     @Provides
-    fun provideUserPreferences(@ApplicationContext context: Context): UserPreferences {
-        return FakeUserPreferences(context)
-    }
+    fun provideUserPreferences(
+        @ApplicationContext context: Context,
+        dispatcherProvider: DispatcherProvider
+    ): UserPreferences = FakeUserPreferences(context, dispatcherProvider)
+
 
     @Singleton
     @Provides
-    fun provideUserOrders(): UserOrders {
-        return FakeUserOrders()
-    }
+    fun provideUserOrders(
+        usersProvider: UsersProvider,
+        dispatcherProvider: DispatcherProvider
+    ): UserOrders = FakeUserOrders(usersProvider, dispatcherProvider)
+
 }

@@ -6,12 +6,12 @@ import kotlinx.coroutines.withContext
 
 class DefaultProductsRepository(
     private val productsProvider: ProductsProvider,
-    private val dispatcher: DispatcherProvider
+    private val dispatcherProvider: DispatcherProvider
 ) : ProductsRepository {
 
     override suspend fun loadProductsList(): List<Product> {
         return runCatching {
-            withContext(dispatcher.io) {
+            withContext(dispatcherProvider.default) {
                 productsProvider.getProducts()
             }
         }.getOrElse {

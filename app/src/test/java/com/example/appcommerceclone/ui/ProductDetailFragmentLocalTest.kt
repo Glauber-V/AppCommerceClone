@@ -6,9 +6,12 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productElectronic
-import com.example.appcommerceclone.data.product.FakeProductsRepository.Companion.productWomensClothing
-import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
+import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
+import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productWomensClothing
+import com.example.appcommerceclone.data.product.ProductsRepository
+import com.example.appcommerceclone.di.DispatcherModule
+import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.ui.product.ProductDetailFragment
 import com.example.appcommerceclone.util.*
 import com.example.appcommerceclone.viewmodels.CartViewModel
@@ -18,6 +21,7 @@ import com.google.common.truth.Truth.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
+import dagger.hilt.android.testing.UninstallModules
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +29,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
+import java.text.NumberFormat
+import javax.inject.Inject
 
+@UninstallModules(ProductsModule::class, DispatcherModule::class)
 @ExperimentalCoroutinesApi
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
@@ -33,42 +40,44 @@ import org.robolectric.annotation.Config
 class ProductDetailFragmentLocalTest {
 
     @get:Rule(order = 0)
-    var hiltAndroidRule = HiltAndroidRule(this)
+    val hiltAndroidRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    var testNavHostControllerRule = TestNavHostControllerRule(R.id.product_detail_fragment)
+    val testNavHostControllerRule = TestNavHostControllerRule(R.id.product_detail_fragment)
 
-    @get:Rule(order = 2)
-    var testFragmentFactoryRule = TestFragmentFactoryRule()
+    @Inject lateinit var productsRepository: ProductsRepository
+    @Inject lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var productViewModel: ProductViewModel
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var cartViewModel: CartViewModel
     private lateinit var factory: TestFragmentFactory
-    private lateinit var productInFullMode: Product
-    private lateinit var productNotInFullMode: Product
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
-        productViewModel = testFragmentFactoryRule.productViewModel!!
-        favoritesViewModel = testFragmentFactoryRule.favoritesViewModel!!
-        cartViewModel = testFragmentFactoryRule.cartViewModel!!
-        factory = testFragmentFactoryRule.factory!!
-        productInFullMode = productWomensClothing
-        productNotInFullMode = productElectronic
+        productViewModel = ProductViewModel(productsRepository, dispatcherProvider)
+        favoritesViewModel = FavoritesViewModel()
+        cartViewModel = CartViewModel()
+        factory = TestFragmentFactory(
+            productViewModelTest = productViewModel,
+            favoritesViewModelTest = favoritesViewModel,
+            cartViewModelTest = cartViewModel
+        )
     }
 
     @Test
-    fun verifyProductWasLoaded_notInFullMode_shouldPass() {
+    fun launchProductDetailFragment_notInFullMode_verifyProductWasLoaded() {
+
+        val product = productElectronic
+        productViewModel.selectProduct(product)
+
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
-            productViewModel.selectProduct(productNotInFullMode)
-
             onView(withId(R.id.product_detail_name))
-                .check(matches(withText(productNotInFullMode.name)))
+                .check(matches(withText(product.name)))
 
             onView(withId(R.id.product_detail_colors_chip_group))
                 .check(matches(withEffectiveVisibility(Visibility.GONE)))
@@ -76,36 +85,44 @@ class ProductDetailFragmentLocalTest {
             onView(withId(R.id.product_detail_sizes_chip_group))
                 .check(matches(withEffectiveVisibility(Visibility.GONE)))
 
+            val formattedPrice = NumberFormat.getCurrencyInstance().format(product.price)
             onView(withId(R.id.product_detail_price))
-                .check(matches(withText(getFormattedPrice(productNotInFullMode))))
+                .check(matches(withText(formattedPrice)))
 
             onView(withId(R.id.product_detail_description))
-                .check(matches(withText(productNotInFullMode.description)))
+                .check(matches(withText(product.description)))
         }
     }
 
     @Test
-    fun clickAddToFavorites_notInFullMode_shouldNavigateToFavoritesFragment() {
-        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
+    fun launchProductDetailFragment_notInFullMode_clickAddToFavorites_navigateToFavoritesFragment() {
 
-            productViewModel.selectProduct(productNotInFullMode)
+        val product = productElectronic
+        productViewModel.selectProduct(product)
+
+        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             onView(withId(R.id.product_detail_add_to_favorites))
                 .perform(scrollTo())
                 .perform(click())
 
-            val favorites = favoritesViewModel.favorites.getOrAwaitValue()
-            assertThat(favorites).contains(productNotInFullMode)
-
+            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.product_detail_fragment)
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.favorites_fragment)
+
+            val favorites = favoritesViewModel.favorites.getOrAwaitValue()
+            assertThat(favorites).isNotEmpty()
+            assertThat(favorites).hasSize(1)
+            assertThat(favorites).contains(product)
         }
     }
 
     @Test
-    fun clickAddToCart_notInFullMode_shouldNavigateToCartFragment() {
-        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
+    fun launchProductDetailFragment_notInFullMode_clickAddToCart_navigateToCartFragment() {
 
-            productViewModel.selectProduct(productNotInFullMode)
+        val product = productElectronic
+        productViewModel.selectProduct(product)
+
+        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             onView(withId(R.id.product_detail_colors_chip_group))
                 .check(matches(withEffectiveVisibility(Visibility.GONE)))
@@ -117,18 +134,53 @@ class ProductDetailFragmentLocalTest {
                 .perform(scrollTo())
                 .perform(click())
 
-            val orderedProduct = cartViewModel.getOrderedProduct(productNotInFullMode)
-            assertThat(cartViewModel.getOrderedProducts()).contains(orderedProduct)
-
+            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.product_detail_fragment)
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
+
+            val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
+            val orderedProduct = cartProducts.first()
+            assertThat(cartProducts).isNotEmpty()
+            assertThat(cartProducts).hasSize(1)
+            assertThat(cartProducts).contains(orderedProduct)
         }
     }
 
     @Test
-    fun clickAddToCart_inFullMode_shouldNavigateToCartFragment() {
+    fun launchProductDetailFragment_inFullMode_verifyProductWasLoaded() {
+
+        val product = productWomensClothing
+        productViewModel.selectProduct(product)
+
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
-            productViewModel.selectProduct(productInFullMode)
+            onView(withId(R.id.product_detail_name))
+                .check(matches(withText(product.name)))
+
+            onView(withId(R.id.product_detail_colors_chip_group))
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+            onView(withId(R.id.product_detail_sizes_chip_group))
+                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+
+            val formattedPrice = NumberFormat.getCurrencyInstance().format(product.price)
+            onView(withId(R.id.product_detail_price))
+                .check(matches(withText(formattedPrice)))
+
+            onView(withId(R.id.product_detail_description))
+                .check(matches(withText(product.description)))
+        }
+    }
+
+    @Test
+    fun launchProductDetailFragment_inFullMode_clickAddToCart_navigateToCartFragment() {
+
+        val product = productWomensClothing
+        productViewModel.selectProduct(product)
+
+        launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
+
+            onView(withId(R.id.product_detail_name))
+                .check(matches(withText(product.name)))
 
             onView(withId(R.id.product_detail_colors_chip_group))
                 .perform(scrollTo())
@@ -152,15 +204,27 @@ class ProductDetailFragmentLocalTest {
                 .perform(scrollTo())
                 .perform(click())
 
+            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.product_detail_fragment)
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
+
+            val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
+            val orderedProduct = cartProducts.first()
+            assertThat(cartProducts).isNotEmpty()
+            assertThat(cartProducts).hasSize(1)
+            assertThat(cartProducts).contains(orderedProduct)
         }
     }
 
     @Test
-    fun clickBuyNow_inFullMode_snackbarShouldBeVisible() {
+    fun launchProductDetailFragment_inFullMode_clickBuyNow_snackbarShouldBeVisible() {
+
+        val product = productWomensClothing
+        productViewModel.selectProduct(product)
+
         launchFragmentInHiltContainer<ProductDetailFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
-            productViewModel.selectProduct(productInFullMode)
+            onView(withId(R.id.product_detail_name))
+                .check(matches(withText(product.name)))
 
             onView(withId(R.id.product_detail_colors_chip_group))
                 .perform(scrollTo())

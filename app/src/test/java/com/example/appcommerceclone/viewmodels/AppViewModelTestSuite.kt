@@ -7,10 +7,10 @@ import org.junit.runners.Suite
 @ExperimentalCoroutinesApi
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-    ConnectivityViewModelTest::class,
-    UserViewModelTest::class,
-    ProductViewModelTest::class,
-    FavoritesViewModelTest::class,
     CartViewModelTest::class,
-    UserOrdersViewModelTest::class)
+    FavoritesViewModelTest::class,
+    ProductViewModelTest::class,
+    UserOrdersViewModelTest::class,
+    UserViewModelTest::class
+)
 class AppViewModelTestSuite

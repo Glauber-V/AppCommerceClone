@@ -38,6 +38,6 @@ object ProductsModule {
     @Provides
     fun provideProductsRepository(
         productsProvider: ProductsProvider,
-        dispatcher: DispatcherProvider
-    ): ProductsRepository = DefaultProductsRepository(productsProvider, dispatcher)
+        dispatcherProvider: DispatcherProvider
+    ): ProductsRepository = DefaultProductsRepository(productsProvider, dispatcherProvider)
 }

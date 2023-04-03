@@ -16,7 +16,6 @@ class TestNavHostControllerRule(private val currentDestination: Int) : TestWatch
         testNavHostController = TestNavHostController(ApplicationProvider.getApplicationContext())
         testNavHostController.setGraph(R.navigation.navigation_graph)
         testNavHostController.setCurrentDestination(currentDestination)
-        super.starting(description)
     }
 
     fun findTestNavHostController(): TestNavHostController {

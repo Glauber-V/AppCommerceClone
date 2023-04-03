@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.UserAuthenticator
 import com.example.appcommerceclone.data.user.UserPreferences
 import com.example.appcommerceclone.data.user.UserPreferencesKeys.USER_PREF_ID_KEY
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewModel @Inject constructor(
     private val userAuthenticator: UserAuthenticator,
-    private val userPreferences: UserPreferences
+    private val userPreferences: UserPreferences,
+    private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
     private val _loggedUser = MutableLiveData<User?>(null)
@@ -26,12 +28,9 @@ class UserViewModel @Inject constructor(
     private val _userProfilePic = MutableLiveData<Uri?>()
     val userProfilePic: LiveData<Uri?> = _userProfilePic
 
-    init {
-        loadSavedUser()
-    }
 
     fun loadSavedUser() {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.main) {
             val userId = userPreferences.getIntValueFromKey(USER_PREF_ID_KEY)
             val user: User? = userAuthenticator.getUserById(userId)
             _loggedUser.value = user
@@ -39,8 +38,9 @@ class UserViewModel @Inject constructor(
     }
 
     fun login(username: String, password: String) {
-        viewModelScope.launch {
-            val user = userAuthenticator.getUserByUsernameAndPassword(username, password)?.also { saveUserId(it.id) }
+        viewModelScope.launch(dispatcherProvider.main) {
+            val user = userAuthenticator.getUserByUsernameAndPassword(username, password)
+            user?.also { saveUserId(it.id) }
             _loggedUser.value = user
         }
     }
@@ -50,7 +50,7 @@ class UserViewModel @Inject constructor(
     }
 
     fun updateUser(updatedUser: User) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.main) {
             Log.d("User", updatedUser.toString())
         }
     }
@@ -61,7 +61,7 @@ class UserViewModel @Inject constructor(
     }
 
     private fun saveUserId(userId: Int) {
-        viewModelScope.launch {
+        viewModelScope.launch(dispatcherProvider.io) {
             userPreferences.saveIntValueToKey(USER_PREF_ID_KEY, userId)
         }
     }

@@ -3,12 +3,13 @@ package com.example.appcommerceclone.ui
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.ui.user.UserRegisterFragment
 import com.example.appcommerceclone.util.TestFragmentFactory
-import com.example.appcommerceclone.util.TestFragmentFactoryRule
 import com.example.appcommerceclone.util.TestNavHostControllerRule
+import com.example.appcommerceclone.util.hasTextInputLayoutErrorText
 import com.example.appcommerceclone.util.launchFragmentInHiltContainer
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -29,13 +30,10 @@ import org.robolectric.annotation.Config
 class UserRegisterFragmentLocalTest {
 
     @get:Rule(order = 0)
-    var hiltAndroidRule = HiltAndroidRule(this)
+    val hiltAndroidRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    var testNavHostControllerRule = TestNavHostControllerRule(R.id.user_register_fragment)
-
-    @get:Rule(order = 2)
-    var testFragmentFactoryRule = TestFragmentFactoryRule()
+    val testNavHostControllerRule = TestNavHostControllerRule(R.id.user_register_fragment)
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var factory: TestFragmentFactory
@@ -44,11 +42,11 @@ class UserRegisterFragmentLocalTest {
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
-        factory = testFragmentFactoryRule.factory!!
+        factory = TestFragmentFactory()
     }
 
     @Test
-    fun clickRegisterBtn_noCredentials_stayInRegisterFragment() {
+    fun launchUserRegisterFragment_clickRegisterBtn_noCredentials_stayInRegisterFragment() {
         launchFragmentInHiltContainer<UserRegisterFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             onView(withId(R.id.user_register_email_text))
@@ -63,12 +61,21 @@ class UserRegisterFragmentLocalTest {
             onView(withId(R.id.user_register_btn))
                 .perform(click())
 
+            onView(withId(R.id.user_register_email))
+                .check(matches(hasTextInputLayoutErrorText(getString(R.string.user_error_no_email))))
+
+            onView(withId(R.id.user_register_username))
+                .check(matches(hasTextInputLayoutErrorText(getString(R.string.user_error_no_username))))
+
+            onView(withId(R.id.user_register_password))
+                .check(matches(hasTextInputLayoutErrorText(getString(R.string.user_error_no_password))))
+
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_register_fragment)
         }
     }
 
     @Test
-    fun clickRegisterBtn_withCredentials_shouldNavigateBackToUserLoginFragment() {
+    fun launchUserRegisterFragment_clickRegisterBtn_withCredentials_navigateBackToProductsFragments() {
         launchFragmentInHiltContainer<UserRegisterFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             onView(withId(R.id.user_register_email_text))
@@ -84,6 +91,7 @@ class UserRegisterFragmentLocalTest {
                 .perform(click())
 
             assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_register_fragment)
+            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.products_fragment)
         }
     }
 }

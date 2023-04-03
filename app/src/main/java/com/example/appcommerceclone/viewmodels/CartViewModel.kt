@@ -70,13 +70,7 @@ class CartViewModel @Inject constructor() : ViewModel() {
     }
 
 
-    fun getOrder(): Order? {
-        if (_cartProducts.value == null)
-            return null
-
-        if (_cartTotalPrice.value == null)
-            return null
-
+    fun createOrder(): Order {
         order.orderedProducts = _cartProducts.value!!
         order.total = _cartTotalPrice.value!!
         return order

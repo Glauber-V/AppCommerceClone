@@ -16,49 +16,49 @@ import com.example.appcommerceclone.ui.user.UserRegisterFragment
 import com.example.appcommerceclone.viewmodels.*
 
 class TestFragmentFactory(
-    private val connectivityViewModel: ConnectivityViewModel? = null,
-    private val productViewModel: ProductViewModel? = null,
-    private val favoritesViewModel: FavoritesViewModel? = null,
-    private val cartViewModel: CartViewModel? = null,
-    private val userViewModel: UserViewModel? = null,
-    private val userOrdersViewModel: UserOrdersViewModel? = null
+    private val connectivityViewModelTest: ConnectivityViewModel? = null,
+    private val productViewModelTest: ProductViewModel? = null,
+    private val favoritesViewModelTest: FavoritesViewModel? = null,
+    private val cartViewModelTest: CartViewModel? = null,
+    private val userViewModelTest: UserViewModel? = null,
+    private val userOrdersViewModelTest: UserOrdersViewModel? = null
 ) : FragmentFactory() {
 
 
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {
         return when (className) {
             ConnectionFragment::class.java.name -> {
-                ConnectionFragment(connectivityViewModel!!)
+                ConnectionFragment(connectivityViewModelTest!!)
             }
             ProductsFragment::class.java.name -> {
-                ProductsFragment(productViewModel!!)
+                ProductsFragment(productViewModelTest!!)
             }
             ProductDetailFragment::class.java.name -> {
-                ProductDetailFragment(productViewModel!!, favoritesViewModel!!, cartViewModel!!)
+                ProductDetailFragment(productViewModelTest!!, favoritesViewModelTest!!, cartViewModelTest!!)
             }
             CategoriesFragment::class.java.name -> {
-                CategoriesFragment(productViewModel!!)
+                CategoriesFragment(productViewModelTest!!)
             }
             FavoritesFragment::class.java.name -> {
-                FavoritesFragment(userViewModel!!, favoritesViewModel!!)
+                FavoritesFragment(userViewModelTest!!, favoritesViewModelTest!!)
             }
             CartFragment::class.java.name -> {
-                CartFragment(cartViewModel!!, userOrdersViewModel!!)
+                CartFragment(cartViewModelTest!!, userOrdersViewModelTest!!)
             }
             OrdersFragment::class.java.name -> {
-                OrdersFragment(userViewModel!!, userOrdersViewModel!!)
+                OrdersFragment(userViewModelTest!!, userOrdersViewModelTest!!)
             }
             UserLoginFragment::class.java.name -> {
-                UserLoginFragment(userViewModel!!)
+                UserLoginFragment(userViewModelTest!!)
             }
             UserRegisterFragment::class.java.name -> {
                 UserRegisterFragment()
             }
             UserProfileFragment::class.java.name -> {
-                UserProfileFragment(userViewModel!!)
+                UserProfileFragment(userViewModelTest!!)
             }
             PictureChooserDialogFragment::class.java.name -> {
-                PictureChooserDialogFragment(userViewModel!!)
+                PictureChooserDialogFragment(userViewModelTest!!)
             }
             else -> super.instantiate(classLoader, className)
         }

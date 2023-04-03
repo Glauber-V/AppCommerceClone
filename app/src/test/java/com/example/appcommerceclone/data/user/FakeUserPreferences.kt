@@ -1,35 +1,35 @@
 package com.example.appcommerceclone.data.user
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
-import androidx.test.core.app.ApplicationProvider
+import androidx.datastore.preferences.preferencesDataStoreFile
+import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.UserPreferencesKeys.TEST_USER_PREFERENCES_DATASTORE_NAME
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-@ExperimentalCoroutinesApi
 class FakeUserPreferences(
-    private val context: Context = ApplicationProvider.getApplicationContext()
+    @ApplicationContext private val context: Context,
+    dispatcherProvider: DispatcherProvider
 ) : UserPreferences {
 
-    private val Context.testUserPreferencesDataStore by preferencesDataStore(
-        name = TEST_USER_PREFERENCES_DATASTORE_NAME
+    private val preferenceDataStore: DataStore<Preferences> = PreferenceDataStoreFactory.create(
+        scope = CoroutineScope(dispatcherProvider.io + SupervisorJob()),
+        produceFile = { context.preferencesDataStoreFile(TEST_USER_PREFERENCES_DATASTORE_NAME) }
     )
 
-
     override suspend fun getIntValueFromKey(key: Preferences.Key<Int>): Int {
-        val data = context.testUserPreferencesDataStore.data.map { preferences ->
-            preferences[key] ?: 0
-        }
+        val data = preferenceDataStore.data.map { it[key] ?: 0 }
         return data.first()
     }
 
     override suspend fun saveIntValueToKey(key: Preferences.Key<Int>, value: Int) {
-        context.testUserPreferencesDataStore.edit { mutablePreferences ->
-            mutablePreferences[key] = value
-        }
+        preferenceDataStore.edit { it[key] = value }
     }
 }

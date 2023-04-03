@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.forEach
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentProductDetailBinding
-import com.example.appcommerceclone.util.ViewExt
+import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.util.ViewExt.showSnackbar
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.ProductViewModel
@@ -24,6 +24,7 @@ class ProductDetailFragment(
 
     private lateinit var binding: FragmentProductDetailBinding
 
+    private lateinit var selectedProduct: Product
     private var isInFullMode = false
 
 
@@ -47,8 +48,9 @@ class ProductDetailFragment(
     private fun setupDataBinding() {
         productViewModel.selectedProduct.observe(viewLifecycleOwner) { hasProduct ->
             hasProduct?.let { product ->
-                binding.product = product
-                isInFullMode = productViewModel.checkIfShouldDisplayInFullDetailMode(product)
+                selectedProduct = product
+                binding.product = selectedProduct
+                isInFullMode = productViewModel.checkIfShouldDisplayInFullDetailMode(selectedProduct)
                 binding.isInFullMode = isInFullMode
             }
         }
@@ -56,10 +58,10 @@ class ProductDetailFragment(
 
     private fun setupAddToFavoritesBtnListener() {
         binding.productDetailAddToFavorites.setOnClickListener {
-            if (favoritesViewModel.addToFavorites(binding.product!!)) {
+            if (favoritesViewModel.addToFavorites(selectedProduct)) {
                 navigateToFavoritesFragment()
             } else {
-                ViewExt.showSnackbar(requireView(), getString(R.string.product_detail_favorites_warning))
+                showSnackbar(requireView(), getString(R.string.product_detail_favorites_warning))
             }
         }
     }
@@ -67,7 +69,7 @@ class ProductDetailFragment(
     private fun setupAddToCartBtnListener() {
         binding.productDetailAddToCart.setOnClickListener {
             if (isChipsSelected()) {
-                cartViewModel.addToCart(binding.product!!)
+                cartViewModel.addToCart(selectedProduct)
                 productViewModel.onSelectedProductFinish()
                 navigateToCartFragment()
             }
@@ -77,7 +79,7 @@ class ProductDetailFragment(
     private fun setupBuyNowBtnListener() {
         binding.productDetailBuyNow.setOnClickListener {
             if (isChipsSelected()) {
-                ViewExt.showSnackbar(requireView(), getString(R.string.product_detail_thanks_for_purchase))
+                showSnackbar(requireView(), getString(R.string.product_detail_thanks_for_purchase))
             }
         }
     }
@@ -122,18 +124,18 @@ class ProductDetailFragment(
         val colorsChipGroup = binding.productDetailColorsChipGroup
         val sizesChipGroup = binding.productDetailSizesChipGroup
 
+        if (colorsChipGroup.checkedChipId == View.NO_ID && sizesChipGroup.checkedChipId == View.NO_ID) {
+            showSnackbar(requireView(), getString(R.string.product_detail_chip_color_and_size_warning))
+            return false
+        }
+
         if (colorsChipGroup.checkedChipId == View.NO_ID) {
-            Toast.makeText(requireContext(), getString(R.string.product_detail_chip_color_warning), Toast.LENGTH_SHORT).show()
+            showSnackbar(requireView(), getString(R.string.product_detail_chip_color_warning))
             return false
         }
 
         if (sizesChipGroup.checkedChipId == View.NO_ID) {
-            Toast.makeText(requireContext(), getString(R.string.product_detail_chip_size_warning), Toast.LENGTH_SHORT).show()
-            return false
-        }
-
-        if (colorsChipGroup.checkedChipId == View.NO_ID || sizesChipGroup.checkedChipId == View.NO_ID) {
-            Toast.makeText(requireContext(), getString(R.string.product_detail_chip_color_and_size_warning), Toast.LENGTH_SHORT).show()
+            showSnackbar(requireView(), getString(R.string.product_detail_chip_size_warning))
             return false
         }
 

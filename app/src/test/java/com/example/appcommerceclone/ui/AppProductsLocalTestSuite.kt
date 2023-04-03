@@ -7,9 +7,11 @@ import org.junit.runners.Suite
 @ExperimentalCoroutinesApi
 @RunWith(Suite::class)
 @Suite.SuiteClasses(
-    ProductsFragmentLocalTest::class,
+    CartFragmentLocalTest::class,
     CategoriesFragmentLocalTest::class,
     FavoritesFragmentLocalTest::class,
+    OrdersFragmentLocalTest::class,
     ProductDetailFragmentLocalTest::class,
-    OrdersFragmentLocalTest::class)
+    ProductsFragmentLocalTest::class
+)
 class AppProductsLocalTestSuite

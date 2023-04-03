@@ -13,6 +13,7 @@ import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.ActivityMainBinding
 import com.example.appcommerceclone.util.UserExt.observeUserConnectionStatus
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
+import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
 
     private val connectivityViewModel: ConnectivityViewModel by viewModels()
+    private val userViewModel: UserViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         navigationView.setupWithNavController(navController)
 
         observeUserConnectionStatus(navController, connectivityViewModel)
+        userViewModel.loadSavedUser()
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.connection_fragment) {
                 supportActionBar?.apply {

@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentCartAlertDialogBinding
 import com.example.appcommerceclone.databinding.FragmentCartBinding
+import com.example.appcommerceclone.model.order.Order
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -25,6 +26,8 @@ class CartFragment(
     private lateinit var binding: FragmentCartBinding
 
     private lateinit var cartAdapter: CartAdapter
+
+    private var canProceed = false
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -50,6 +53,7 @@ class CartFragment(
 
     private fun observeCartProductsChanges() {
         cartViewModel.cartProducts.observe(viewLifecycleOwner) { cartProducts ->
+            canProceed = cartProducts.isNotEmpty()
             cartAdapter.submitList(cartProducts)
         }
     }
@@ -77,9 +81,9 @@ class CartFragment(
 
 
     private fun finishPurchase() {
-        cartViewModel.getOrder()?.also { order ->
-            userOrdersViewModel.receiveOrder(order)
-        }
+        if (!canProceed) return
+        val order: Order = cartViewModel.createOrder()
+        userOrdersViewModel.receiveOrder(order)
         cartViewModel.onOrderDispatched()
         navigateToOrdersFragment()
     }

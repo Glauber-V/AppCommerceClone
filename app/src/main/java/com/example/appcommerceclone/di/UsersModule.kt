@@ -46,20 +46,20 @@ object UsersModule {
     @Provides
     fun provideUserAuthenticator(
         usersProvider: UsersProvider,
-        dispatcher: DispatcherProvider
-    ): UserAuthenticator = DefaultUserAuthenticator(usersProvider, dispatcher)
+        dispatcherProvider: DispatcherProvider
+    ): UserAuthenticator = DefaultUserAuthenticator(usersProvider, dispatcherProvider)
 
     @Singleton
     @Provides
     fun provideUserPreferences(
         @ApplicationContext context: Context,
-        dispatcher: DispatcherProvider
-    ): UserPreferences = DefaultUserPreferences(context, dispatcher)
+        dispatcherProvider: DispatcherProvider
+    ): UserPreferences = DefaultUserPreferences(context, dispatcherProvider)
 
     @Singleton
     @Provides
     fun provideUserOrders(
         usersProvider: UsersProvider,
-        dispatcher: DispatcherProvider
-    ): UserOrders = DefaultUserOrders(usersProvider, dispatcher)
+        dispatcherProvider: DispatcherProvider
+    ): UserOrders = DefaultUserOrders(usersProvider, dispatcherProvider)
 }
