@@ -7,7 +7,6 @@ import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.data.user.UserAuthenticator
 import com.example.appcommerceclone.data.user.UserOrders
-import com.example.appcommerceclone.data.user.UserPreferences
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.model.order.Order
@@ -49,7 +48,6 @@ class OrdersFragmentLocalTest {
     val testMainDispatcherRule = TestMainDispatcherRule()
 
     @Inject lateinit var userAuthenticator: UserAuthenticator
-    @Inject lateinit var userPreferences: UserPreferences
     @Inject lateinit var userOrders: UserOrders
     @Inject lateinit var dispatcherProvider: DispatcherProvider
 
@@ -62,7 +60,7 @@ class OrdersFragmentLocalTest {
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
-        userViewModel = UserViewModel(userAuthenticator, userPreferences, dispatcherProvider)
+        userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
         userOrdersViewModel = UserOrdersViewModel(userOrders, dispatcherProvider)
         factory = TestFragmentFactory(userViewModelTest = userViewModel, userOrdersViewModelTest = userOrdersViewModel)
     }

@@ -9,7 +9,6 @@ import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.data.user.UserAuthenticator
-import com.example.appcommerceclone.data.user.UserPreferences
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.ui.user.UserProfileFragment
@@ -48,7 +47,6 @@ class UserProfileFragmentLocalTest {
     val testMainDispatcherRule = TestMainDispatcherRule()
 
     @Inject lateinit var userAuthenticator: UserAuthenticator
-    @Inject lateinit var userPreferences: UserPreferences
     @Inject lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var navHostController: TestNavHostController
@@ -59,7 +57,7 @@ class UserProfileFragmentLocalTest {
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
-        userViewModel = UserViewModel(userAuthenticator, userPreferences, dispatcherProvider)
+        userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
         factory = TestFragmentFactory(userViewModelTest = userViewModel)
     }
 

@@ -13,7 +13,6 @@ import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.ActivityMainBinding
 import com.example.appcommerceclone.util.UserExt.observeUserConnectionStatus
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
-import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,7 +26,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
 
     private val connectivityViewModel: ConnectivityViewModel by viewModels()
-    private val userViewModel: UserViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +44,22 @@ class MainActivity : AppCompatActivity() {
         navigationView.setupWithNavController(navController)
 
         observeUserConnectionStatus(navController, connectivityViewModel)
-        userViewModel.loadSavedUser()
+        setupOnDestinationChangedListener()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        return navController.navigateUp(drawerLayout)
+    }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        if (navController.currentDestination?.id == R.id.connection_fragment) finish().also { return }
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) drawerLayout.closeDrawer(Gravity.LEFT)
+        else super.onBackPressed()
+    }
+
+
+    private fun setupOnDestinationChangedListener() {
         navController.addOnDestinationChangedListener { _, destination, _ ->
             if (destination.id == R.id.connection_fragment) {
                 supportActionBar?.apply {
@@ -64,15 +77,5 @@ class MainActivity : AppCompatActivity() {
                 binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
             }
         }
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp(drawerLayout)
-    }
-
-    override fun onBackPressed() {
-        if (navController.currentDestination?.id == R.id.connection_fragment) finish().also { return }
-        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) drawerLayout.closeDrawer(Gravity.LEFT)
-        else super.onBackPressed()
     }
 }

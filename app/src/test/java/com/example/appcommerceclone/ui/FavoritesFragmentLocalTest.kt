@@ -12,7 +12,6 @@ import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.data.user.UserAuthenticator
-import com.example.appcommerceclone.data.user.UserPreferences
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.ui.favorites.FavoritesAdapter.*
@@ -52,7 +51,6 @@ class FavoritesFragmentLocalTest {
     val testMainDispatcherRule = TestMainDispatcherRule()
 
     @Inject lateinit var userAuthenticator: UserAuthenticator
-    @Inject lateinit var userPreferences: UserPreferences
     @Inject lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var navHostController: TestNavHostController
@@ -64,7 +62,7 @@ class FavoritesFragmentLocalTest {
     fun setUp() {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
-        userViewModel = UserViewModel(userAuthenticator, userPreferences, dispatcherProvider)
+        userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
         favoritesViewModel = FavoritesViewModel()
         factory = TestFragmentFactory(userViewModelTest = userViewModel, favoritesViewModelTest = favoritesViewModel)
     }

@@ -1,6 +1,5 @@
 package com.example.appcommerceclone.di
 
-import android.content.Context
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.*
 import com.example.appcommerceclone.util.Constants.FAKE_STORE_API_URL
@@ -9,7 +8,6 @@ import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -48,13 +46,6 @@ object UsersModule {
         usersProvider: UsersProvider,
         dispatcherProvider: DispatcherProvider
     ): UserAuthenticator = DefaultUserAuthenticator(usersProvider, dispatcherProvider)
-
-    @Singleton
-    @Provides
-    fun provideUserPreferences(
-        @ApplicationContext context: Context,
-        dispatcherProvider: DispatcherProvider
-    ): UserPreferences = DefaultUserPreferences(context, dispatcherProvider)
 
     @Singleton
     @Provides
