@@ -49,7 +49,6 @@ consistency in test results.
 - [Coroutines](https://kotlinlang.org/docs/coroutines-guide.html)
 - [Flow](https://developer.android.com/kotlin/flow)
 - [Glide](https://bumptech.github.io/glide/)
-- [Preference Store](https://developer.android.com/topic/libraries/architecture/datastore)
 - [Facebook's shimmer effect](https://github.com/facebook/shimmer-android)
 - [Espresso](https://developer.android.com/training/testing/espresso)
 - [Truth](https://truth.dev/)
