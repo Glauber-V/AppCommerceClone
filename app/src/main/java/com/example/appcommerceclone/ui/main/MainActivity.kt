@@ -2,6 +2,7 @@ package com.example.appcommerceclone.ui.main
 
 import android.os.Bundle
 import android.view.Gravity
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -9,9 +10,11 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.appcommerceclone.NavigationGraphDirections
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.ActivityMainBinding
-import com.example.appcommerceclone.util.UserExt.observeUserConnectionStatus
+import com.example.appcommerceclone.util.ViewExt.isLocked
+import com.example.appcommerceclone.util.ViewExt.isNavigationUpEnabled
 import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,42 +43,46 @@ class MainActivity : AppCompatActivity() {
         drawerLayout = binding.drawerLayout
         navigationView = binding.navView
 
+        val onBackPressedCallback = object : OnBackPressedCallback(false) {
+            override fun handleOnBackPressed() {
+                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) drawerLayout.closeDrawer(Gravity.LEFT)
+                else finish()
+            }
+        }
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
         setupActionBarWithNavController(navController, drawerLayout)
         navigationView.setupWithNavController(navController)
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.products_fragment -> {
+                    binding.drawerLayout.isLocked(false)
+                    onBackPressedCallback.isEnabled = true
+                }
+                R.id.user_login_fragment -> {
+                    supportActionBar?.isNavigationUpEnabled(false)
+                    binding.drawerLayout.isLocked(true)
+                    onBackPressedCallback.isEnabled = false
+                }
+                R.id.connection_fragment -> {
+                    supportActionBar?.isNavigationUpEnabled(false)
+                    binding.drawerLayout.isLocked(true)
+                    onBackPressedCallback.isEnabled = false
+                }
+                else -> {
+                    supportActionBar?.isNavigationUpEnabled(true)
+                    binding.drawerLayout.isLocked(true)
+                    onBackPressedCallback.isEnabled = false
+                }
+            }
+        }
 
-        observeUserConnectionStatus(navController, connectivityViewModel)
-        setupOnDestinationChangedListener()
+        connectivityViewModel.isConnected.observe(this) { hasConnection ->
+            if (!hasConnection) navController.navigate(NavigationGraphDirections.actionGlobalConnectionFragment())
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(drawerLayout)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() {
-        if (navController.currentDestination?.id == R.id.connection_fragment) finish().also { return }
-        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) drawerLayout.closeDrawer(Gravity.LEFT)
-        else super.onBackPressed()
-    }
-
-
-    private fun setupOnDestinationChangedListener() {
-        navController.addOnDestinationChangedListener { _, destination, _ ->
-            if (destination.id == R.id.connection_fragment) {
-                supportActionBar?.apply {
-                    setHomeButtonEnabled(false)
-                    setDisplayHomeAsUpEnabled(false)
-                    setDisplayShowHomeEnabled(false)
-                }
-                binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-            } else {
-                supportActionBar?.apply {
-                    setHomeButtonEnabled(true)
-                    setDisplayHomeAsUpEnabled(true)
-                    setDisplayShowHomeEnabled(true)
-                }
-                binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-            }
-        }
     }
 }

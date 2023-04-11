@@ -1,10 +1,13 @@
 package com.example.appcommerceclone.ui.user
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.FragmentUserLoginBinding
@@ -23,6 +26,19 @@ class UserLoginFragment(private val userViewModel: UserViewModel) : Fragment() {
 
     private var isLoadingUser = false
 
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val navController = findNavController()
+                val startDestination = navController.graph.startDestinationId
+                val navOptions = NavOptions.Builder().setPopUpTo(startDestination, true).build()
+                navController.navigate(startDestination, null, navOptions)
+            }
+        })
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentUserLoginBinding.inflate(inflater, container, false)
@@ -79,7 +95,7 @@ class UserLoginFragment(private val userViewModel: UserViewModel) : Fragment() {
                     showSnackbar(binding.root, getString(R.string.user_error_not_found))
                 } else {
                     showSnackbar(binding.root, getString(R.string.user_profile_welcome_message, user.username))
-                    findNavController().navigateUp()
+                    findNavController().popBackStack()
                 }
                 isLoadingUser = false
             }

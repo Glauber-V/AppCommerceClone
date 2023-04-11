@@ -1,9 +1,11 @@
 package com.example.appcommerceclone.ui.connection
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.databinding.FragmentConnectionBinding
@@ -14,6 +16,16 @@ class ConnectionFragment(private val connectivityViewModel: ConnectivityViewMode
     private lateinit var binding: FragmentConnectionBinding
 
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                requireActivity().finish()
+            }
+        })
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentConnectionBinding.inflate(inflater, container, false)
         return binding.root
@@ -22,13 +34,13 @@ class ConnectionFragment(private val connectivityViewModel: ConnectivityViewMode
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        observeConnectionChanges()
+        observeUserConnectionStatus()
     }
 
 
-    private fun observeConnectionChanges() {
-        connectivityViewModel.isConnected.observe(viewLifecycleOwner) { isConnected ->
-            if (isConnected) findNavController().navigateUp()
+    private fun observeUserConnectionStatus() {
+        connectivityViewModel.isConnected.observe(viewLifecycleOwner) { hasConnection ->
+            if (hasConnection) findNavController().popBackStack()
         }
     }
 }

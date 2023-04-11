@@ -1,9 +1,11 @@
 package com.example.appcommerceclone.util
 
 import android.view.View
+import androidx.appcompat.app.ActionBar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.widget.doOnTextChanged
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
@@ -50,5 +52,16 @@ object ViewExt {
     @Suppress("DEPRECATION")
     fun Fragment.hideKeyboard() {
         ViewCompat.getWindowInsetsController(requireView())?.hide(WindowInsetsCompat.Type.ime())
+    }
+
+    fun ActionBar.isNavigationUpEnabled(boolean: Boolean) {
+        setHomeButtonEnabled(boolean)
+        setDisplayHomeAsUpEnabled(boolean)
+        setDisplayShowHomeEnabled(boolean)
+    }
+
+    fun DrawerLayout.isLocked(boolean: Boolean) {
+        if (boolean) setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        else setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 }
