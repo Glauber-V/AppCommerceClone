@@ -1,36 +1,33 @@
 # AppCommerce
 
-AppCommerce is an e-commerce app. Features a simple filterable product list where you can add products to your favorites to maybe buy them later or
-simply add them to your cart to continue browsing. You can see your previous purchases and also login into a predefined user account. All remote data
-comes from the FakeStoreApi, a free online REST API ([GitHub](https://github.com/keikaavousi/fake-store-api) / [Site](https://fakestoreapi.com/)).
+AppCommerceClone is an e-commerce app that features a simple filterable product list where you can add products to your favorites or easily add them
+to your cart. You can see your previous purchases and also login into a predefined user account. All remote data comes from the FakeStoreApi, a free
+online REST API ([GitHub](https://github.com/keikaavousi/fake-store-api) / [Site](https://fakestoreapi.com/)).
 
 ## Architecture
 
-Following Goggle recommended [app architecture and best practices](https://developer.android.com/topic/architecture), the app is structured in
-a [Model-View-ViewModel (MVVM)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) pattern in conjunction with the Repository Pattern
-acting as [Single Source Of Truth (SSOT)](https://en.wikipedia.org/wiki/Single_source_of_truth). The AppCommerce has a single activity that hosts all
-fragments while the [Navigation](https://developer.android.com/guide/navigation) component handles the fragment
-transactions. [ViewModels](https://developer.android.com/topic/libraries/architecture/viewmodel) separates business logic from UI to keep fragments
-more organized.
+The app is structured using the [Model-View-ViewModel (MVVM)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93viewmodel) pattern in
+conjunction with the Repository Pattern acting as [Single Source Of Truth (SSOT)](https://en.wikipedia.org/wiki/Single_source_of_truth) abstracting
+the data source out of the view models. The AppCommerceClone app has a single activity that hosts all fragments while the Navigation component handles
+the fragment transactions. In addition to good practices, this app follows the [SOLID](https://en.wikipedia.org/wiki/SOLID) principles to achieve a
+more understandable, flexible, and maintainable app.
 
 ## Screenshots
 
 <p float="left">
   <img src="screenshots/video_start.gif" width="200" alt="app initializing">
-  <img src="screenshots/video_login.gif" width="200" alt="login process">
   <img src="screenshots/screenshot_product_detail_full.png" width="200" alt="full product detail">
   <img src="screenshots/screenshot_cart.png" width="200" alt="cart">
+  <img src="screenshots/screenshot_orders.png" width="200" alt="cart">
 </p>
 
 ## Testing
 
-Tests are written with [Espresso](https://developer.android.com/training/testing/espresso) and [Robolectric](https://robolectric.org/), also you can
-run all tests together using [Suite](https://junit.org/junit4/javadoc/4.13/org/junit/runners/Suite.html) classes. The data layer components are
-defined following the [Dependency Inversion Principles](https://pt.wikipedia.org/wiki/Princ%C3%ADpio_da_invers%C3%A3o_de_depend%C3%AAncia)
-where each repository extends an interface and different implementations can be created for the production and testing code. Said implementations can
-be found with the "Default-" and "Fake-" prefixes. This project also makes extensive use of rules and custom functions that allows testing fragments
-while using Hilt dependency injection and waiting for a new LiveData value to be set. Coroutine dispatchers are also injectable with Hilt to increase
-consistency in test results.
+Tests were written with [Robolectric](https://robolectric.org/), [Espresso](https://developer.android.com/training/testing/espresso),
+and [Truth](https://truth.dev/). The data layer components were defined following
+the [Dependency Inversion Principles](https://pt.wikipedia.org/wiki/Princ%C3%ADpio_da_invers%C3%A3o_de_depend%C3%AAncia) where each repository
+extends an interface and different implementations can be
+created for the production and testing code.
 
 ## Used Libraries
 
