@@ -121,6 +121,12 @@ class ProductsFragmentLocalTest {
             assertThat(products).isNotEmpty()
             assertThat(products).hasSize(4)
 
+            onView(withId(R.id.products_recycler_view))
+                .check(matches(atPosition(0, hasDescendant(withText(productJewelery.name)))))
+                .check(matches(atPosition(1, hasDescendant(withText(productElectronic.name)))))
+                .check(matches(atPosition(2, hasDescendant(withText(productMensClothing.name)))))
+                .check(matches(atPosition(3, hasDescendant(withText(productWomensClothing.name)))))
+
             productViewModel.selectCategoryAndUpdateProductsList(CATEGORY_NAME_ELECTRONICS)
             products = productViewModel.products.getOrAwaitValue()
             assertThat(products).isNotEmpty()

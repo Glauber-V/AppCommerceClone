@@ -23,11 +23,11 @@ class CartAdapter(
     override fun onBindViewHolder(holder: CartViewHolder, position: Int) {
         val orderedProduct = getItem(position)
         holder.binding.orderedProduct = orderedProduct
-        holder.binding.cartIncreaseQuantity.setOnClickListener {
+        holder.binding.itemProductInCartIncreaseQuantityBtn.setOnClickListener {
             cartViewModel.increaseQuantity(orderedProduct)
             notifyItemChanged(holder.adapterPosition)
         }
-        holder.binding.cartDecreaseQuantity.setOnClickListener {
+        holder.binding.itemProductInCartDecreaseQuantityBtn.setOnClickListener {
             cartViewModel.decreaseQuantity(orderedProduct)
             if (orderedProduct.quantity >= 1) notifyItemChanged(holder.adapterPosition)
             else notifyItemRemoved(holder.adapterPosition)

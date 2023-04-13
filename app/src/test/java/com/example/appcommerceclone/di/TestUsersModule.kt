@@ -1,7 +1,10 @@
 package com.example.appcommerceclone.di
 
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.user.*
+import com.example.appcommerceclone.data.user.FakeUserAuthenticator
+import com.example.appcommerceclone.data.user.FakeUserProvider
+import com.example.appcommerceclone.data.user.UserAuthenticator
+import com.example.appcommerceclone.data.user.UsersProvider
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.components.SingletonComponent
@@ -22,11 +25,4 @@ object TestUsersModule {
         usersProvider: UsersProvider,
         dispatcherProvider: DispatcherProvider
     ): UserAuthenticator = FakeUserAuthenticator(usersProvider, dispatcherProvider)
-
-    @Singleton
-    @Provides
-    fun provideUserOrders(
-        usersProvider: UsersProvider,
-        dispatcherProvider: DispatcherProvider
-    ): UserOrders = FakeUserOrders(usersProvider, dispatcherProvider)
 }

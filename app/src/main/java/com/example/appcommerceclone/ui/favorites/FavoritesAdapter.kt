@@ -24,7 +24,7 @@ class FavoritesAdapter(
     override fun onBindViewHolder(holder: FavoriteProductViewHolder, position: Int) {
         val product = getItem(position)
         holder.binding.product = product
-        holder.binding.productFavoriteRemoveBtn.setOnClickListener {
+        holder.binding.itemProductFavoriteRemoveBtn.setOnClickListener {
             favoritesViewModel.removeFromFavorites(product)
             notifyItemRemoved(holder.adapterPosition)
         }

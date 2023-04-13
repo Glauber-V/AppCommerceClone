@@ -1,16 +1,23 @@
 package com.example.appcommerceclone.ui
 
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
+import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
 import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
+import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productMensClothing
+import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productWomensClothing
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.data.user.UserAuthenticator
-import com.example.appcommerceclone.data.user.UserOrders
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.model.order.Order
 import com.example.appcommerceclone.model.order.OrderedProduct
+import com.example.appcommerceclone.ui.order.OrdersAdapter.*
 import com.example.appcommerceclone.ui.order.OrdersFragment
 import com.example.appcommerceclone.util.*
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
@@ -48,7 +55,6 @@ class OrdersFragmentLocalTest {
     val testMainDispatcherRule = TestMainDispatcherRule()
 
     @Inject lateinit var userAuthenticator: UserAuthenticator
-    @Inject lateinit var userOrders: UserOrders
     @Inject lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var navHostController: TestNavHostController
@@ -61,12 +67,15 @@ class OrdersFragmentLocalTest {
         hiltAndroidRule.inject()
         navHostController = testNavHostControllerRule.findTestNavHostController()
         userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
-        userOrdersViewModel = UserOrdersViewModel(userOrders, dispatcherProvider)
-        factory = TestFragmentFactory(userViewModelTest = userViewModel, userOrdersViewModelTest = userOrdersViewModel)
+        userOrdersViewModel = UserOrdersViewModel()
+        factory = TestFragmentFactory(
+            userViewModelTest = userViewModel,
+            userOrdersViewModelTest = userOrdersViewModel
+        )
     }
 
     @Test
-    fun launchOrdersFragments_noUser_navigateToLoginFragment() = runTest {
+    fun launchOrdersFragment_noUser_navigateToLoginFragment() = runTest {
 
         val user = userViewModel.loggedUser.getOrAwaitValue()
         assertThat(user).isNull()
@@ -79,7 +88,7 @@ class OrdersFragmentLocalTest {
     }
 
     @Test
-    fun launchOrdersFragment_withUser_stayInOrdersFragment() = runTest {
+    fun launchOrdersFragment_withUser_stayInUserOrdersFragment() = runTest {
 
         userViewModel.login(username = firstUser.username, password = firstUser.password)
         advanceUntilIdle()
@@ -96,7 +105,7 @@ class OrdersFragmentLocalTest {
     }
 
     @Test
-    fun launchOrdersFragment_withUser_verifyOrdersListHasSize2() = runTest {
+    fun launchOrdersFragment_withUser_createNewOrder_verifyRecyclerViewHasCorrectData() = runTest {
 
         userViewModel.login(username = firstUser.username, password = firstUser.password)
         advanceUntilIdle()
@@ -108,55 +117,40 @@ class OrdersFragmentLocalTest {
         var orders = userOrdersViewModel.orders.getOrAwaitValue()
         assertThat(orders).isEmpty()
 
-        launchFragmentInHiltContainer<OrdersFragment>(navHostController = navHostController, fragmentFactory = factory) {
+        val orderedProducts = mutableListOf(
+            OrderedProduct(product = productJewelery, quantity = 4),
+            OrderedProduct(product = productElectronic, quantity = 6),
+            OrderedProduct(product = productWomensClothing, quantity = 2),
+            OrderedProduct(product = productMensClothing, quantity = 1)
+        )
 
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_login_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.orders_fragment)
+        val finalPrice = orderedProducts.sumOf { it.product.price * it.quantity }
+        val order1 = Order(orderedProducts = orderedProducts, total = finalPrice)
+        val order2 = order1.copy()
 
-            advanceUntilIdle()
+        userOrdersViewModel.processOrder(order1, user!!.id)
+        userOrdersViewModel.processOrder(order2, user.id)
 
-            orders = userOrdersViewModel.orders.getOrAwaitValue()
-            assertThat(orders).isNotEmpty()
-            assertThat(orders).hasSize(2)
-        }
-    }
-
-    @Test
-    fun launchOrdersFragment_withUser_processUnfinishedOrder() = runTest {
-
-        userViewModel.login(username = firstUser.username, password = firstUser.password)
-        advanceUntilIdle()
-
-        val user = userViewModel.loggedUser.getOrAwaitValue()
-        assertThat(user).isNotNull()
-        assertThat(user).isEqualTo(firstUser)
-
-        var orders = userOrdersViewModel.orders.getOrAwaitValue()
-        assertThat(orders).isEmpty()
-
-        val orderedProduct = OrderedProduct(productJewelery)
-        val orderedProducts = mutableListOf(orderedProduct)
-        val total = orderedProducts.sumOf { it.product.price * it.quantity }
-        var order = Order(orderedProducts = orderedProducts, total = total)
-        userOrdersViewModel.receiveOrder(order)
+        orders = userOrdersViewModel.orders.getOrAwaitValue()
+        assertThat(orders).isNotEmpty()
+        assertThat(orders).hasSize(2)
+        assertThat(orders).contains(order1)
+        assertThat(orders).contains(order2)
 
         launchFragmentInHiltContainer<OrdersFragment>(navHostController = navHostController, fragmentFactory = factory) {
 
             assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_login_fragment)
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.orders_fragment)
 
-            advanceUntilIdle()
+            onView(withId(R.id.orders_recyclerview))
+                .check(matches(atPosition(0, hasDescendant(withText(getString(R.string.order_item_id, order1.id))))))
+                .check(matches(atPosition(0, hasDescendant(withText(getString(R.string.order_item_date, order1.date))))))
+                .check(matches(atPosition(0, hasDescendant(withText(getString(R.string.order_item_total_price, order1.getFormattedPrice()))))))
 
-            orders = userOrdersViewModel.orders.getOrAwaitValue()
-            assertThat(orders).isNotEmpty()
-            assertThat(orders).hasSize(1)
-
-            order = orders.first()
-            assertThat(order.id).isNotEqualTo(0)
-            assertThat(order.userId).isEqualTo(user!!.id)
-            assertThat(order.date).isNotEqualTo("")
-            assertThat(order.orderedProducts).isEqualTo(orderedProducts)
-            assertThat(order.total).isEqualTo(total)
+            onView(withId(R.id.orders_recyclerview))
+                .check(matches(atPosition(1, hasDescendant(withText(getString(R.string.order_item_id, order2.id))))))
+                .check(matches(atPosition(1, hasDescendant(withText(getString(R.string.order_item_date, order2.date))))))
+                .check(matches(atPosition(1, hasDescendant(withText(getString(R.string.order_item_total_price, order2.getFormattedPrice()))))))
         }
     }
 }

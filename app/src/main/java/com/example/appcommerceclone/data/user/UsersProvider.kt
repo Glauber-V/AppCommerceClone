@@ -1,6 +1,5 @@
 package com.example.appcommerceclone.data.user
 
-import com.example.appcommerceclone.model.order.Order
 import com.example.appcommerceclone.model.user.User
 import com.example.appcommerceclone.model.user.UserToken
 import retrofit2.http.*
@@ -21,10 +20,5 @@ interface UsersProvider {
     suspend fun getUserById(
         @Path("id") id: Int
     ): User
-
-    @GET("carts/user/{id}")
-    suspend fun getUserOrders(
-        @Path("id") userId: Int
-    ): MutableList<Order>
 }
 

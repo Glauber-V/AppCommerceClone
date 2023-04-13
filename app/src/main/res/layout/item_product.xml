@@ -26,7 +26,7 @@
 
             <ImageView
                     android:id="@+id/item_product_image"
-                    setProductImageFromUrl="@{product.imageUrl}"
+                    setProductImageFromUrl="@{product}"
                     android:layout_width="wrap_content"
                     android:layout_height="200dp"
                     android:adjustViewBounds="true"
@@ -54,7 +54,7 @@
             <TextView
                     android:id="@+id/item_product_price"
                     style="@style/AppCommerce.TextAppearance.CardView.Center.Subtitle"
-                    setProductPrice="@{product.price}"
+                    setProductPrice="@{product}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_size_medium"

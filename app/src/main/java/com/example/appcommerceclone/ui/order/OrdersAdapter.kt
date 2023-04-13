@@ -6,11 +6,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.appcommerceclone.databinding.ItemOrderBinding
 import com.example.appcommerceclone.model.order.Order
-import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 
-class OrdersAdapter(
-    private val userOrdersViewModel: UserOrdersViewModel
-) : ListAdapter<Order, OrdersAdapter.OrderViewHolder>(OrderDiffCallback) {
+class OrdersAdapter : ListAdapter<Order, OrdersAdapter.OrderViewHolder>(OrderDiffCallback) {
 
     class OrderViewHolder(val binding: ItemOrderBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -23,6 +20,5 @@ class OrdersAdapter(
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
         val order = getItem(position)
         holder.binding.order = order
-        holder.itemView.setOnClickListener { userOrdersViewModel.selectOrder(order) }
     }
 }

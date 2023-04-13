@@ -1,6 +1,7 @@
 package com.example.appcommerceclone.model.product
 
 import com.squareup.moshi.Json
+import java.text.NumberFormat
 
 data class Product(
     @Json(name = "id") val id: Int = 0,
@@ -9,4 +10,7 @@ data class Product(
     @Json(name = "description") val description: String = "",
     @Json(name = "category") val category: String = "",
     @Json(name = "image") val imageUrl: String = ""
-)
+) {
+
+    fun getFormattedPrice(): String = NumberFormat.getCurrencyInstance().format(price)
+}

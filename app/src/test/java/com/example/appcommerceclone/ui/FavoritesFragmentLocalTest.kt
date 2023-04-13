@@ -123,7 +123,9 @@ class FavoritesFragmentLocalTest {
             assertThat(favorites).isNotEmpty()
 
             val favoriteProduct = favorites.first()
-            onView(withId(R.id.product_favorite_name)).check(matches(withText(favoriteProduct.name)))
+            onView(withId(R.id.favorites_recycler_view))
+                .check(matches(atPosition(0, hasDescendant(withText(favoriteProduct.name)))))
+                .check(matches(atPosition(0, hasDescendant(withText(favoriteProduct.getFormattedPrice())))))
         }
     }
 
@@ -148,7 +150,7 @@ class FavoritesFragmentLocalTest {
             assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_login_fragment)
             assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.favorites_fragment)
 
-            onView(withId(R.id.product_favorite_remove_btn)).perform(click())
+            onView(withId(R.id.item_product_favorite_remove_btn)).perform(click())
 
             favorites = favoritesViewModel.favorites.getOrAwaitValue()
             assertThat(favorites).isEmpty()

@@ -34,7 +34,7 @@ class OrdersFragment(
         verifyUserExistsToProceed(userViewModel) { user ->
             processUnfinishedOrders(user)
             setupOrderRecycleView()
-            observeOrdersListChanges(user)
+            observeOrdersListChanges()
         }
     }
 
@@ -48,14 +48,13 @@ class OrdersFragment(
     }
 
     private fun setupOrderRecycleView() {
-        ordersAdapter = OrdersAdapter(userOrdersViewModel)
+        ordersAdapter = OrdersAdapter()
         binding.ordersRecyclerview.adapter = ordersAdapter
     }
 
-    private fun observeOrdersListChanges(user: User) {
+    private fun observeOrdersListChanges() {
         userOrdersViewModel.orders.observe(viewLifecycleOwner) { orders ->
-            if (orders.isEmpty()) userOrdersViewModel.refreshUserOrders(user.id)
-            ordersAdapter.submitList(orders)
+            if (orders.isNotEmpty()) ordersAdapter.submitList(orders)
         }
     }
 }

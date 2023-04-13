@@ -30,8 +30,9 @@
                     android:id="@+id/item_order_id"
                     style="@style/AppCommerce.TextAppearance.CardView.LeftToRight.Subtitle"
                     setOrderId="@{order}"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Order Id: 1"/>
@@ -40,10 +41,11 @@
                     android:id="@+id/item_order_date"
                     style="@style/AppCommerce.TextAppearance.CardView.LeftToRight.Subtitle"
                     setOrderDate="@{order}"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_size_small"
-                    app:layout_constraintStart_toStartOf="@+id/item_order_id"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/item_order_id"
                     tools:text="Date: 25/10/22"/>
 
@@ -51,10 +53,12 @@
                     android:id="@+id/item_order_products"
                     style="@style/AppCommerce.TextAppearance.CardView.LeftToRight.Subtitle"
                     setOrderProductsList="@{order}"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_size_small"
-                    app:layout_constraintStart_toStartOf="@+id/item_order_date"
+                    android:ellipsize="end"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/item_order_date"
                     tools:text="Products: Smart TV '50 4K, Home Theater Gold, Orthopedic chair"/>
 
@@ -62,11 +66,12 @@
                     android:id="@+id/item_order_total"
                     style="@style/AppCommerce.TextAppearance.CardView.LeftToRight.Subtitle"
                     setOrderTotalPrice="@{order}"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_size_small"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/item_order_products"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/item_order_products"
                     tools:text="Total: $6.436,20"/>
 

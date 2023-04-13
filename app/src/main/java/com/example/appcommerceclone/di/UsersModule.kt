@@ -46,11 +46,4 @@ object UsersModule {
         usersProvider: UsersProvider,
         dispatcherProvider: DispatcherProvider
     ): UserAuthenticator = DefaultUserAuthenticator(usersProvider, dispatcherProvider)
-
-    @Singleton
-    @Provides
-    fun provideUserOrders(
-        usersProvider: UsersProvider,
-        dispatcherProvider: DispatcherProvider
-    ): UserOrders = DefaultUserOrders(usersProvider, dispatcherProvider)
 }

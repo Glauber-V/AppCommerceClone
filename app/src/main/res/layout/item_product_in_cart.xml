@@ -25,8 +25,8 @@
                 android:padding="@dimen/margin_size_medium">
 
             <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/ordered_product_image"
-                    setProductImageFromUrl="@{orderedProduct.product.imageUrl}"
+                    android:id="@+id/item_product_in_cart_image"
+                    setProductImageFromUrl="@{orderedProduct.product}"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_marginStart="@dimen/margin_size_medium"
@@ -41,7 +41,7 @@
                     tools:src="@drawable/banner_men_s_clothing"/>
 
             <TextView
-                    android:id="@+id/ordered_product_name"
+                    android:id="@+id/item_product_in_cart_name"
                     style="@style/AppCommerce.TextAppearance.CardView.LeftToRight.Headline"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -50,24 +50,24 @@
                     android:layout_marginEnd="@dimen/margin_size_medium"
                     android:text="@{orderedProduct.product.name}"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/ordered_product_image"
+                    app:layout_constraintStart_toEndOf="@+id/item_product_in_cart_image"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:text="Product Name - Crafted with some premium material"/>
 
             <TextView
-                    android:id="@+id/ordered_product_price"
+                    android:id="@+id/item_product_in_cart_price"
                     style="@style/AppCommerce.TextAppearance.CardView.LeftToRight.Subtitle"
                     setOrderedProductPrice="@{orderedProduct}"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/margin_size_small"
-                    app:layout_constraintEnd_toEndOf="@+id/ordered_product_name"
-                    app:layout_constraintStart_toStartOf="@+id/ordered_product_name"
-                    app:layout_constraintTop_toBottomOf="@+id/ordered_product_name"
+                    app:layout_constraintEnd_toEndOf="@+id/item_product_in_cart_name"
+                    app:layout_constraintStart_toStartOf="@+id/item_product_in_cart_name"
+                    app:layout_constraintTop_toBottomOf="@+id/item_product_in_cart_name"
                     tools:text="R$ 29,90"/>
 
             <com.google.android.material.button.MaterialButton
-                    android:id="@+id/cart_decrease_quantity"
+                    android:id="@+id/item_product_in_cart_decrease_quantity_btn"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="@dimen/btn_min_height_size"
                     android:layout_height="@dimen/btn_min_height_size"
@@ -79,25 +79,25 @@
                     app:iconPadding="0dp"
                     app:iconTint="@color/icon_color_black"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="@+id/ordered_product_price"
-                    app:layout_constraintTop_toBottomOf="@+id/ordered_product_price"
+                    app:layout_constraintStart_toStartOf="@+id/item_product_in_cart_price"
+                    app:layout_constraintTop_toBottomOf="@+id/item_product_in_cart_price"
                     app:shapeAppearance="@style/AppCommerce.ShapeAppearance.Button.FullRounded"/>
 
             <TextView
-                    android:id="@+id/ordered_product_quantity"
+                    android:id="@+id/item_product_in_cart_quantity_text"
                     style="@style/AppCommerce.TextAppearance.Body"
-                    setProductQuantity="@{orderedProduct.quantity}"
+                    setProductQuantity="@{orderedProduct}"
                     android:layout_width="@dimen/btn_min_height_size"
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:textAlignment="gravity"
-                    app:layout_constraintBottom_toBottomOf="@id/cart_decrease_quantity"
-                    app:layout_constraintStart_toEndOf="@id/cart_decrease_quantity"
-                    app:layout_constraintTop_toTopOf="@id/cart_decrease_quantity"
+                    app:layout_constraintBottom_toBottomOf="@id/item_product_in_cart_decrease_quantity_btn"
+                    app:layout_constraintStart_toEndOf="@id/item_product_in_cart_decrease_quantity_btn"
+                    app:layout_constraintTop_toTopOf="@id/item_product_in_cart_decrease_quantity_btn"
                     tools:text="2"/>
 
             <com.google.android.material.button.MaterialButton
-                    android:id="@+id/cart_increase_quantity"
+                    android:id="@+id/item_product_in_cart_increase_quantity_btn"
                     android:layout_width="@dimen/btn_min_height_size"
                     android:layout_height="@dimen/btn_min_height_size"
                     android:contentDescription="@string/content_desc_item_cart_increase_btn"
@@ -106,9 +106,9 @@
                     app:iconGravity="textStart"
                     app:iconPadding="0dp"
                     app:iconTint="@color/white_100"
-                    app:layout_constraintBottom_toBottomOf="@id/ordered_product_quantity"
-                    app:layout_constraintStart_toEndOf="@id/ordered_product_quantity"
-                    app:layout_constraintTop_toTopOf="@+id/ordered_product_quantity"/>
+                    app:layout_constraintBottom_toBottomOf="@id/item_product_in_cart_quantity_text"
+                    app:layout_constraintStart_toEndOf="@id/item_product_in_cart_quantity_text"
+                    app:layout_constraintTop_toTopOf="@+id/item_product_in_cart_quantity_text"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
