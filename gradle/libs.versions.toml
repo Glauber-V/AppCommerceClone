@@ -1,0 +1,89 @@
+[versions]
+# Android
+androidGradlePlugin = "8.0.1"
+androidDesugarJdkLibs = "1.1.5"
+androidMaterial = "1.6.1"
+# AndroidX
+androidXCore = "1.8.0"
+androidXAppCompat = "1.4.0"
+androidXConstraintLayout = "2.1.4"
+androidXSwiperefreshLayout = "1.1.0"
+androidXlifecycle = "2.5.1"
+androidXNavigation = "2.5.2"
+androidXEspresso = "3.5.0-alpha07"
+androidXTestExtJunit = "1.1.3"
+androidXTestCore = "1.4.0"
+androidXArchCore = "2.1.0"
+# Kotlin
+kotlin = "1.6.21"
+kotlinxCoroutines = "1.6.1"
+ksp = "1.8.10-1.0.9"
+# Hilt
+hilt = "2.43.2"
+# Squareup
+moshi = "1.13.0"
+retrofit2 = "2.9.0"
+okhttp = "3.14.9"
+# Bumptech
+glide = "4.11.0"
+# Facebook
+facebookShimmer = "0.5.0"
+# Robolectric
+robolectric = "4.10"
+# Truth
+truth = "1.1.2"
+# JUnit
+junit = "4.13.2"
+
+[libraries]
+# Android
+android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
+android-material = { group = "com.google.android.material", name = "material", version.ref = "androidMaterial" }
+# AndroidX
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "androidXCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidXAppCompat" }
+androidx-constraint-layout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidXConstraintLayout" }
+androidx-swiperefresh-layout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "androidXSwiperefreshLayout" }
+androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidXlifecycle" }
+androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "androidXlifecycle" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "androidXNavigation" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "androidXNavigation" }
+androidx-navigation-testing = { group = "androidx.navigation", name = "navigation-testing", version.ref = "androidXNavigation" }
+androidx-test-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "androidXEspresso" }
+androidx-test-espresso-contrib = { group = "androidx.test.espresso", name = "espresso-contrib", version.ref = "androidXEspresso" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidXTestExtJunit" }
+androidx-test-core-ktx = { group = "androidx.test", name = "core-ktx", version.ref = "androidXTestCore" }
+androidx-arch-core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "androidXArchCore" }
+# kotlin
+kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+# Hilt
+hilt-android-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+# Squareup
+squareup-moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
+squareup-moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+squareup-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+squareup-retrofit2 = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit2" }
+squareup-retrofit2-conrverter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit2" }
+squareup-okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+# Bumptech
+bumptech-glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+# Facebook
+facebook-shimmer = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "facebookShimmer" }
+# Robolectric
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+# Truth
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+# JUnit
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }
+android-library = { id = "com.android.library", version.ref = "androidGradlePlugin" }
+android-kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "androidXNavigation" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
