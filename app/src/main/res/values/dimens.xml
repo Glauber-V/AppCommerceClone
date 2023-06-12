@@ -30,6 +30,10 @@
     <dimen name="chip_unchecked_stroke_width">1dp</dimen>
     <dimen name="chip_checked_stroke_width">2dp</dimen>
 
+    <dimen name="item_product_image_height">220dp</dimen>
+    <dimen name="item_product_title_height">40dp</dimen>
+    <dimen name="item_product_subtitle_height">30dp</dimen>
+
     <dimen name="elevation_small">4dp</dimen>
     <dimen name="elevation_medium">6dp</dimen>
     <dimen name="elevation_high">8dp</dimen>

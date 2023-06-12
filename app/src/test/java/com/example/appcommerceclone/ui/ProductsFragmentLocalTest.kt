@@ -1,24 +1,24 @@
 package com.example.appcommerceclone.ui
 
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.espresso.Espresso.onView
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.printToLog
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
-import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productMensClothing
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productWomensClothing
+import com.example.appcommerceclone.data.product.FakeProductsProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
-import com.example.appcommerceclone.ui.product.ProductsAdapter
-import com.example.appcommerceclone.ui.product.ProductsFragment
+import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.ui.product.ProductsScreenContent
 import com.example.appcommerceclone.util.*
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -37,7 +37,7 @@ import org.robolectric.annotation.Config
 import javax.inject.Inject
 
 @UninstallModules(ProductsModule::class, DispatcherModule::class)
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
@@ -47,139 +47,84 @@ class ProductsFragmentLocalTest {
     val hiltAndroidRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val testNavHostControllerRule = TestNavHostControllerRule(R.id.products_fragment)
-
-    @get:Rule(order = 2)
     val testMainDispatcherRule = TestMainDispatcherRule()
 
-    @Inject lateinit var productsRepository: ProductsRepository
-    @Inject lateinit var dispatcherProvider: DispatcherProvider
+    @get:Rule(order = 2)
+    val composeRule = createComposeRule()
 
-    private lateinit var navHostController: TestNavHostController
+    @Inject
+    lateinit var productsRepository: ProductsRepository
+
+    @Inject
+    lateinit var dispatcherProvider: DispatcherProvider
+
     private lateinit var productViewModel: ProductViewModel
-    private lateinit var factory: TestFragmentFactory
+    private lateinit var isDataLoaded: State<Boolean>
+    private lateinit var isLoading: State<Boolean>
+    private lateinit var products: State<List<Product>>
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
-        navHostController = testNavHostControllerRule.findTestNavHostController()
-        productViewModel = ProductViewModel(productsRepository, dispatcherProvider)
-        factory = TestFragmentFactory(productViewModelTest = productViewModel)
-    }
-
-    @Test
-    fun launchProductsFragment_verifyLayoutVisibility_verifyListIsNotEmpty() = runTest {
-
-        var products = productViewModel.products.getOrAwaitValue()
-        assertThat(products).isEmpty()
-
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            onView(withId(R.id.products_shimmer))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
-            advanceUntilIdle()
-
-            val isLoading = productViewModel.isLoading.getOrAwaitValue()
-            assertThat(isLoading).isFalse()
-
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(4)
-
-            onView(withId(R.id.products_shimmer))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+        showSemanticTreeInConsole()
+        composeRule.setContent {
+            productViewModel = ProductViewModel(productsRepository, dispatcherProvider)
+            isDataLoaded = productViewModel.isDataLoaded.observeAsState(initial = false)
+            isLoading = productViewModel.isLoading.observeAsState(initial = false)
+            products = productViewModel.products.observeAsState(initial = emptyList())
+            MaterialTheme {
+                ProductsScreenContent(
+                    isLoading = isLoading.value,
+                    products = products.value,
+                    onProductClicked = {}
+                )
+            }
         }
     }
 
     @Test
-    fun launchProductsFragment_reloadListWithSelectedCategory_verifySwipeToRefreshResetsList() = runTest {
+    fun onProductsScreenContent_loadProducts_verifyProductsAreVisible() = runTest {
 
-        var products = productViewModel.products.getOrAwaitValue()
-        assertThat(products).isEmpty()
+        assertThat(isDataLoaded.value).isFalse()
+        assertThat(products.value).isEmpty()
 
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
+        with(composeRule) {
 
-            onView(withId(R.id.products_shimmer))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            onRoot().printToLog("onProductScreen|NoData")
 
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
+            onNodeWithText(FakeProductsProvider.productJewelery.name).assertDoesNotExist()
+            onNodeWithText(FakeProductsProvider.productElectronic.name).assertDoesNotExist()
+            onNodeWithText(FakeProductsProvider.productMensClothing.name).assertDoesNotExist()
+            onNodeWithText(FakeProductsProvider.productWomensClothing.name).assertDoesNotExist()
 
-            advanceUntilIdle()
-
-            val isLoading = productViewModel.isLoading.getOrAwaitValue()
-            assertThat(isLoading).isFalse()
-
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(4)
-
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(atPosition(0, hasDescendant(withText(productJewelery.name)))))
-                .check(matches(atPosition(1, hasDescendant(withText(productElectronic.name)))))
-                .check(matches(atPosition(2, hasDescendant(withText(productMensClothing.name)))))
-                .check(matches(atPosition(3, hasDescendant(withText(productWomensClothing.name)))))
-
-            productViewModel.selectCategoryAndUpdateProductsList(CATEGORY_NAME_ELECTRONICS)
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(1)
-            assertThat(products.first().category).isEqualTo(CATEGORY_NAME_ELECTRONICS)
-
-            // This action won't have any effect while using robolectric:
-            // onView(withId(R.id.products_swipe_refresh_layout)).perform(swipeDown())
-            // https://stackoverflow.com/questions/55517269/android-espresso-testing-swiperefreshlayout-onrefresh-not-been-triggered-on-swip
             productViewModel.updateProductsList()
             advanceUntilIdle()
 
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(4)
-            assertThat(products).contains(productJewelery)
-            assertThat(products).contains(productElectronic)
-            assertThat(products).contains(productMensClothing)
-            assertThat(products).contains(productWomensClothing)
-        }
-    }
+            assertThat(isDataLoaded.value).isTrue()
+            assertThat(isLoading.value).isFalse()
+            assertThat(products.value).isNotEmpty()
+            assertThat(products.value).contains(FakeProductsProvider.productJewelery)
+            assertThat(products.value).contains(FakeProductsProvider.productElectronic)
+            assertThat(products.value).contains(FakeProductsProvider.productMensClothing)
+            assertThat(products.value).contains(FakeProductsProvider.productWomensClothing)
 
-    @Test
-    fun launchProductsFragment_clickOnProductFromTheList_navigateToProductDetailFragment() = runTest {
+            onRoot().printToLog("onProductScreen|WithData")
 
-        var products = productViewModel.products.getOrAwaitValue()
-        assertThat(products).isEmpty()
+            onNodeWithText(FakeProductsProvider.productJewelery.name)
+                .assertExists()
+                .assertIsDisplayed()
 
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            onNodeWithText(FakeProductsProvider.productElectronic.name)
+                .assertExists()
+                .assertIsDisplayed()
 
-            onView(withId(R.id.products_shimmer))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+            onNodeWithText(FakeProductsProvider.productMensClothing.name)
+                .assertExists()
+                .assertIsDisplayed()
 
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
-            advanceUntilIdle()
-
-            val isLoading = productViewModel.isLoading.getOrAwaitValue()
-            assertThat(isLoading).isFalse()
-
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(4)
-
-            onView(withId(R.id.products_recycler_view))
-                .perform(scrollToPosition<ProductsAdapter.ProductViewHolder>(0))
-
-            onView(withId(R.id.products_recycler_view))
-                .perform(actionOnItemAtPosition<ProductsAdapter.ProductViewHolder>(1, click()))
-
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.products_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.product_detail_fragment)
+            onNodeWithText(FakeProductsProvider.productWomensClothing.name)
+                .assertExists()
+                .assertIsDisplayed()
         }
     }
 }

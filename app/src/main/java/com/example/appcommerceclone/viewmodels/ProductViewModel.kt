@@ -21,13 +21,16 @@ class ProductViewModel @Inject constructor(
 
     private var _allProducts: List<Product> = emptyList()
 
+    private val _isDataLoaded = MutableLiveData(false)
+    val isDataLoaded: LiveData<Boolean> = _isDataLoaded
+
     private val _products = MutableLiveData<List<Product>>(mutableListOf())
     val products: LiveData<List<Product>> = _products
 
-    private val _selectedProduct = MutableLiveData<Product?>()
+    private val _selectedProduct = MutableLiveData<Product?>(null)
     val selectedProduct: LiveData<Product?> = _selectedProduct
 
-    private val _isLoading = MutableLiveData<Boolean>()
+    private val _isLoading = MutableLiveData(false)
     val isLoading: LiveData<Boolean> = _isLoading
 
 
@@ -36,6 +39,7 @@ class ProductViewModel @Inject constructor(
             _isLoading.value = true
             _allProducts = repository.loadProductsList()
             _products.value = prepareProductsList(_allProducts, categoryName)
+            _isDataLoaded.value = true
             _isLoading.value = false
         }
     }
@@ -62,12 +66,8 @@ class ProductViewModel @Inject constructor(
 
     fun checkIfShouldDisplayInFullDetailMode(product: Product): Boolean {
         return when (product.category) {
-            CATEGORY_NAME_ELECTRONICS -> {
-                false
-            }
-            CATEGORY_NAME_JEWELRY -> {
-                false
-            }
+            CATEGORY_NAME_ELECTRONICS -> false
+            CATEGORY_NAME_JEWELRY -> false
             else -> true
         }
     }

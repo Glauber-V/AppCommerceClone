@@ -4,79 +4,263 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Card
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.ViewCompositionStrategy.*
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.appcommerceclone.databinding.FragmentProductsBinding
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.example.appcommerceclone.R
+import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.ui.ShimmerItem
+import com.example.appcommerceclone.ui.shimmerEffect
+import com.example.appcommerceclone.util.exampleProductElectronic
+import com.example.appcommerceclone.util.exampleProductJewelry
+import com.example.appcommerceclone.util.exampleProductMensClothing
+import com.example.appcommerceclone.util.exampleProductWomensClothing
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProductsFragment(private val productViewModel: ProductViewModel) : Fragment(), SwipeRefreshLayout.OnRefreshListener {
-
-    private lateinit var binding: FragmentProductsBinding
-
-    private lateinit var productsAdapter: ProductsAdapter
-
+class ProductsFragment(private val productViewModel: ProductViewModel) : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentProductsBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.productsSwipeRefreshLayout.setOnRefreshListener(this)
-        setupProductsRecyclerView()
-        observeLoadingProcess()
-        observeProductsListChanges()
-    }
-
-
-    private fun setupProductsRecyclerView() {
-        productsAdapter = ProductsAdapter { product ->
-            productViewModel.selectProduct(product)
-            navigateToProductDetailFragment()
-        }
-        binding.productsRecyclerView.adapter = productsAdapter
-    }
-
-    private fun observeLoadingProcess() {
-        productViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) startShimmer()
-            else stopShimmer()
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                ProductsScreen(
+                    productViewModel = productViewModel,
+                    navHostController = findNavController()
+                )
+            }
         }
     }
+}
 
-    private fun observeProductsListChanges() {
-        productViewModel.products.observe(viewLifecycleOwner) { products ->
-            if (products.isEmpty()) productViewModel.updateProductsList()
-            else productsAdapter.submitList(products)
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ProductsScreen(
+    modifier: Modifier = Modifier,
+    productViewModel: ProductViewModel,
+    navHostController: NavController
+) {
+    val isDataLoaded by productViewModel.isDataLoaded.observeAsState(initial = false)
+    if (!isDataLoaded) productViewModel.updateProductsList()
+
+    val isLoading by productViewModel.isLoading.observeAsState(initial = false)
+    val products by productViewModel.products.observeAsState(initial = emptyList())
+
+    val isRefreshing by rememberSaveable { mutableStateOf(false) }
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = isRefreshing,
+        onRefresh = { productViewModel.updateProductsList() }
+    )
+
+    Box(modifier = modifier.pullRefresh(pullRefreshState)) {
+        ProductsScreenContent(
+            modifier = modifier,
+            isLoading = isLoading,
+            products = products,
+            onProductClicked = { product: Product ->
+                productViewModel.selectProduct(product)
+                val toDestination = ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
+                navHostController.navigate(toDestination)
+            }
+        )
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = pullRefreshState
+        )
+    }
+}
+
+@Composable
+fun ProductsScreenContent(
+    modifier: Modifier = Modifier,
+    isLoading: Boolean,
+    products: List<Product>,
+    onProductClicked: (Product) -> Unit
+) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(items = products) { product: Product ->
+            ShimmerItem(
+                isLoading = isLoading,
+                placeHolderContent = {
+                    ProductItemWithShimmer()
+                },
+                contentAfterLoading = {
+                    ProductItem(
+                        product = product,
+                        onProductClicked = { onProductClicked(product) }
+                    )
+                }
+            )
         }
     }
+}
 
-
-    private fun startShimmer() {
-        binding.productsShimmer.startShimmer()
-        binding.productsShimmer.visibility = View.VISIBLE
-        binding.productsSwipeRefreshLayout.visibility = View.GONE
+@OptIn(ExperimentalMaterialApi::class)
+@Composable
+fun ProductItem(
+    modifier: Modifier = Modifier,
+    product: Product,
+    onProductClicked: () -> Unit
+) {
+    Card(
+        onClick = onProductClicked,
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(R.dimen.padding_small)),
+        shape = RoundedCornerShape(dimensionResource(R.dimen.corner_size_small)),
+    ) {
+        Column(
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val paddingValues = PaddingValues(
+                top = dimensionResource(id = R.dimen.padding_small),
+                start = dimensionResource(id = R.dimen.padding_medium),
+                end = dimensionResource(id = R.dimen.padding_medium)
+            )
+            AsyncImage(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = R.dimen.item_product_image_height)),
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(product.imageUrl)
+                    .placeholder(R.drawable.place_holder)
+                    .error(R.drawable.ic_baseline_broken_image_24)
+                    .build(),
+                contentDescription = null
+            )
+            Text(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .height(dimensionResource(id = R.dimen.item_product_title_height))
+                    .padding(paddingValues),
+                text = product.name,
+                textAlign = TextAlign.Justify,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.h6
+            )
+            Text(
+                modifier = modifier
+                    .height(dimensionResource(id = R.dimen.item_product_subtitle_height))
+                    .padding(paddingValues),
+                text = product.getFormattedPrice(),
+                textAlign = TextAlign.Justify,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.subtitle1
+            )
+        }
     }
+}
 
-    private fun stopShimmer() {
-        binding.productsShimmer.stopShimmer()
-        binding.productsShimmer.visibility = View.GONE
-        binding.productsSwipeRefreshLayout.visibility = View.VISIBLE
-        binding.productsSwipeRefreshLayout.isRefreshing = false
+@Composable
+fun ProductItemWithShimmer(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(id = R.dimen.padding_small)),
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        val paddingValues = PaddingValues(
+            top = dimensionResource(id = R.dimen.padding_small),
+            start = dimensionResource(id = R.dimen.padding_medium),
+            end = dimensionResource(id = R.dimen.padding_medium)
+        )
+        Box(
+            modifier = modifier
+                .height(dimensionResource(id = R.dimen.item_product_image_height))
+                .fillMaxWidth()
+                .padding(paddingValues)
+                .shimmerEffect()
+        )
+        Box(
+            modifier = modifier
+                .height(dimensionResource(id = R.dimen.item_product_title_height))
+                .fillMaxWidth()
+                .padding(paddingValues)
+                .shimmerEffect()
+        )
+        Box(
+            modifier = modifier
+                .height(dimensionResource(id = R.dimen.item_product_subtitle_height))
+                .fillMaxWidth()
+                .padding(paddingValues)
+                .shimmerEffect()
+        )
     }
+}
 
-
-    private fun navigateToProductDetailFragment() {
-        val toDestination = ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
-        findNavController().navigate(toDestination)
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun PreviewProductsScreenContent() {
+    MaterialTheme {
+        ProductsScreenContent(
+            isLoading = false,
+            products = listOf(
+                exampleProductJewelry,
+                exampleProductElectronic,
+                exampleProductMensClothing,
+                exampleProductWomensClothing
+            ),
+            onProductClicked = {}
+        )
     }
+}
 
-    override fun onRefresh() {
-        productViewModel.updateProductsList()
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun PreviewProductsScreenContentWhileLoading() {
+    MaterialTheme {
+        ProductsScreenContent(
+            isLoading = true,
+            products = listOf(
+                exampleProductJewelry,
+                exampleProductElectronic,
+                exampleProductMensClothing,
+                exampleProductWomensClothing
+            ),
+            onProductClicked = {}
+        )
     }
 }
