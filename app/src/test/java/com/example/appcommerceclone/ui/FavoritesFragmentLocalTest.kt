@@ -1,30 +1,30 @@
 package com.example.appcommerceclone.ui
 
-import androidx.fragment.app.FragmentFactory
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.activity.ComponentActivity
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onAllNodesWithContentDescription
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.printToLog
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
+import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
 import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
-import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
-import com.example.appcommerceclone.data.user.UserAuthenticator
-import com.example.appcommerceclone.di.DispatcherModule
-import com.example.appcommerceclone.di.UsersModule
+import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productMensClothing
+import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productWomensClothing
+import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.favorites.FavoritesAdapter.*
-import com.example.appcommerceclone.ui.favorites.FavoritesFragment
+import com.example.appcommerceclone.ui.favorites.FavoritesScreen
 import com.example.appcommerceclone.util.*
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
-import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
 import org.junit.Before
 import org.junit.Rule
@@ -32,10 +32,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import javax.inject.Inject
 
-@UninstallModules(UsersModule::class, DispatcherModule::class)
-@ExperimentalCoroutinesApi
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
@@ -45,115 +42,45 @@ class FavoritesFragmentLocalTest {
     val hiltAndroidRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val testNavHostControllerRule = TestNavHostControllerRule(R.id.favorites_fragment)
+    val composeAndroidRule = createAndroidComposeRule<ComponentActivity>()
 
-    @get:Rule(order = 2)
-    val testMainDispatcherRule = TestMainDispatcherRule()
-
-    @Inject lateinit var userAuthenticator: UserAuthenticator
-    @Inject lateinit var dispatcherProvider: DispatcherProvider
-
-    private lateinit var navHostController: TestNavHostController
-    private lateinit var userViewModel: UserViewModel
     private lateinit var favoritesViewModel: FavoritesViewModel
-    private lateinit var factory: FragmentFactory
+    private lateinit var favoriteProducts: State<List<Product>>
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
-        navHostController = testNavHostControllerRule.findTestNavHostController()
-        userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
-        favoritesViewModel = FavoritesViewModel()
-        factory = TestFragmentFactory(userViewModelTest = userViewModel, favoritesViewModelTest = favoritesViewModel)
-    }
-
-    @Test
-    fun launchFavoritesFragment_noUser_navigateToUserLoginFragment() = runTest {
-
-        val user = userViewModel.loggedUser.getOrAwaitValue()
-        assertThat(user).isNull()
-
-        launchFragmentInHiltContainer<FavoritesFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.favorites_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+        showSemanticTreeInConsole()
+        composeAndroidRule.setContent {
+            favoritesViewModel = FavoritesViewModel().apply {
+                addToFavorites(productJewelery)
+                addToFavorites(productElectronic)
+                addToFavorites(productMensClothing)
+                addToFavorites(productWomensClothing)
+            }
+            favoriteProducts = favoritesViewModel.favorites.observeAsState(initial = emptyList())
+            FavoritesScreen(
+                favoriteProducts = favoriteProducts.value,
+                onRemoveFavoriteProduct = { product: Product ->
+                    favoritesViewModel.removeFromFavorites(product)
+                }
+            )
         }
     }
 
     @Test
-    fun launchFavoritesFragment_withUser_stayInFavoritesFragment() = runTest {
+    fun onFavoriteScreen_removeFavoriteProduct_verifyProductWasRemoved() {
 
-        userViewModel.login(username = firstUser.username, password = firstUser.password)
-        advanceUntilIdle()
+        assertThat(favoriteProducts.value).hasSize(4)
 
-        val user = userViewModel.loggedUser.getOrAwaitValue()
-        assertThat(user).isNotNull()
-        assertThat(user).isEqualTo(firstUser)
+        with(composeAndroidRule) {
+            onRoot().printToLog("onFavoriteScreen")
 
-        launchFragmentInHiltContainer<FavoritesFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            onAllNodesWithContentDescription(getStringResource(R.string.content_desc_remove_from_favorites_btn))
+                .onFirst()
+                .performClick()
 
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_login_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.favorites_fragment)
-        }
-    }
-
-    @Test
-    fun launchFavoritesFragment_witUser_verifyListIsNotEmpty() = runTest {
-
-        userViewModel.login(username = firstUser.username, password = firstUser.password)
-        advanceUntilIdle()
-
-        val user = userViewModel.loggedUser.getOrAwaitValue()
-        assertThat(user).isNotNull()
-        assertThat(user).isEqualTo(firstUser)
-
-        favoritesViewModel.addToFavorites(productJewelery)
-
-        var favorites = favoritesViewModel.favorites.getOrAwaitValue()
-        assertThat(favorites).isNotEmpty()
-        assertThat(favorites).hasSize(1)
-        assertThat(favorites).contains(productJewelery)
-
-        launchFragmentInHiltContainer<FavoritesFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_login_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.favorites_fragment)
-
-            favorites = favoritesViewModel.favorites.getOrAwaitValue()
-            assertThat(favorites).isNotEmpty()
-
-            val favoriteProduct = favorites.first()
-            onView(withId(R.id.favorites_recycler_view))
-                .check(matches(atPosition(0, hasDescendant(withText(favoriteProduct.name)))))
-                .check(matches(atPosition(0, hasDescendant(withText(favoriteProduct.getFormattedPrice())))))
-        }
-    }
-
-    @Test
-    fun launchFavoritesFragment_withUser_removeFavoriteProduct() = runTest {
-
-        userViewModel.login(username = firstUser.username, password = firstUser.password)
-        advanceUntilIdle()
-
-        val user = userViewModel.loggedUser.getOrAwaitValue()
-        assertThat(user).isNotNull()
-        assertThat(user).isEqualTo(firstUser)
-
-        favoritesViewModel.addToFavorites(productJewelery)
-
-        var favorites = favoritesViewModel.favorites.getOrAwaitValue()
-        assertThat(favorites).isNotEmpty()
-        assertThat(favorites).contains(productJewelery)
-
-        launchFragmentInHiltContainer<FavoritesFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_login_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.favorites_fragment)
-
-            onView(withId(R.id.item_product_favorite_remove_btn)).perform(click())
-
-            favorites = favoritesViewModel.favorites.getOrAwaitValue()
-            assertThat(favorites).isEmpty()
+            assertThat(favoriteProducts.value).hasSize(3)
         }
     }
 }

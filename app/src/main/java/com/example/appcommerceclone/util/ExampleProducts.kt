@@ -34,3 +34,10 @@ val exampleProductWomensClothing = baseExampleProduct.copy(
     price = 7.95,
     category = Constants.CATEGORY_NAME_WOMENS_CLOTHING,
 )
+
+val exampleProductsList = listOf(
+    exampleProductJewelry,
+    exampleProductElectronic,
+    exampleProductMensClothing,
+    exampleProductWomensClothing
+)
