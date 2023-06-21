@@ -12,7 +12,6 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.product.FakeProductsProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
@@ -92,10 +91,10 @@ class ProductsFragmentLocalTest {
 
             onRoot().printToLog("onProductScreen|NoData")
 
-            onNodeWithText(FakeProductsProvider.productJewelery.name).assertDoesNotExist()
-            onNodeWithText(FakeProductsProvider.productElectronic.name).assertDoesNotExist()
-            onNodeWithText(FakeProductsProvider.productMensClothing.name).assertDoesNotExist()
-            onNodeWithText(FakeProductsProvider.productWomensClothing.name).assertDoesNotExist()
+            onNodeWithText(productJewelry.name).assertDoesNotExist()
+            onNodeWithText(productElectronic.name).assertDoesNotExist()
+            onNodeWithText(productMensClothing.name).assertDoesNotExist()
+            onNodeWithText(productWomensClothing.name).assertDoesNotExist()
 
             productViewModel.updateProductsList()
             advanceUntilIdle()
@@ -103,26 +102,26 @@ class ProductsFragmentLocalTest {
             assertThat(isDataLoaded.value).isTrue()
             assertThat(isLoading.value).isFalse()
             assertThat(products.value).isNotEmpty()
-            assertThat(products.value).contains(FakeProductsProvider.productJewelery)
-            assertThat(products.value).contains(FakeProductsProvider.productElectronic)
-            assertThat(products.value).contains(FakeProductsProvider.productMensClothing)
-            assertThat(products.value).contains(FakeProductsProvider.productWomensClothing)
+            assertThat(products.value).contains(productJewelry)
+            assertThat(products.value).contains(productElectronic)
+            assertThat(products.value).contains(productMensClothing)
+            assertThat(products.value).contains(productWomensClothing)
 
             onRoot().printToLog("onProductScreen|WithData")
 
-            onNodeWithText(FakeProductsProvider.productJewelery.name)
+            onNodeWithText(productJewelry.name)
                 .assertExists()
                 .assertIsDisplayed()
 
-            onNodeWithText(FakeProductsProvider.productElectronic.name)
+            onNodeWithText(productElectronic.name)
                 .assertExists()
                 .assertIsDisplayed()
 
-            onNodeWithText(FakeProductsProvider.productMensClothing.name)
+            onNodeWithText(productMensClothing.name)
                 .assertExists()
                 .assertIsDisplayed()
 
-            onNodeWithText(FakeProductsProvider.productWomensClothing.name)
+            onNodeWithText(productWomensClothing.name)
                 .assertExists()
                 .assertIsDisplayed()
         }

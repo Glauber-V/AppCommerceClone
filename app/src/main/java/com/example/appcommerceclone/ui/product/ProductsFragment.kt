@@ -46,10 +46,10 @@ import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.common.ShimmerItem
 import com.example.appcommerceclone.ui.common.shimmerEffect
-import com.example.appcommerceclone.util.exampleProductElectronic
-import com.example.appcommerceclone.util.exampleProductJewelry
-import com.example.appcommerceclone.util.exampleProductMensClothing
-import com.example.appcommerceclone.util.exampleProductWomensClothing
+import com.example.appcommerceclone.util.productElectronic
+import com.example.appcommerceclone.util.productJewelry
+import com.example.appcommerceclone.util.productMensClothing
+import com.example.appcommerceclone.util.productWomensClothing
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -238,10 +238,10 @@ fun PreviewProductsScreenContent() {
         ProductsScreenContent(
             isLoading = false,
             products = listOf(
-                exampleProductJewelry,
-                exampleProductElectronic,
-                exampleProductMensClothing,
-                exampleProductWomensClothing
+                productJewelry,
+                productElectronic,
+                productMensClothing,
+                productWomensClothing
             ),
             onProductClicked = {}
         )
@@ -255,10 +255,10 @@ fun PreviewProductsScreenContentWhileLoading() {
         ProductsScreenContent(
             isLoading = true,
             products = listOf(
-                exampleProductJewelry,
-                exampleProductElectronic,
-                exampleProductMensClothing,
-                exampleProductWomensClothing
+                productJewelry,
+                productElectronic,
+                productMensClothing,
+                productWomensClothing
             ),
             onProductClicked = {}
         )

@@ -3,14 +3,14 @@ package com.example.appcommerceclone.viewmodels
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.dispatcher.FakeDispatcherProvider
 import com.example.appcommerceclone.data.product.FakeProductsProvider
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productMensClothing
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productWomensClothing
 import com.example.appcommerceclone.data.product.FakeProductsRepository
 import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
 import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.getOrAwaitValue
+import com.example.appcommerceclone.util.productElectronic
+import com.example.appcommerceclone.util.productJewelry
+import com.example.appcommerceclone.util.productMensClothing
+import com.example.appcommerceclone.util.productWomensClothing
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -58,7 +58,7 @@ class ProductViewModelTest {
 
         val products = productViewModel.products.getOrAwaitValue()
         assertThat(products.size).isEqualTo(4)
-        assertThat(products).contains(productJewelery)
+        assertThat(products).contains(productJewelry)
         assertThat(products).contains(productElectronic)
         assertThat(products).contains(productMensClothing)
         assertThat(products).contains(productWomensClothing)
@@ -66,18 +66,18 @@ class ProductViewModelTest {
 
     @Test
     fun selectProduct_confirmSelectedProduct() {
-        productViewModel.selectProduct(productJewelery)
+        productViewModel.selectProduct(productJewelry)
 
         val selectedProduct = productViewModel.selectedProduct.getOrAwaitValue()
-        assertThat(selectedProduct).isEqualTo(productJewelery)
+        assertThat(selectedProduct).isEqualTo(productJewelry)
     }
 
     @Test
     fun selectProduct_onSelectedProductFinish_selectedProductsIsNull() {
-        productViewModel.selectProduct(productJewelery)
+        productViewModel.selectProduct(productJewelry)
 
         var selectedProduct = productViewModel.selectedProduct.getOrAwaitValue()
-        assertThat(selectedProduct).isEqualTo(productJewelery)
+        assertThat(selectedProduct).isEqualTo(productJewelry)
 
         productViewModel.onSelectedProductFinish()
 

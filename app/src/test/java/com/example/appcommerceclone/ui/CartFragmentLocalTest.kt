@@ -14,12 +14,13 @@ import androidx.compose.ui.test.onParent
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToLog
-import androidx.test.core.app.ApplicationProvider.*
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
 import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.ui.cart.CartScreen
-import com.example.appcommerceclone.util.*
+import com.example.appcommerceclone.util.formatPrice
+import com.example.appcommerceclone.util.getStringResource
+import com.example.appcommerceclone.util.productJewelry
+import com.example.appcommerceclone.util.showSemanticTreeInConsole
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -73,7 +74,7 @@ class CartFragmentLocalTest {
 
         assertThat(cartProducts.value).isEmpty()
 
-        cartViewModel.addToCart(productJewelery)
+        cartViewModel.addToCart(productJewelry)
         assertThat(cartProducts.value).isNotEmpty()
         assertThat(cartProducts.value).hasSize(1)
 
@@ -101,8 +102,8 @@ class CartFragmentLocalTest {
 
         assertThat(cartProducts.value).isEmpty()
 
-        cartViewModel.addToCart(productJewelery)
-        cartViewModel.addToCart(productJewelery)
+        cartViewModel.addToCart(productJewelry)
+        cartViewModel.addToCart(productJewelry)
 
         assertThat(cartProducts.value).isNotEmpty()
         assertThat(cartProducts.value).hasSize(1)
@@ -131,7 +132,7 @@ class CartFragmentLocalTest {
 
         assertThat(cartProducts.value).isEmpty()
 
-        cartViewModel.addToCart(productJewelery)
+        cartViewModel.addToCart(productJewelry)
         assertThat(cartProducts.value).isNotEmpty()
         assertThat(cartProducts.value).hasSize(1)
 
@@ -151,9 +152,6 @@ class CartFragmentLocalTest {
                 .performClick()
 
             assertThat(cartProducts.value).isEmpty()
-        }
-        with(composeAndroidRule) {
-            onRoot().printToLog("onCartScreen|RemoveOrderedProduct")
         }
     }
 }

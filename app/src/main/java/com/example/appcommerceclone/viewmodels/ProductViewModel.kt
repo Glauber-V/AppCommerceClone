@@ -64,7 +64,7 @@ class ProductViewModel @Inject constructor(
         _products.value = prepareProductsList(_allProducts, categoryName)
     }
 
-    fun checkIfShouldDisplayInFullDetailMode(product: Product): Boolean {
+    fun showMoreOptions(product: Product): Boolean {
         return when (product.category) {
             CATEGORY_NAME_ELECTRONICS -> false
             CATEGORY_NAME_JEWELRY -> false

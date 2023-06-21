@@ -1,9 +1,9 @@
 package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
 import com.example.appcommerceclone.util.getOrAwaitValue
+import com.example.appcommerceclone.util.productElectronic
+import com.example.appcommerceclone.util.productJewelry
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -23,36 +23,36 @@ class FavoritesViewModelTest {
 
     @Test
     fun addProductToFavoriteList_returnTrueIfProductWasAdded() {
-        favoritesViewModel.addToFavorites(productJewelery)
+        favoritesViewModel.addToFavorites(productJewelry)
 
         val favorites = favoritesViewModel.favorites.getOrAwaitValue()
-        assertThat(favorites).contains(productJewelery)
+        assertThat(favorites).contains(productJewelry)
     }
 
     @Test
     fun removeProductFromFavoriteList_returnTrueIfProductWasRemoved() {
-        favoritesViewModel.addToFavorites(productJewelery)
+        favoritesViewModel.addToFavorites(productJewelry)
 
         var favorites = favoritesViewModel.favorites.getOrAwaitValue()
-        assertThat(favorites).contains(productJewelery)
+        assertThat(favorites).contains(productJewelry)
 
-        favoritesViewModel.removeFromFavorites(productJewelery)
+        favoritesViewModel.removeFromFavorites(productJewelry)
 
         favorites = favoritesViewModel.favorites.getOrAwaitValue()
-        assertThat(favorites).doesNotContain(productJewelery)
+        assertThat(favorites).doesNotContain(productJewelry)
     }
 
     @Test
     fun removeAllProductsFromTheList_favoritesListShouldBeEmpty() {
-        favoritesViewModel.addToFavorites(productJewelery)
+        favoritesViewModel.addToFavorites(productJewelry)
         favoritesViewModel.addToFavorites(productElectronic)
 
         var favorites = favoritesViewModel.favorites.getOrAwaitValue()
         assertThat(favorites).isNotEmpty()
-        assertThat(favorites).contains(productJewelery)
+        assertThat(favorites).contains(productJewelry)
         assertThat(favorites).contains(productElectronic)
 
-        favoritesViewModel.removeFromFavorites(productJewelery)
+        favoritesViewModel.removeFromFavorites(productJewelry)
         favoritesViewModel.removeFromFavorites(productElectronic)
 
         favorites = favoritesViewModel.favorites.getOrAwaitValue()

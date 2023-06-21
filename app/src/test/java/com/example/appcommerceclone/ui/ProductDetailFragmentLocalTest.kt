@@ -1,6 +1,7 @@
 package com.example.appcommerceclone.ui
 
 import androidx.activity.ComponentActivity
+import androidx.compose.material.MaterialTheme
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -14,7 +15,6 @@ import androidx.test.espresso.assertion.ViewAssertions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
@@ -62,27 +62,24 @@ class ProductDetailFragmentLocalTest {
     }
 
     @Test
-    fun onProductDetailScreen_notInFullDetail_verifyTransaction() {
-        val product = productElectronic
-        productViewModel.selectProduct(product)
-
-        val isShowInFullMode = productViewModel.checkIfShouldDisplayInFullDetailMode(product)
-        assertThat(isShowInFullMode).isFalse()
+    fun onProductDetailScreen_noOptions_verifyTransaction() {
 
         var transactionStatus = false
 
         with(composeRule) {
             setContent {
-                ProductDetailScreen(
-                    product = product,
-                    isShowFullDetail = isShowInFullMode,
-                    onAddToFavorites = { },
-                    onBuyNow = { transactionStatus = true },
-                    onAddToCart = { }
-                )
+                MaterialTheme {
+                    ProductDetailScreen(
+                        product = productElectronic,
+                        showOptions = productViewModel.showMoreOptions(productElectronic),
+                        onAddToFavorites = { },
+                        onBuyNow = { transactionStatus = true },
+                        onAddToCart = { }
+                    )
+                }
             }
 
-            onRoot().printToLog("onProductDetailScreen|NotInFullMode")
+            onRoot().printToLog("onProductDetailScreen|NoOptions")
 
             onNodeWithText(getStringResource(R.string.product_detail_buy_now))
                 .assertExists()

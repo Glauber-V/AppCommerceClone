@@ -1,11 +1,11 @@
 package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productMensClothing
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productWomensClothing
 import com.example.appcommerceclone.util.getOrAwaitValue
+import com.example.appcommerceclone.util.productElectronic
+import com.example.appcommerceclone.util.productJewelry
+import com.example.appcommerceclone.util.productMensClothing
+import com.example.appcommerceclone.util.productWomensClothing
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -26,7 +26,7 @@ class CartViewModelTest {
     @Test
     fun increaseOrderedProductQuantity_verifyQuantityIsEqualTo2() {
 
-        val product = productJewelery
+        val product = productJewelry
         cartViewModel.addToCart(product)
 
         val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
@@ -38,7 +38,7 @@ class CartViewModelTest {
 
     @Test
     fun increaseOrderedProductQuantity_byAddingTheSameProductTwice_verifyQuantityIsEqualTo2() {
-        val product = productJewelery
+        val product = productJewelry
         cartViewModel.addToCart(product)
         cartViewModel.addToCart(product)
 
@@ -98,7 +98,7 @@ class CartViewModelTest {
         var cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
         assertThat(cartProducts).isEmpty()
 
-        cartViewModel.addToCart(productJewelery)
+        cartViewModel.addToCart(productJewelry)
         cartViewModel.addToCart(productElectronic)
         cartViewModel.addToCart(productMensClothing)
         cartViewModel.addToCart(productWomensClothing)

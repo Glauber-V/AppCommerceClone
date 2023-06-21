@@ -13,17 +13,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.selection.toggleable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -57,9 +57,6 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.role
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,7 +66,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.product.Product
-import com.example.appcommerceclone.util.exampleProductMensClothing
+import com.example.appcommerceclone.util.productMensClothing
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.ProductViewModel
@@ -102,9 +99,8 @@ class ProductDetailFragment(
             setContent {
                 val selectedProduct by productViewModel.selectedProduct.observeAsState(initial = null)
                 selectedProduct?.let { product: Product ->
-                    val showInFullDetailMode = productViewModel.checkIfShouldDisplayInFullDetailMode(product)
                     ProductDetailScreen(
-                        isShowFullDetail = showInFullDetailMode,
+                        showOptions = productViewModel.showMoreOptions(product),
                         product = product,
                         onAddToFavorites = {
                             favoritesViewModel.addToFavorites(product)
@@ -130,7 +126,7 @@ class ProductDetailFragment(
 fun ProductDetailScreen(
     modifier: Modifier = Modifier,
     product: Product,
-    isShowFullDetail: Boolean,
+    showOptions: Boolean,
     onAddToFavorites: () -> Unit,
     onBuyNow: () -> Unit,
     onAddToCart: () -> Unit
@@ -142,55 +138,56 @@ fun ProductDetailScreen(
 
     var selectedColor by rememberSaveable { mutableStateOf(Colors.NONE) }
     var selectedSize by rememberSaveable { mutableStateOf(Sizes.NONE) }
-    val canProceed = if (isShowFullDetail) selectedColor != Colors.NONE && selectedSize != Sizes.NONE else true
+    val canProceed = if (showOptions) selectedColor != Colors.NONE && selectedSize != Sizes.NONE else true
 
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
     ) { contentPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(contentPadding)
-                .verticalScroll(state = verticaScrollState),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            ProductDetails(
-                modifier = Modifier.padding(
-                    top = dimensionResource(id = R.dimen.padding_large),
-                    start = dimensionResource(id = R.dimen.padding_large),
-                    end = dimensionResource(id = R.dimen.padding_large)
-                ),
-                product = product,
-                onAddToFavorites = onAddToFavorites
-            )
-            ProductOptions(
-                modifier = Modifier.padding(
-                    top = dimensionResource(id = R.dimen.padding_large),
-                    start = dimensionResource(id = R.dimen.padding_large),
-                    end = dimensionResource(id = R.dimen.padding_large)
-                ),
-                isShowFullDetail = isShowFullDetail,
-                selectedColor = selectedColor,
-                onSelectedColorChange = { selectedColor = it },
-                selectedSize = selectedSize,
-                onSelectedSizeChange = { selectedSize = it }
-            )
-            PurchaseActions(
-                modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
-                canProceed = canProceed,
-                onProceedFailed = {
-                    snackBarScope.launch {
-                        snackbarHostState.showSnackbar(
-                            message = context.createSnackbarMessage(selectedColor, selectedSize)
-                        )
-                    }
-                },
-                onAddToCart = onAddToCart,
-                onBuyNow = onBuyNow
-            )
+        Column(modifier = modifier.verticalScroll(state = verticaScrollState)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(contentPadding),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ProductDetails(
+                    modifier = Modifier.padding(
+                        top = dimensionResource(id = R.dimen.padding_large),
+                        start = dimensionResource(id = R.dimen.padding_large),
+                        end = dimensionResource(id = R.dimen.padding_large)
+                    ),
+                    product = product,
+                    onAddToFavorites = onAddToFavorites
+                )
+                ProductOptions(
+                    modifier = Modifier.padding(
+                        top = dimensionResource(id = R.dimen.padding_large),
+                        start = dimensionResource(id = R.dimen.padding_large),
+                        end = dimensionResource(id = R.dimen.padding_large)
+                    ),
+                    isShowFullDetail = showOptions,
+                    selectedColor = selectedColor,
+                    onSelectedColorChange = { selectedColor = it },
+                    selectedSize = selectedSize,
+                    onSelectedSizeChange = { selectedSize = it }
+                )
+                PurchaseActions(
+                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
+                    canProceed = canProceed,
+                    onProceedFailed = {
+                        snackBarScope.launch {
+                            snackbarHostState.showSnackbar(
+                                message = context.createSnackbarMessage(selectedColor, selectedSize)
+                            )
+                        }
+                    },
+                    onAddToCart = onAddToCart,
+                    onBuyNow = onBuyNow
+                )
+            }
         }
     }
 }
@@ -364,6 +361,7 @@ fun SizeChipGroup(
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun ProductDetailChip(
     modifier: Modifier = Modifier,
@@ -374,10 +372,10 @@ fun ProductDetailChip(
     chipContent: @Composable (() -> Unit)? = null
 ) {
     Surface(
+        checked = isSelected,
+        onCheckedChange = onChipSelected,
         modifier = modifier
-            .semantics { role = Role.Checkbox }
-            .toggleable(value = isSelected, onValueChange = onChipSelected)
-            .sizeIn(minHeight = 48.dp, minWidth = 48.dp)
+            .size(48.dp)
             .padding(dimensionResource(id = R.dimen.padding_small)),
         shape = shape,
         color = backGroundColor,
@@ -472,8 +470,8 @@ fun Context.createSnackbarMessage(selectedColor: Colors, selectedSize: Sizes): S
 fun PreviewProductDetailScreenContent() {
     MaterialTheme {
         ProductDetailScreen(
-            isShowFullDetail = true,
-            product = exampleProductMensClothing,
+            showOptions = true,
+            product = productMensClothing,
             onAddToFavorites = { },
             onBuyNow = { },
             onAddToCart = { }

@@ -7,16 +7,11 @@ import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productMensClothing
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productWomensClothing
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.data.user.UserAuthenticator
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.model.order.Order
-import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.ui.order.OrdersAdapter.*
 import com.example.appcommerceclone.ui.order.OrdersFragment
 import com.example.appcommerceclone.util.*
@@ -117,15 +112,7 @@ class OrdersFragmentLocalTest {
         var orders = userOrdersViewModel.orders.getOrAwaitValue()
         assertThat(orders).isEmpty()
 
-        val orderedProducts = mutableListOf(
-            OrderedProduct(product = productJewelery, quantity = 4),
-            OrderedProduct(product = productElectronic, quantity = 6),
-            OrderedProduct(product = productWomensClothing, quantity = 2),
-            OrderedProduct(product = productMensClothing, quantity = 1)
-        )
-
-        val finalPrice = orderedProducts.sumOf { it.product.price * it.quantity }
-        val order1 = Order(orderedProducts = orderedProducts, total = finalPrice)
+        val order1 = Order(orderedProducts = orderedProductList, total = orderedProductList.getTotalPrice())
         val order2 = order1.copy()
 
         userOrdersViewModel.processOrder(order1, user!!.id)

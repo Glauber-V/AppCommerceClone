@@ -48,8 +48,8 @@ import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.ui.common.DoubleActionButton
-import com.example.appcommerceclone.util.exampleOrderedProductList
 import com.example.appcommerceclone.util.formatPrice
+import com.example.appcommerceclone.util.orderedProductList
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -277,7 +277,7 @@ fun CartProductItem(
 fun PreviewCartScreen() {
     MaterialTheme {
         CartScreen(
-            cartProducts = exampleOrderedProductList,
+            cartProducts = orderedProductList,
             onQuantityIncrease = { },
             onQuantityDecrease = { },
             cartTotalPrice = "R$ 39.99",
