@@ -6,28 +6,30 @@ import androidx.lifecycle.ViewModel
 import com.example.appcommerceclone.model.order.Order
 import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.util.getTotalPrice
 import dagger.hilt.android.lifecycle.HiltViewModel
-import java.text.NumberFormat
 import javax.inject.Inject
 
 @HiltViewModel
 class CartViewModel @Inject constructor() : ViewModel() {
 
-    private var order = Order()
-
-    private val _cartProducts = MutableLiveData(order.orderedProducts)
+    private val _cartProducts = MutableLiveData<MutableList<OrderedProduct>>(mutableListOf())
     val cartProducts: LiveData<MutableList<OrderedProduct>> = _cartProducts
 
     private var _cartTotalPrice = MutableLiveData(0.0)
     val cartTotalPrice: LiveData<Double> = _cartTotalPrice
 
 
+    private fun updateTotalPrice() {
+        _cartTotalPrice.value = _cartProducts.value?.getTotalPrice() ?: 0.0
+    }
+
     fun addToCart(product: Product) {
-        isProductAlreadyInCart(product).also { orderedProduct ->
-            orderedProduct?.apply {
-                increaseQuantity(this)
-                return
-            }
+        _cartProducts.value?.firstOrNull { orderedProduct ->
+            orderedProduct.product == product
+        }?.let {
+            increaseQuantity(it)
+            return
         }
 
         val newOrderedProduct = OrderedProduct(product)
@@ -35,15 +37,6 @@ class CartViewModel @Inject constructor() : ViewModel() {
         _cartProducts.value?.add(newOrderedProduct)
         updateTotalPrice()
     }
-
-    private fun isProductAlreadyInCart(product: Product): OrderedProduct? {
-        var result: OrderedProduct? = null
-        _cartProducts.value?.forEach { orderedProduct ->
-            if (product.id == orderedProduct.id) result = orderedProduct
-        }
-        return result
-    }
-
 
     fun increaseQuantity(orderedProduct: OrderedProduct) {
         orderedProduct.quantity += 1
@@ -56,32 +49,12 @@ class CartViewModel @Inject constructor() : ViewModel() {
         updateTotalPrice()
     }
 
-
-    private fun updateTotalPrice() {
-        var totalPrice = 0.0
-        _cartProducts.value?.forEach { orderedProduct ->
-            totalPrice += orderedProduct.product.price * orderedProduct.quantity
-        }
-        _cartTotalPrice.value = totalPrice
+    fun createOrder(orderedProduct: List<OrderedProduct>): Order {
+        return Order(
+            orderedProducts = orderedProduct,
+            total = orderedProduct.getTotalPrice()
+        ).also { abandonCart() }
     }
-
-    fun getFormattedTotalPrice(totalPrice: Double): String {
-        return NumberFormat.getCurrencyInstance().format(totalPrice)
-    }
-
-
-    fun createOrder(): Order {
-        order.orderedProducts = _cartProducts.value!!
-        order.total = _cartTotalPrice.value!!
-        return order
-    }
-
-    fun onOrderDispatched() {
-        order = Order()
-        _cartProducts.value = mutableListOf()
-        updateTotalPrice()
-    }
-
 
     fun abandonCart() {
         _cartProducts.value = mutableListOf()

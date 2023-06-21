@@ -1,34 +1,37 @@
 package com.example.appcommerceclone.ui
 
-import androidx.navigation.testing.TestNavHostController
+import androidx.activity.ComponentActivity
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.filterToOne
+import androidx.compose.ui.test.hasContentDescription
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onChildren
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onParent
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.printToLog
 import androidx.test.core.app.ApplicationProvider.*
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
-import com.example.appcommerceclone.ui.cart.CartFragment
+import com.example.appcommerceclone.model.order.OrderedProduct
+import com.example.appcommerceclone.ui.cart.CartScreen
 import com.example.appcommerceclone.util.*
 import com.example.appcommerceclone.viewmodels.CartViewModel
-import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import org.hamcrest.Matchers.*
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowDialog
 
-@ExperimentalCoroutinesApi
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
@@ -38,191 +41,119 @@ class CartFragmentLocalTest {
     val hiltAndroidRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val testNavHostControllerRule = TestNavHostControllerRule(R.id.cart_fragment)
+    val composeAndroidRule = createAndroidComposeRule<ComponentActivity>()
 
-    private lateinit var navHostController: TestNavHostController
     private lateinit var cartViewModel: CartViewModel
-    private lateinit var userOrdersViewModel: UserOrdersViewModel
-    private lateinit var factory: TestFragmentFactory
+    private lateinit var cartProducts: State<List<OrderedProduct>>
+    private lateinit var cartTotalPrice: State<Double>
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
-        navHostController = testNavHostControllerRule.findTestNavHostController()
-        cartViewModel = CartViewModel()
-        userOrdersViewModel = UserOrdersViewModel()
-        factory = TestFragmentFactory(
-            cartViewModelTest = cartViewModel,
-            userOrdersViewModelTest = userOrdersViewModel
-        )
+        showSemanticTreeInConsole()
+        composeAndroidRule.setContent {
+            cartViewModel = CartViewModel()
+            cartProducts = cartViewModel.cartProducts.observeAsState(initial = emptyList())
+            cartTotalPrice = cartViewModel.cartTotalPrice.observeAsState(initial = 0.0)
+            MaterialTheme {
+                CartScreen(
+                    cartProducts = cartProducts.value,
+                    onQuantityIncrease = { cartViewModel.increaseQuantity(it) },
+                    onQuantityDecrease = { cartViewModel.decreaseQuantity(it) },
+                    cartTotalPrice = cartTotalPrice.value.formatPrice(),
+                    onAbandonCart = { cartViewModel.abandonCart() },
+                    onConfirmPurchase = { }
+                )
+            }
+        }
     }
 
     @Test
-    fun launchCartFragment_clickIncreaseQuantityBtn_verifyCartWasUpdatedCorrectly() {
+    fun onCartScreen_clickIncreaseQuantityBtn_verifyCartWasUpdatedCorrectly() {
+
+        assertThat(cartProducts.value).isEmpty()
 
         cartViewModel.addToCart(productJewelery)
+        assertThat(cartProducts.value).isNotEmpty()
+        assertThat(cartProducts.value).hasSize(1)
 
-        val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-        assertThat(cartProducts).isNotEmpty()
-        assertThat(cartProducts).hasSize(1)
+        with(composeAndroidRule) {
 
-        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            onRoot().printToLog("onCartScreen|IncreaseQuantity")
 
-            val orderedProduct = cartProducts.first()
+            val orderedProduct = cartProducts.value.first()
             assertThat(orderedProduct.quantity).isEqualTo(1)
 
-            onView(withId(R.id.item_product_in_cart_increase_quantity_btn)).perform(click())
+            onNodeWithText(orderedProduct.product.name)
+                .assertExists()
+                .assertIsDisplayed()
+                .onParent()
+                .onChildren()
+                .filterToOne(hasContentDescription(getStringResource(R.string.content_desc_item_cart_increase_btn)))
+                .performClick()
+
+            assertThat(orderedProduct.quantity).isEqualTo(2)
+        }
+    }
+
+    @Test
+    fun onCartScreen_clickDecreaseQuantityBtn_verifyCartWasUpdatedCorrectly() {
+
+        assertThat(cartProducts.value).isEmpty()
+
+        cartViewModel.addToCart(productJewelery)
+        cartViewModel.addToCart(productJewelery)
+
+        assertThat(cartProducts.value).isNotEmpty()
+        assertThat(cartProducts.value).hasSize(1)
+
+        with(composeAndroidRule) {
+
+            onRoot().printToLog("onCartScreen|DecreaseQuantity")
+
+            val orderedProduct = cartProducts.value.first()
             assertThat(orderedProduct.quantity).isEqualTo(2)
 
-            onView(withId(R.id.cart_recycler_view))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.product.name)))))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.quantity.toString())))))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.getFormattedPrice())))))
+            onNodeWithText(orderedProduct.product.name)
+                .assertExists()
+                .assertIsDisplayed()
+                .onParent()
+                .onChildren()
+                .filterToOne(hasContentDescription(getStringResource(R.string.content_desc_item_cart_decrease_btn)))
+                .performClick()
+
+            assertThat(orderedProduct.quantity).isEqualTo(1)
         }
     }
 
     @Test
-    fun launchCartFragment_clickDecreaseQuantityBtn_verifyCartWasUpdatedCorrectly() {
+    fun onCartScreen_clickDecreaseQuantityBtn_whenQuantityIs1_verifyCartWasUpdatedCorrectly() {
+
+        assertThat(cartProducts.value).isEmpty()
 
         cartViewModel.addToCart(productJewelery)
+        assertThat(cartProducts.value).isNotEmpty()
+        assertThat(cartProducts.value).hasSize(1)
 
-        val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-        assertThat(cartProducts).isNotEmpty()
-        assertThat(cartProducts).hasSize(1)
+        with(composeAndroidRule) {
 
-        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            onRoot().printToLog("onCartScreen|RemoveProduct")
 
-            val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
+            val orderedProduct = cartProducts.value.first()
             assertThat(orderedProduct.quantity).isEqualTo(1)
 
-            onView(withId(R.id.item_product_in_cart_increase_quantity_btn)).perform(click())
-            assertThat(orderedProduct.quantity).isEqualTo(2)
+            onNodeWithText(orderedProduct.product.name)
+                .assertExists()
+                .assertIsDisplayed()
+                .onParent()
+                .onChildren()
+                .filterToOne(hasContentDescription(getStringResource(R.string.content_desc_item_cart_decrease_btn)))
+                .performClick()
 
-            onView(withId(R.id.cart_recycler_view))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.product.name)))))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.quantity.toString())))))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.getFormattedPrice())))))
-
-            onView(withId(R.id.item_product_in_cart_decrease_quantity_btn)).perform(click())
-            assertThat(orderedProduct.quantity).isEqualTo(1)
-
-            onView(withId(R.id.cart_recycler_view))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.product.name)))))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.quantity.toString())))))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.getFormattedPrice())))))
+            assertThat(cartProducts.value).isEmpty()
         }
-    }
-
-    @Test
-    fun launchCartFragment_clickDecreaseQuantityBtn_whenQuantityIs1_verifyCartWasUpdatedCorrectly() {
-
-        cartViewModel.addToCart(productJewelery)
-
-        var cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-        assertThat(cartProducts).isNotEmpty()
-        assertThat(cartProducts).hasSize(1)
-
-        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
-            assertThat(orderedProduct.quantity).isEqualTo(1)
-
-            onView(withId(R.id.cart_recycler_view))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.product.name)))))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.quantity.toString())))))
-                .check(matches(atPosition(0, hasDescendant(withText(orderedProduct.getFormattedPrice())))))
-
-            onView(withId(R.id.item_product_in_cart_decrease_quantity_btn)).perform(click())
-
-            cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-            assertThat(cartProducts).isEmpty()
-
-            onView(withId(R.id.cart_recycler_view))
-                .check(matches(not(atPosition(0, hasDescendant(withText(orderedProduct.product.name))))))
-                .check(matches(not(atPosition(0, hasDescendant(withText(orderedProduct.quantity.toString()))))))
-                .check(matches(not(atPosition(0, hasDescendant(withText(orderedProduct.getFormattedPrice()))))))
-        }
-    }
-
-    @Test
-    fun launchCartFragment_clickAbandonCart_whenCartIsEmpty_navigateUp() {
-
-        val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-        assertThat(cartProducts).isEmpty()
-
-        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
-
-            onView(withId(R.id.cart_cancel_purchase_btn)).perform(click())
-
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.cart_fragment)
-        }
-    }
-
-    @Test
-    fun launchCartFragment_clickConfirmPurchase_whenCartIsEmpty_navigateToOrdersFragment() {
-
-        val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-        assertThat(cartProducts).isEmpty()
-
-        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
-
-            onView(withId(R.id.cart_confirm_purchase_btn)).perform(click())
-
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
-        }
-    }
-
-    @Test
-    fun launchCartFragment_clickConfirmPurchase_whenCartIsNotEmpty_navigateToOrdersFragment() {
-
-        cartViewModel.addToCart(productJewelery)
-
-        val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-        assertThat(cartProducts).isNotEmpty()
-        assertThat(cartProducts).hasSize(1)
-
-        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.cart_fragment)
-
-            onView(withId(R.id.cart_confirm_purchase_btn)).perform(click())
-
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.cart_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.orders_fragment)
-        }
-    }
-
-    @Test
-    fun launchCartFragment_clickAbandonCart_whenCartIsNotEmpty_alertDialogShouldBeVisible() {
-
-        cartViewModel.addToCart(productJewelery)
-
-        var cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-        assertThat(cartProducts).isNotEmpty()
-        assertThat(cartProducts).hasSize(1)
-
-        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-            assertThat(cartProducts).isNotEmpty()
-
-            onView(withId(R.id.cart_cancel_purchase_btn)).perform(click())
-
-            val dialog = ShadowDialog.getLatestDialog()
-            assertTrue(dialog.isShowing)
-
-            onView(withText(R.string.cart_dialog_title))
-                .inRoot(isDialog())
-                .check(matches(isDisplayed()))
-
-            onView(withId(R.id.cart_dialog_positive)).perform(click())
-
-            cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-            assertThat(cartProducts).isEmpty()
+        with(composeAndroidRule) {
+            onRoot().printToLog("onCartScreen|RemoveOrderedProduct")
         }
     }
 }

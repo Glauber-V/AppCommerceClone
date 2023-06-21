@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.ui
+package com.example.appcommerceclone.ui.common
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable

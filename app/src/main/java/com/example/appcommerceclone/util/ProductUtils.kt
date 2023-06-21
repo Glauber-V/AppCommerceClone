@@ -1,5 +1,6 @@
 package com.example.appcommerceclone.util
 
+import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.model.product.Product
 
 val baseExampleProduct = Product(
@@ -40,4 +41,16 @@ val exampleProductsList = listOf(
     exampleProductElectronic,
     exampleProductMensClothing,
     exampleProductWomensClothing
+)
+
+val exampleOrderedProductJewelery = OrderedProduct(product = exampleProductJewelry, quantity = 1)
+val exampleOrderedProductElectronic = OrderedProduct(product = exampleProductElectronic, quantity = 1)
+val exampleOrderedProductMensClothing = OrderedProduct(product = exampleProductMensClothing, quantity = 1)
+val exampleOrderedProductWomensClothing = OrderedProduct(product = exampleProductWomensClothing, quantity = 1)
+
+val exampleOrderedProductList = listOf(
+    exampleOrderedProductJewelery,
+    exampleOrderedProductElectronic,
+    exampleOrderedProductMensClothing,
+    exampleOrderedProductWomensClothing
 )

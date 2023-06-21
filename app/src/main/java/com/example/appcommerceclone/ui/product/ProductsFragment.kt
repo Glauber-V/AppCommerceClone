@@ -44,8 +44,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.product.Product
-import com.example.appcommerceclone.ui.ShimmerItem
-import com.example.appcommerceclone.ui.shimmerEffect
+import com.example.appcommerceclone.ui.common.ShimmerItem
+import com.example.appcommerceclone.ui.common.shimmerEffect
 import com.example.appcommerceclone.util.exampleProductElectronic
 import com.example.appcommerceclone.util.exampleProductJewelry
 import com.example.appcommerceclone.util.exampleProductMensClothing
