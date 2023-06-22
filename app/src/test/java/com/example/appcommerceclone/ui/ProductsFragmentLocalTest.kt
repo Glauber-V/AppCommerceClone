@@ -96,7 +96,7 @@ class ProductsFragmentLocalTest {
             onNodeWithText(productMensClothing.name).assertDoesNotExist()
             onNodeWithText(productWomensClothing.name).assertDoesNotExist()
 
-            productViewModel.updateProductsList()
+            productViewModel.updateProductList()
             advanceUntilIdle()
 
             assertThat(isDataLoaded.value).isTrue()

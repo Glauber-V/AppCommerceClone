@@ -2,6 +2,7 @@ package com.example.appcommerceclone.util
 
 import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.viewmodels.ProductCategories
 
 val baseExampleProduct = Product(
     description = "Product crafted by specialists in the industry. Satisfaction guaranteed. " +
@@ -12,28 +13,28 @@ val productJewelry = baseExampleProduct.copy(
     id = 10,
     name = "Solid Gold Petite Micro",
     price = 168.00,
-    category = Constants.CATEGORY_NAME_JEWELRY,
+    category = ProductCategories.JEWELERY.categoryName,
 )
 
 val productElectronic = baseExampleProduct.copy(
     id = 20,
     name = "Sandisk SSD Plus ITB - SATA III 6Gb/s",
     price = 109.00,
-    category = Constants.CATEGORY_NAME_ELECTRONICS,
+    category = ProductCategories.ELECTRONICS.categoryName,
 )
 
 val productMensClothing = baseExampleProduct.copy(
     id = 30,
     name = "Casual Premium Slim",
     price = 22.30,
-    category = Constants.CATEGORY_NAME_MENS_CLOTHING,
+    category = ProductCategories.MENS_CLOTHING.categoryName,
 )
 
 val productWomensClothing = baseExampleProduct.copy(
     id = 40,
     name = "Short Sleeve Moisture",
     price = 7.95,
-    category = Constants.CATEGORY_NAME_WOMENS_CLOTHING,
+    category = ProductCategories.WOMENS_CLOTHING.categoryName,
 )
 
 val productsList = listOf(

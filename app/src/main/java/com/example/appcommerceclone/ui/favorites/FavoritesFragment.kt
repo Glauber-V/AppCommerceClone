@@ -4,19 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -44,6 +40,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.util.productsList
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
@@ -100,16 +97,7 @@ fun FavoriteProductItem(
     product: Product,
     onRemoveFavoriteProduct: (Product) -> Unit
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.padding_small)),
-        shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-        border = BorderStroke(
-            width = dimensionResource(id = R.dimen.stroke_size_small),
-            color = colorResource(id = R.color.stroke_color_dark)
-        )
-    ) {
+    LeftToRightCard(modifier) {
         Row(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
             horizontalArrangement = Arrangement.Start,

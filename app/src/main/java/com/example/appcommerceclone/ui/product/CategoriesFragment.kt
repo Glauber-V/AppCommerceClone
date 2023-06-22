@@ -4,40 +4,106 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.example.appcommerceclone.databinding.FragmentCategoriesBinding
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_JEWELRY
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_MENS_CLOTHING
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_WOMENS_CLOTHING
+import androidx.navigation.findNavController
+import com.example.appcommerceclone.R
+import com.example.appcommerceclone.ui.common.LeftToRightCard
+import com.example.appcommerceclone.viewmodels.ProductCategories
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class CategoriesFragment(private val productViewModel: ProductViewModel) : Fragment() {
 
-    private lateinit var binding: FragmentCategoriesBinding
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentCategoriesBinding.inflate(inflater, container, false)
-        return binding.root
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                CategoriesScreen { selectedProductCategory: ProductCategories ->
+                    productViewModel.filterProductList(selectedProductCategory)
+                    findNavController().navigateUp()
+                }
+            }
+        }
     }
+}
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        binding.productCategoryAll.setOnClickListener { selectCategoryAndNavigateBack("") }
-        binding.productCategoryElectronics.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_ELECTRONICS) }
-        binding.productCategoryJewelery.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_JEWELRY) }
-        binding.productCategoryMensClothing.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_MENS_CLOTHING) }
-        binding.productCategoryWomensClothing.setOnClickListener { selectCategoryAndNavigateBack(CATEGORY_NAME_WOMENS_CLOTHING) }
+@Composable
+fun CategoriesScreen(
+    modifier: Modifier = Modifier,
+    onProductCategorySelected: (ProductCategories) -> Unit
+) {
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.Start
+    ) {
+        ProductCategoryItem(
+            name = stringResource(id = R.string.category_name_jewelery),
+            productCategory = ProductCategories.JEWELERY,
+            onProductCategorySelected = { onProductCategorySelected(it) }
+        )
+        ProductCategoryItem(
+            name = stringResource(id = R.string.category_name_electronics),
+            productCategory = ProductCategories.ELECTRONICS,
+            onProductCategorySelected = { onProductCategorySelected(it) }
+        )
+        ProductCategoryItem(
+            name = stringResource(id = R.string.category_name_mens_clothing),
+            productCategory = ProductCategories.MENS_CLOTHING,
+            onProductCategorySelected = { onProductCategorySelected(it) }
+        )
+        ProductCategoryItem(
+            name = stringResource(id = R.string.category_name_women_s_clothing),
+            productCategory = ProductCategories.WOMENS_CLOTHING,
+            onProductCategorySelected = { onProductCategorySelected(it) }
+        )
     }
+}
 
+@Composable
+fun ProductCategoryItem(
+    modifier: Modifier = Modifier,
+    name: String,
+    productCategory: ProductCategories,
+    onProductCategorySelected: (ProductCategories) -> Unit
+) {
+    LeftToRightCard(
+        onClick = { onProductCategorySelected(productCategory) },
+        modifier = modifier.height(65.dp)
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                modifier = Modifier.padding(start = 40.dp),
+                text = name,
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.h6
+            )
+        }
+    }
+}
 
-    private fun selectCategoryAndNavigateBack(categoryName: String) {
-        productViewModel.selectCategoryAndUpdateProductsList(categoryName)
-        findNavController().navigateUp()
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun PreviewCategoriesScreen() {
+    MaterialTheme {
+        CategoriesScreen {}
     }
 }

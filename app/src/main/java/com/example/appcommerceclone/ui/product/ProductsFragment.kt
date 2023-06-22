@@ -50,6 +50,7 @@ import com.example.appcommerceclone.util.productElectronic
 import com.example.appcommerceclone.util.productJewelry
 import com.example.appcommerceclone.util.productMensClothing
 import com.example.appcommerceclone.util.productWomensClothing
+import com.example.appcommerceclone.viewmodels.ProductCategories
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -77,7 +78,7 @@ fun ProductsScreen(
     navHostController: NavController
 ) {
     val isDataLoaded by productViewModel.isDataLoaded.observeAsState(initial = false)
-    if (!isDataLoaded) productViewModel.updateProductsList()
+    if (!isDataLoaded) productViewModel.updateProductList()
 
     val isLoading by productViewModel.isLoading.observeAsState(initial = false)
     val products by productViewModel.products.observeAsState(initial = emptyList())
@@ -85,7 +86,12 @@ fun ProductsScreen(
     val isRefreshing by rememberSaveable { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { productViewModel.updateProductsList() }
+        onRefresh = {
+            with(productViewModel) {
+                if (!isDataLoaded) updateProductList()
+                filterProductList(ProductCategories.NONE)
+            }
+        }
     )
 
     Box(modifier = modifier.pullRefresh(pullRefreshState)) {

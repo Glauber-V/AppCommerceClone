@@ -1,5 +1,6 @@
 package com.example.appcommerceclone.viewmodels
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -7,11 +8,32 @@ import androidx.lifecycle.viewModelScope
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.model.product.Product
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_JEWELRY
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+enum class ProductCategories(val categoryName: String) {
+    NONE(""),
+    JEWELERY("jewelery"),
+    ELECTRONICS("electronics"),
+    MENS_CLOTHING("men's clothing"),
+    WOMENS_CLOTHING("women's clothing")
+}
+
+enum class ProductColors(val color: Color) {
+    NONE(Color.Transparent),
+    YELLOW(Color(0xFFFFC107)),
+    BLUE(Color(0xFF03A9F4)),
+    GREEN(Color(0xFF8BC34A))
+}
+
+enum class ProductSizes(val size: String) {
+    NONE(""),
+    P("P"),
+    M("M"),
+    G("G"),
+    GG("GG")
+}
 
 @HiltViewModel
 class ProductViewModel @Inject constructor(
@@ -34,22 +56,27 @@ class ProductViewModel @Inject constructor(
     val isLoading: LiveData<Boolean> = _isLoading
 
 
-    fun updateProductsList(categoryName: String = "") {
+    fun updateProductList() {
         viewModelScope.launch(dispatcherProvider.main) {
             _isLoading.value = true
             _allProducts = repository.loadProductsList()
-            _products.value = prepareProductsList(_allProducts, categoryName)
+            _products.value = _allProducts
             _isDataLoaded.value = true
             _isLoading.value = false
         }
     }
 
-
-    private fun prepareProductsList(productList: List<Product>, categoryName: String): List<Product> {
-        return if (categoryName.isEmpty()) productList
-        else productList.filter { it.category == categoryName }
+    fun filterProductList(category: ProductCategories) {
+        _products.value = _allProducts.filter { it.category == category.categoryName }
     }
 
+    fun showMoreOptions(product: Product): Boolean {
+        return when (product.category) {
+            ProductCategories.JEWELERY.categoryName -> false
+            ProductCategories.ELECTRONICS.categoryName -> false
+            else -> true
+        }
+    }
 
     fun selectProduct(product: Product) {
         _selectedProduct.value = product
@@ -57,18 +84,5 @@ class ProductViewModel @Inject constructor(
 
     fun onSelectedProductFinish() {
         _selectedProduct.value = null
-    }
-
-
-    fun selectCategoryAndUpdateProductsList(categoryName: String) {
-        _products.value = prepareProductsList(_allProducts, categoryName)
-    }
-
-    fun showMoreOptions(product: Product): Boolean {
-        return when (product.category) {
-            CATEGORY_NAME_ELECTRONICS -> false
-            CATEGORY_NAME_JEWELRY -> false
-            else -> true
-        }
     }
 }

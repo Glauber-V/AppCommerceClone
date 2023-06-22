@@ -4,7 +4,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.dispatcher.FakeDispatcherProvider
 import com.example.appcommerceclone.data.product.FakeProductsProvider
 import com.example.appcommerceclone.data.product.FakeProductsRepository
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
 import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.getOrAwaitValue
 import com.example.appcommerceclone.util.productElectronic
@@ -43,17 +42,19 @@ class ProductViewModelTest {
 
     @Test
     fun updateProductsList_withCategorySelected_verifyAllProductsHaveSameCategory() = runTest {
-        productViewModel.updateProductsList(CATEGORY_NAME_ELECTRONICS)
+        productViewModel.updateProductList()
         advanceUntilIdle()
+
+        productViewModel.filterProductList(ProductCategories.ELECTRONICS)
 
         val products = productViewModel.products.getOrAwaitValue()
         assertThat(products.size).isEqualTo(1)
-        assertThat(products.first().category).isEqualTo(CATEGORY_NAME_ELECTRONICS)
+        assertThat(products.first().category).isEqualTo(ProductCategories.ELECTRONICS.categoryName)
     }
 
     @Test
     fun updateProductsList_noCategorySelected_verifyAllProductsHaveSameCategory() = runTest {
-        productViewModel.updateProductsList()
+        productViewModel.updateProductList()
         advanceUntilIdle()
 
         val products = productViewModel.products.getOrAwaitValue()

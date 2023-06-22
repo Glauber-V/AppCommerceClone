@@ -1,8 +1,8 @@
 package com.example.appcommerceclone.di
 
+import com.example.appcommerceclone.data.FAKE_STORE_API_URL
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.*
-import com.example.appcommerceclone.util.Constants.FAKE_STORE_API_URL
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module

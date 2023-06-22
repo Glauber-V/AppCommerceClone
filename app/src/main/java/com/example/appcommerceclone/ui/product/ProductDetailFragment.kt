@@ -69,23 +69,10 @@ import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.util.productMensClothing
 import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
+import com.example.appcommerceclone.viewmodels.ProductColors
+import com.example.appcommerceclone.viewmodels.ProductSizes
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import kotlinx.coroutines.launch
-
-enum class Colors(val color: Color) {
-    NONE(Color.Transparent),
-    YELLOW(Color(0xFFFFC107)),
-    BLUE(Color(0xFF03A9F4)),
-    GREEN(Color(0xFF8BC34A))
-}
-
-enum class Sizes(val size: String) {
-    NONE(""),
-    P("P"),
-    M("M"),
-    G("G"),
-    GG("GG")
-}
 
 class ProductDetailFragment(
     private val productViewModel: ProductViewModel,
@@ -136,9 +123,9 @@ fun ProductDetailScreen(
     val snackBarScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    var selectedColor by rememberSaveable { mutableStateOf(Colors.NONE) }
-    var selectedSize by rememberSaveable { mutableStateOf(Sizes.NONE) }
-    val canProceed = if (showOptions) selectedColor != Colors.NONE && selectedSize != Sizes.NONE else true
+    var selectedColor by rememberSaveable { mutableStateOf(ProductColors.NONE) }
+    var selectedSize by rememberSaveable { mutableStateOf(ProductSizes.NONE) }
+    val canProceed = if (showOptions) selectedColor != ProductColors.NONE && selectedSize != ProductSizes.NONE else true
 
     Scaffold(
         snackbarHost = {
@@ -261,10 +248,10 @@ fun ProductDetails(
 fun ProductOptions(
     modifier: Modifier = Modifier,
     isShowFullDetail: Boolean,
-    selectedColor: Colors,
-    onSelectedColorChange: (Colors) -> Unit,
-    selectedSize: Sizes,
-    onSelectedSizeChange: (Sizes) -> Unit
+    selectedColor: ProductColors,
+    onSelectedColorChange: (ProductColors) -> Unit,
+    selectedSize: ProductSizes,
+    onSelectedSizeChange: (ProductSizes) -> Unit
 ) {
     if (isShowFullDetail) {
         Column(
@@ -303,22 +290,22 @@ fun ProductOptions(
 @Composable
 fun ColorChipGroup(
     modifier: Modifier = Modifier,
-    selectedColor: Colors,
-    onSelectedColorChange: (Colors) -> Unit
+    selectedColor: ProductColors,
+    onSelectedColorChange: (ProductColors) -> Unit
 ) {
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        items(Colors.values()) { colorOption ->
-            if (colorOption != Colors.NONE) {
+        items(ProductColors.values()) { colorOption ->
+            if (colorOption != ProductColors.NONE) {
                 ProductDetailChip(
                     modifier = Modifier.testTag(colorOption.name),
                     isSelected = colorOption == selectedColor,
                     onChipSelected = { isChipSelected ->
                         if (isChipSelected) onSelectedColorChange(colorOption)
-                        else onSelectedColorChange(Colors.NONE)
+                        else onSelectedColorChange(ProductColors.NONE)
                     },
                     backGroundColor = colorOption.color
                 )
@@ -330,23 +317,23 @@ fun ColorChipGroup(
 @Composable
 fun SizeChipGroup(
     modifier: Modifier = Modifier,
-    selectedSize: Sizes,
-    onSelectedSizeChange: (Sizes) -> Unit
+    selectedSize: ProductSizes,
+    onSelectedSizeChange: (ProductSizes) -> Unit
 ) {
     LazyRow(
         modifier = modifier,
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        items(Sizes.values()) { sizeOption ->
-            if (sizeOption != Sizes.NONE) {
+        items(ProductSizes.values()) { sizeOption ->
+            if (sizeOption != ProductSizes.NONE) {
                 ProductDetailChip(
                     modifier = Modifier.testTag(sizeOption.name),
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
                     isSelected = sizeOption == selectedSize,
                     onChipSelected = { isChipSelected ->
                         if (isChipSelected) onSelectedSizeChange(sizeOption)
-                        else onSelectedSizeChange(Sizes.NONE)
+                        else onSelectedSizeChange(ProductSizes.NONE)
                     },
                     chipContent = {
                         Text(
@@ -457,10 +444,10 @@ fun PurchaseActions(
     }
 }
 
-fun Context.createSnackbarMessage(selectedColor: Colors, selectedSize: Sizes): String {
-    if (selectedColor == Colors.NONE && selectedSize == Sizes.NONE) return getString(R.string.product_detail_chip_color_and_size_warning)
-    if (selectedColor == Colors.NONE) return getString(R.string.product_detail_chip_color_warning)
-    if (selectedSize == Sizes.NONE) return getString(R.string.product_detail_chip_size_warning)
+fun Context.createSnackbarMessage(selectedColor: ProductColors, selectedSize: ProductSizes): String {
+    if (selectedColor == ProductColors.NONE && selectedSize == ProductSizes.NONE) return getString(R.string.product_detail_chip_color_and_size_warning)
+    if (selectedColor == ProductColors.NONE) return getString(R.string.product_detail_chip_color_warning)
+    if (selectedSize == ProductSizes.NONE) return getString(R.string.product_detail_chip_size_warning)
 
     return ""
 }
