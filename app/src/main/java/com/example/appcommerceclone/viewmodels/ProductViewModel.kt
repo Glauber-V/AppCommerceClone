@@ -58,6 +58,7 @@ class ProductViewModel @Inject constructor(
 
     fun updateProductList() {
         viewModelScope.launch(dispatcherProvider.main) {
+            _isDataLoaded.value = false
             _isLoading.value = true
             _allProducts = repository.loadProductsList()
             _products.value = _allProducts

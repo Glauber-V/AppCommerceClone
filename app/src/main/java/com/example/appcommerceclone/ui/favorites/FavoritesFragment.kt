@@ -41,7 +41,7 @@ import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.common.LeftToRightCard
-import com.example.appcommerceclone.util.productsList
+import com.example.appcommerceclone.util.productList
 import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -153,7 +153,7 @@ fun FavoriteProductItem(
 fun PreviewFavoritesScreen() {
     MaterialTheme {
         FavoritesScreen(
-            favoriteProducts = productsList,
+            favoriteProducts = productList,
             onRemoveFavoriteProduct = {}
         )
     }

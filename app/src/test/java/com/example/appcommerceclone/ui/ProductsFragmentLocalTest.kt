@@ -16,8 +16,9 @@ import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.model.product.Product
-import com.example.appcommerceclone.ui.product.ProductsScreenContent
+import com.example.appcommerceclone.ui.product.ProductsScreen
 import com.example.appcommerceclone.util.*
+import com.example.appcommerceclone.viewmodels.ProductCategories
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -72,8 +73,11 @@ class ProductsFragmentLocalTest {
             isLoading = productViewModel.isLoading.observeAsState(initial = false)
             products = productViewModel.products.observeAsState(initial = emptyList())
             MaterialTheme {
-                ProductsScreenContent(
+                ProductsScreen(
+                    onLoadData = { productViewModel.updateProductList() },
+                    onRefresh = { productViewModel.filterProductList(ProductCategories.NONE) },
                     isLoading = isLoading.value,
+                    isDataLoaded = isDataLoaded.value,
                     products = products.value,
                     onProductClicked = {}
                 )
@@ -82,32 +86,27 @@ class ProductsFragmentLocalTest {
     }
 
     @Test
-    fun onProductsScreenContent_loadProducts_verifyProductsAreVisible() = runTest {
-
-        assertThat(isDataLoaded.value).isFalse()
-        assertThat(products.value).isEmpty()
+    fun onProductsScreen_verifyProductsAreVisible() = runTest {
 
         with(composeRule) {
 
-            onRoot().printToLog("onProductScreen|NoData")
+            assertThat(isLoading.value).isTrue()
+            assertThat(isDataLoaded.value).isFalse()
 
             onNodeWithText(productJewelry.name).assertDoesNotExist()
             onNodeWithText(productElectronic.name).assertDoesNotExist()
             onNodeWithText(productMensClothing.name).assertDoesNotExist()
             onNodeWithText(productWomensClothing.name).assertDoesNotExist()
 
-            productViewModel.updateProductList()
             advanceUntilIdle()
 
-            assertThat(isDataLoaded.value).isTrue()
             assertThat(isLoading.value).isFalse()
+            assertThat(isDataLoaded.value).isTrue()
             assertThat(products.value).isNotEmpty()
             assertThat(products.value).contains(productJewelry)
             assertThat(products.value).contains(productElectronic)
             assertThat(products.value).contains(productMensClothing)
             assertThat(products.value).contains(productWomensClothing)
-
-            onRoot().printToLog("onProductScreen|WithData")
 
             onNodeWithText(productJewelry.name)
                 .assertExists()
@@ -124,6 +123,8 @@ class ProductsFragmentLocalTest {
             onNodeWithText(productWomensClothing.name)
                 .assertExists()
                 .assertIsDisplayed()
+
+            onRoot().printToLog("onProductScreen")
         }
     }
 }

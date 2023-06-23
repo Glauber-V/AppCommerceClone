@@ -38,18 +38,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.product.Product
-import com.example.appcommerceclone.ui.common.ShimmerItem
 import com.example.appcommerceclone.ui.common.shimmerEffect
-import com.example.appcommerceclone.util.productElectronic
-import com.example.appcommerceclone.util.productJewelry
-import com.example.appcommerceclone.util.productMensClothing
-import com.example.appcommerceclone.util.productWomensClothing
+import com.example.appcommerceclone.util.productList
 import com.example.appcommerceclone.viewmodels.ProductCategories
 import com.example.appcommerceclone.viewmodels.ProductViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -61,9 +56,24 @@ class ProductsFragment(private val productViewModel: ProductViewModel) : Fragmen
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
             setContent {
+                val isLoading by productViewModel.isLoading.observeAsState(initial = false)
+                val isDataLoaded by productViewModel.isLoading.observeAsState(initial = false)
+                val products by productViewModel.products.observeAsState(initial = emptyList())
                 ProductsScreen(
-                    productViewModel = productViewModel,
-                    navHostController = findNavController()
+                    onLoadData = {
+                        productViewModel.updateProductList()
+                    },
+                    onRefresh = {
+                        productViewModel.filterProductList(ProductCategories.NONE)
+                    },
+                    isLoading = isLoading,
+                    isDataLoaded = isDataLoaded,
+                    products = products,
+                    onProductClicked = { product: Product ->
+                        productViewModel.selectProduct(product)
+                        val toDestination = ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
+                        findNavController().navigate(toDestination)
+                    }
                 )
             }
         }
@@ -74,38 +84,32 @@ class ProductsFragment(private val productViewModel: ProductViewModel) : Fragmen
 @Composable
 fun ProductsScreen(
     modifier: Modifier = Modifier,
-    productViewModel: ProductViewModel,
-    navHostController: NavController
+    onLoadData: () -> Unit,
+    onRefresh: () -> Unit,
+    isLoading: Boolean,
+    isDataLoaded: Boolean,
+    products: List<Product>,
+    onProductClicked: (Product) -> Unit
 ) {
-    val isDataLoaded by productViewModel.isDataLoaded.observeAsState(initial = false)
-    if (!isDataLoaded) productViewModel.updateProductList()
-
-    val isLoading by productViewModel.isLoading.observeAsState(initial = false)
-    val products by productViewModel.products.observeAsState(initial = emptyList())
+    if (!isDataLoaded) onLoadData()
 
     val isRefreshing by rememberSaveable { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = {
-            with(productViewModel) {
-                if (!isDataLoaded) updateProductList()
-                filterProductList(ProductCategories.NONE)
-            }
-        }
+        onRefresh = onRefresh
     )
 
     Box(modifier = modifier.pullRefresh(pullRefreshState)) {
-        ProductsScreenContent(
-            modifier = modifier,
-            isLoading = isLoading,
-            products = products,
-            onProductClicked = { product: Product ->
-                productViewModel.selectProduct(product)
-                val toDestination = ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
-                navHostController.navigate(toDestination)
-            }
-        )
+        if (isLoading) {
+            ProductsScreenContentWithShimmer()
+        } else {
+            ProductsScreenContent(
+                products = products,
+                onProductClicked = onProductClicked
+            )
+        }
         PullRefreshIndicator(
+            modifier = Modifier.align(alignment = Alignment.TopCenter),
             refreshing = isRefreshing,
             state = pullRefreshState
         )
@@ -115,7 +119,6 @@ fun ProductsScreen(
 @Composable
 fun ProductsScreenContent(
     modifier: Modifier = Modifier,
-    isLoading: Boolean,
     products: List<Product>,
     onProductClicked: (Product) -> Unit
 ) {
@@ -123,18 +126,10 @@ fun ProductsScreenContent(
         columns = GridCells.Fixed(2),
         modifier = modifier.fillMaxSize()
     ) {
-        items(items = products) { product: Product ->
-            ShimmerItem(
-                isLoading = isLoading,
-                placeHolderContent = {
-                    ProductItemWithShimmer()
-                },
-                contentAfterLoading = {
-                    ProductItem(
-                        product = product,
-                        onProductClicked = { onProductClicked(product) }
-                    )
-                }
+        items(products) { product: Product ->
+            ProductItem(
+                product = product,
+                onProductClicked = { onProductClicked(product) }
             )
         }
     }
@@ -200,6 +195,18 @@ fun ProductItem(
 }
 
 @Composable
+fun ProductsScreenContentWithShimmer(modifier: Modifier = Modifier) {
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(2),
+        modifier = modifier.fillMaxSize()
+    ) {
+        items(12) {
+            ProductItemWithShimmer()
+        }
+    }
+}
+
+@Composable
 fun ProductItemWithShimmer(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
@@ -239,16 +246,14 @@ fun ProductItemWithShimmer(modifier: Modifier = Modifier) {
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun PreviewProductsScreenContent() {
+fun PreviewProductsScreen() {
     MaterialTheme {
-        ProductsScreenContent(
+        ProductsScreen(
+            onLoadData = {},
+            onRefresh = {},
             isLoading = false,
-            products = listOf(
-                productJewelry,
-                productElectronic,
-                productMensClothing,
-                productWomensClothing
-            ),
+            isDataLoaded = false,
+            products = productList,
             onProductClicked = {}
         )
     }
@@ -256,16 +261,14 @@ fun PreviewProductsScreenContent() {
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun PreviewProductsScreenContentWhileLoading() {
+fun PreviewProductsScreenWhileLoading() {
     MaterialTheme {
-        ProductsScreenContent(
+        ProductsScreen(
+            onLoadData = {},
+            onRefresh = {},
             isLoading = true,
-            products = listOf(
-                productJewelry,
-                productElectronic,
-                productMensClothing,
-                productWomensClothing
-            ),
+            isDataLoaded = false,
+            products = emptyList(),
             onProductClicked = {}
         )
     }

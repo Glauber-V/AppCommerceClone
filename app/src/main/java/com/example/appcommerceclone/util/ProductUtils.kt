@@ -37,7 +37,7 @@ val productWomensClothing = baseExampleProduct.copy(
     category = ProductCategories.WOMENS_CLOTHING.categoryName,
 )
 
-val productsList = listOf(
+val productList = listOf(
     productJewelry,
     productElectronic,
     productMensClothing,

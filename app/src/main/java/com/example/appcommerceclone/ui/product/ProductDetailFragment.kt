@@ -13,7 +13,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -301,7 +302,9 @@ fun ColorChipGroup(
         items(ProductColors.values()) { colorOption ->
             if (colorOption != ProductColors.NONE) {
                 ProductDetailChip(
-                    modifier = Modifier.testTag(colorOption.name),
+                    modifier = Modifier
+                        .testTag(colorOption.name)
+                        .requiredSize(48.dp),
                     isSelected = colorOption == selectedColor,
                     onChipSelected = { isChipSelected ->
                         if (isChipSelected) onSelectedColorChange(colorOption)
@@ -328,7 +331,9 @@ fun SizeChipGroup(
         items(ProductSizes.values()) { sizeOption ->
             if (sizeOption != ProductSizes.NONE) {
                 ProductDetailChip(
-                    modifier = Modifier.testTag(sizeOption.name),
+                    modifier = Modifier
+                        .testTag(sizeOption.name)
+                        .sizeIn(minWidth = 48.dp, minHeight = 48.dp),
                     shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
                     isSelected = sizeOption == selectedSize,
                     onChipSelected = { isChipSelected ->
@@ -361,9 +366,7 @@ fun ProductDetailChip(
     Surface(
         checked = isSelected,
         onCheckedChange = onChipSelected,
-        modifier = modifier
-            .size(48.dp)
-            .padding(dimensionResource(id = R.dimen.padding_small)),
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_small)),
         shape = shape,
         color = backGroundColor,
         border = BorderStroke(
@@ -373,15 +376,15 @@ fun ProductDetailChip(
         )
     ) {
         Row(
-            modifier = modifier.padding(dimensionResource(id = R.dimen.padding_large)),
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (isSelected) {
                 Icon(
                     modifier = Modifier.padding(
-                        start = dimensionResource(id = R.dimen.padding_small),
-                        end = dimensionResource(id = R.dimen.padding_small)
+                        start = if (chipContent != null) dimensionResource(id = R.dimen.padding_small) else 0.dp,
+                        end = if (chipContent != null) dimensionResource(id = R.dimen.padding_small) else 0.dp
                     ),
                     imageVector = Icons.Default.Done,
                     contentDescription = null
