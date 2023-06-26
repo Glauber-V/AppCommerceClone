@@ -123,13 +123,20 @@
 
     <!-- Content Description -->
     <string name="content_desc_no_internet_connection_image">No Internet connection</string>
+
     <string name="content_desc_add_to_favorites_btn">Add to favorites</string>
     <string name="content_desc_add_to_cart_btn">Add to cart</string>
     <string name="content_desc_buy_now">Buy now</string>
+
     <string name="content_desc_remove_from_favorites_btn">Remove product from favorites</string>
+
     <string name="content_desc_product_detail_name">Product picture</string>
     <string name="content_desc_item_cart_increase_btn">Increase product quantity</string>
     <string name="content_desc_item_cart_decrease_btn">Decrease product quantity</string>
+
+    <string name="content_desc_hide_password">Hide password</string>
+    <string name="content_desc_show_password">Show password</string>
+
     <string name="content_desc_update_profile_pic_btn">Update your profile picture</string>
     <string name="content_desc_get_picture_from_gallery_btn">Get a picture from your gallery</string>
     <string name="content_desc_get_picture_from_camera_btn">Take a picture</string>

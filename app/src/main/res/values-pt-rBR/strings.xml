@@ -114,13 +114,20 @@
 
     <!-- Content Description -->
     <string name="content_desc_no_internet_connection_image">Sem conexão com a internet</string>
+
     <string name="content_desc_add_to_favorites_btn">Adicionar as favoritos</string>
     <string name="content_desc_add_to_cart_btn">Adicionar ao carrinho</string>
     <string name="content_desc_buy_now">Comprar agora</string>
+
     <string name="content_desc_remove_from_favorites_btn">Remove product from favorites</string>
+
     <string name="content_desc_product_detail_name">Foto do produto</string>
     <string name="content_desc_item_cart_increase_btn">Aumentar quantidate desse produto</string>
     <string name="content_desc_item_cart_decrease_btn">Diminuir a quantidate desse produto</string>
+
+    <string name="content_desc_hide_password">Esconder senha</string>
+    <string name="content_desc_show_password">Mostrar senha</string>
+
     <string name="content_desc_update_profile_pic_btn">Atualizar foto de perfil</string>
     <string name="content_desc_get_picture_from_gallery_btn">Pegar foto da galeria</string>
     <string name="content_desc_get_picture_from_camera_btn">Tirar foto</string>
