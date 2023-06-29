@@ -57,22 +57,20 @@ class ProductsFragment(private val productViewModel: ProductViewModel) : Fragmen
             setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 val isLoading by productViewModel.isLoading.observeAsState(initial = false)
-                val isDataLoaded by productViewModel.isLoading.observeAsState(initial = false)
+                val isDataLoaded by productViewModel.isDataLoaded.observeAsState(initial = false)
                 val products by productViewModel.products.observeAsState(initial = emptyList())
+                if (!isLoading && !isDataLoaded) productViewModel.updateProductList()
                 ProductsScreen(
-                    onLoadData = {
-                        productViewModel.updateProductList()
-                    },
-                    onRefresh = {
-                        productViewModel.filterProductList(ProductCategories.NONE)
-                    },
                     isLoading = isLoading,
-                    isDataLoaded = isDataLoaded,
                     products = products,
                     onProductClicked = { product: Product ->
                         productViewModel.selectProduct(product)
-                        val toDestination = ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
-                        findNavController().navigate(toDestination)
+                        findNavController().navigate(
+                            ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
+                        )
+                    },
+                    onRefresh = {
+                        productViewModel.filterProductList(ProductCategories.NONE)
                     }
                 )
             }
@@ -84,15 +82,11 @@ class ProductsFragment(private val productViewModel: ProductViewModel) : Fragmen
 @Composable
 fun ProductsScreen(
     modifier: Modifier = Modifier,
-    onLoadData: () -> Unit,
-    onRefresh: () -> Unit,
     isLoading: Boolean,
-    isDataLoaded: Boolean,
     products: List<Product>,
-    onProductClicked: (Product) -> Unit
+    onProductClicked: (Product) -> Unit,
+    onRefresh: () -> Unit
 ) {
-    if (!isDataLoaded) onLoadData()
-
     val isRefreshing by rememberSaveable { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
@@ -101,9 +95,10 @@ fun ProductsScreen(
 
     Box(modifier = modifier.pullRefresh(pullRefreshState)) {
         if (isLoading) {
-            ProductsScreenContentWithShimmer()
+            ProductsScreenContentWithShimmer(modifier = Modifier.fillMaxSize())
         } else {
             ProductsScreenContent(
+                modifier = Modifier.fillMaxSize(),
                 products = products,
                 onProductClicked = onProductClicked
             )
@@ -123,8 +118,8 @@ fun ProductsScreenContent(
     onProductClicked: (Product) -> Unit
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = modifier.fillMaxSize()
+        modifier = modifier,
+        columns = GridCells.Fixed(2)
     ) {
         items(products) { product: Product ->
             ProductItem(
@@ -197,8 +192,8 @@ fun ProductItem(
 @Composable
 fun ProductsScreenContentWithShimmer(modifier: Modifier = Modifier) {
     LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        modifier = modifier.fillMaxSize()
+        modifier = modifier,
+        columns = GridCells.Fixed(2)
     ) {
         items(12) {
             ProductItemWithShimmer()
@@ -249,12 +244,10 @@ fun ProductItemWithShimmer(modifier: Modifier = Modifier) {
 fun PreviewProductsScreen() {
     MaterialTheme {
         ProductsScreen(
-            onLoadData = {},
-            onRefresh = {},
             isLoading = false,
-            isDataLoaded = false,
             products = productList,
-            onProductClicked = {}
+            onProductClicked = {},
+            onRefresh = {}
         )
     }
 }
@@ -264,12 +257,10 @@ fun PreviewProductsScreen() {
 fun PreviewProductsScreenWhileLoading() {
     MaterialTheme {
         ProductsScreen(
-            onLoadData = {},
-            onRefresh = {},
             isLoading = true,
-            isDataLoaded = false,
             products = emptyList(),
-            onProductClicked = {}
+            onProductClicked = {},
+            onRefresh = {}
         )
     }
 }

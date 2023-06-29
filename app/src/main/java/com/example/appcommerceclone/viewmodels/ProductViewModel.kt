@@ -43,6 +43,9 @@ class ProductViewModel @Inject constructor(
 
     private var _allProducts: List<Product> = emptyList()
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
     private val _isDataLoaded = MutableLiveData(false)
     val isDataLoaded: LiveData<Boolean> = _isDataLoaded
 
@@ -51,9 +54,6 @@ class ProductViewModel @Inject constructor(
 
     private val _selectedProduct = MutableLiveData<Product?>(null)
     val selectedProduct: LiveData<Product?> = _selectedProduct
-
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
 
 
     fun updateProductList() {
@@ -68,7 +68,8 @@ class ProductViewModel @Inject constructor(
     }
 
     fun filterProductList(category: ProductCategories) {
-        _products.value = _allProducts.filter { it.category == category.categoryName }
+        _products.value = if (category == ProductCategories.NONE) _allProducts
+        else _allProducts.filter { it.category == category.categoryName }
     }
 
     fun showMoreOptions(product: Product): Boolean {
