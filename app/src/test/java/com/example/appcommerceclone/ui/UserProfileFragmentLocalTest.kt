@@ -31,7 +31,7 @@ import org.robolectric.annotation.Config
 import javax.inject.Inject
 
 @UninstallModules(UsersModule::class, DispatcherModule::class)
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)

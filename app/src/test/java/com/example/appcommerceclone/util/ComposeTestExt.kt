@@ -8,8 +8,8 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.google.common.truth.Truth.assertThat
 import org.robolectric.shadows.ShadowLog
 
-fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.getStringResource(@StringRes resId: Int): String {
-    return activity.getString(resId)
+fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.getStringResource(@StringRes resId: Int, formatArgs: Any? = null): String {
+    return activity.getString(resId, formatArgs)
 }
 
 fun NavHostController.assertCurrentRouteIsEqualTo(route: String) {

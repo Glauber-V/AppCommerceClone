@@ -5,12 +5,10 @@ import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUs
 import com.example.appcommerceclone.model.order.Order
 import com.example.appcommerceclone.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-@ExperimentalCoroutinesApi
 class UserOrdersViewModelTest {
 
     @get:Rule(order = 0)

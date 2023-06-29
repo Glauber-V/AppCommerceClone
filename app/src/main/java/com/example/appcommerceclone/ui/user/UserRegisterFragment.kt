@@ -6,24 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,17 +29,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.ui.common.OutlinedTextFieldWithValidation
+import com.example.appcommerceclone.ui.common.PrimaryActionButton
+import com.example.appcommerceclone.ui.common.UserEmailOutlinedTextField
+import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
+import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -61,7 +51,7 @@ class UserRegisterFragment : Fragment() {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 UserRegisterScreen(
-                    onRegister = {
+                    onRegisterRequest = {
                         findNavController().navigateUp()
                     }
                 )
@@ -74,7 +64,7 @@ class UserRegisterFragment : Fragment() {
 @Composable
 fun UserRegisterScreen(
     modifier: Modifier = Modifier,
-    onRegister: () -> Unit
+    onRegisterRequest: () -> Unit
 ) {
     val context = LocalContext.current
     val snackbarScope = rememberCoroutineScope()
@@ -83,137 +73,58 @@ fun UserRegisterScreen(
     var userEmailText by rememberSaveable { mutableStateOf("") }
     var userNameText by rememberSaveable { mutableStateOf("") }
     var userPasswordText by rememberSaveable { mutableStateOf("") }
-    var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
+
+    val canRegister = userEmailText.isNotEmpty()
+            && userNameText.isNotEmpty()
+            && userPasswordText.isNotEmpty()
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
     Scaffold(
+        modifier = modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { contentPadding ->
         Column(
-            modifier = modifier
+            modifier = Modifier
                 .padding(contentPadding)
                 .padding(dimensionResource(id = R.dimen.padding_extra_large)),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            OutlinedTextFieldWithValidation(
-                value = userEmailText,
-                onValueChange = { userEmailText = it },
+            UserEmailOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Email,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.icon_color_black)
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.user_hint_email),
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.user_hint_email),
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                },
-                errorMessage = stringResource(id = R.string.user_error_no_email)
+                userEmailText = userEmailText,
+                onEmailTextChange = { userEmailText = it }
             )
-            OutlinedTextFieldWithValidation(
-                value = userNameText,
-                onValueChange = { userNameText = it },
+            UserNameOutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = dimensionResource(id = R.dimen.padding_large)),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Person,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.icon_color_black)
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.user_hint_username),
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.user_hint_username),
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                },
-                errorMessage = stringResource(id = R.string.user_error_no_username)
+                userNameText = userNameText,
+                onUserNameTextChange = { userNameText = it }
             )
-            OutlinedTextFieldWithValidation(
-                value = userPasswordText,
-                onValueChange = { userPasswordText = it },
+            UserPasswordOutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = dimensionResource(id = R.dimen.padding_large)),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Filled.Lock,
-                        contentDescription = null,
-                        tint = colorResource(id = R.color.icon_color_black)
-                    )
-                },
-                label = {
-                    Text(
-                        text = stringResource(id = R.string.user_hint_password),
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                },
-                placeholder = {
-                    Text(
-                        text = stringResource(id = R.string.user_hint_password),
-                        style = MaterialTheme.typography.subtitle1
-                    )
-                },
-                trailingIcon = {
-                    IconButton(
-                        onClick = {
-                            isPasswordVisible = !isPasswordVisible
-                        },
-                        content = {
-                            Icon(
-                                imageVector = if (isPasswordVisible) Icons.Filled.VisibilityOff
-                                else Icons.Filled.Visibility,
-                                contentDescription = if (isPasswordVisible) stringResource(id = R.string.content_desc_hide_password)
-                                else stringResource(id = R.string.content_desc_show_password),
-                                tint = colorResource(id = R.color.icon_color_black)
-                            )
-                        }
-                    )
-                },
-                visualTransformation = if (isPasswordVisible) VisualTransformation.None
-                else PasswordVisualTransformation(),
-                errorMessage = stringResource(id = R.string.user_error_no_password),
+                userPasswordText = userPasswordText,
+                onUserPasswordChange = { userPasswordText = it }
             )
-            TextButton(
-                onClick = {
+            PrimaryActionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+                onPrimaryAction = {
                     snackbarScope.launch {
                         focusManager.clearFocus()
                         keyboardController?.hide()
                         snackbarHostState.showSnackbar(message = context.getString(R.string.user_register_successfully_message))
-                        onRegister()
+                        onRegisterRequest()
                     }
                 },
-                enabled = userEmailText.isNotEmpty() && userNameText.isNotEmpty() && userPasswordText.isNotEmpty(),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(dimensionResource(id = R.dimen.btn_min_height_size))
-                    .padding(top = dimensionResource(id = R.dimen.padding_large)),
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = colorResource(id = R.color.primaryColor),
-                    contentColor = colorResource(id = R.color.white_100)
-                ),
-                content = {
+                isPrimaryActionEnabled = canRegister,
+                primaryContent = {
                     Text(
                         text = stringResource(id = R.string.user_register_btn),
                         textAlign = TextAlign.Center,
@@ -229,6 +140,6 @@ fun UserRegisterScreen(
 @Composable
 fun PreviewUserRegisterScreen() {
     MaterialTheme {
-        UserRegisterScreen(onRegister = {})
+        UserRegisterScreen(onRegisterRequest = {})
     }
 }

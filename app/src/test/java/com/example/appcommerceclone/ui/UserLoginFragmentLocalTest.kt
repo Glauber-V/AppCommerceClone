@@ -1,18 +1,27 @@
 package com.example.appcommerceclone.ui
 
-import androidx.navigation.testing.TestNavHostController
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.activity.ComponentActivity
+import androidx.compose.material.MaterialTheme
+import androidx.compose.runtime.State
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performClick
+import androidx.compose.ui.test.performTextReplacement
+import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
+import com.example.appcommerceclone.data.user.FakeUserProvider
 import com.example.appcommerceclone.data.user.UserAuthenticator
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.UsersModule
-import com.example.appcommerceclone.ui.user.UserLoginFragment
-import com.example.appcommerceclone.util.*
+import com.example.appcommerceclone.model.user.User
+import com.example.appcommerceclone.ui.user.UserLoginScreen
+import com.example.appcommerceclone.util.TestMainDispatcherRule
+import com.example.appcommerceclone.util.getStringResource
+import com.example.appcommerceclone.util.showSemanticTreeInConsole
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -31,7 +40,7 @@ import org.robolectric.annotation.Config
 import javax.inject.Inject
 
 @UninstallModules(UsersModule::class, DispatcherModule::class)
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
@@ -41,111 +50,119 @@ class UserLoginFragmentLocalTest {
     val hiltAndroidRule = HiltAndroidRule(this)
 
     @get:Rule(order = 1)
-    val testNavHostControllerRule = TestNavHostControllerRule(R.id.user_login_fragment)
-
-    @get:Rule(order = 2)
     val testMainDispatcherRule = TestMainDispatcherRule()
 
-    @Inject lateinit var userAuthenticator: UserAuthenticator
-    @Inject lateinit var dispatcherProvider: DispatcherProvider
+    @get:Rule(order = 2)
+    val composeRule = createAndroidComposeRule<ComponentActivity>()
 
-    private lateinit var navHostController: TestNavHostController
+    @Inject
+    lateinit var userAuthenticator: UserAuthenticator
+
+    @Inject
+    lateinit var dispatcherProvider: DispatcherProvider
+
     private lateinit var userViewModel: UserViewModel
-    private lateinit var factory: TestFragmentFactory
+    private lateinit var isLoading: State<Boolean>
+    private lateinit var isDataLoaded: State<Boolean>
+    private lateinit var user: State<User?>
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
-        navHostController = testNavHostControllerRule.findTestNavHostController()
-        userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
-        factory = TestFragmentFactory(userViewModelTest = userViewModel)
-    }
-
-    @Test
-    fun launchUserLoginFragment_clickLoginBtn_noUsernameAndPassword_stayInUserLoginFragment() = runTest {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
-
-            onView(withId(R.id.user_login_username_text))
-                .perform(replaceText(""))
-
-            onView(withId(R.id.user_login_password_text))
-                .perform(replaceText(""))
-
-            onView(withId(R.id.user_login_btn))
-                .perform(noConstraintsClick())
-
-            advanceUntilIdle()
-
-            onView(withId(R.id.user_login_username))
-                .check(matches(hasTextInputLayoutErrorText(getString(R.string.user_error_no_username))))
-
-            onView(withId(R.id.user_login_password))
-                .check(matches(hasTextInputLayoutErrorText(getString(R.string.user_error_no_password))))
-
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+        showSemanticTreeInConsole()
+        composeRule.setContent {
+            MaterialTheme {
+                userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
+                isLoading = userViewModel.isLoading.observeAsState(initial = false)
+                isDataLoaded = userViewModel.isDataLoaded.observeAsState(initial = false)
+                user = userViewModel.loggedUser.observeAsState(initial = null)
+                UserLoginScreen(
+                    userState = user.value,
+                    isLoading = isLoading.value,
+                    isDataLoaded = isDataLoaded.value,
+                    onLoginRequest = { username: String, password: String ->
+                        userViewModel.login(username, password)
+                    },
+                    onLoginRequestComplete = {},
+                    onRegisterRequest = {}
+                )
+            }
         }
     }
 
     @Test
-    fun launchUserLoginFragment_clickLoginBtn_wrongUsernameAndPassword_stayInUserLoginFragment() = runTest {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController, fragmentFactory = factory) {
+    fun onUserLoginScreen_wrongCredentials_failedLogin() = runTest {
 
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+        with(composeRule) {
 
-            onView(withId(R.id.user_login_username_text))
-                .perform(replaceText("Robert"))
+            onRoot().printToLog("onUserLoginScreen|FailedLogin")
 
-            onView(withId(R.id.user_login_password_text))
-                .perform(replaceText("45687"))
+            assertThat(user.value).isNull()
 
-            onView(withId(R.id.user_login_btn))
-                .perform(noConstraintsClick())
+            onNodeWithText(getStringResource(R.string.user_hint_username))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement("wrong username")
+
+            onNodeWithText(getStringResource(R.string.user_hint_password))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement("wrong password")
+
+            onNodeWithText(getStringResource(R.string.user_login_btn))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
 
             advanceUntilIdle()
 
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+            assertThat(isDataLoaded.value).isTrue()
+            assertThat(user.value).isNull()
+
+            onNodeWithText(getStringResource(R.string.user_profile_welcome_message, FakeUserProvider.firstUser.username))
+                .assertDoesNotExist()
+
+            onNodeWithText(getStringResource(R.string.user_error_not_found))
+                .assertExists()
+                .assertIsDisplayed()
         }
     }
 
     @Test
-    fun launchUserLoginFragment_clickLoginBtn_withUsernameAndPassword_navigateToMainFragment() = runTest {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController, fragmentFactory = factory) {
+    fun onUserLoginScreen_correctCredentials_successfulLogin() = runTest {
 
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
+        with(composeRule) {
 
-            onView(withId(R.id.user_login_username_text))
-                .perform(replaceText(firstUser.username))
+            onRoot().printToLog("onUserLoginScreen|SuccessfulLogin")
 
-            onView(withId(R.id.user_login_password_text))
-                .perform(replaceText(firstUser.password))
+            assertThat(user.value).isNull()
 
-            onView(withId(R.id.user_login_btn))
-                .perform(noConstraintsClick())
+            onNodeWithText(getStringResource(R.string.user_hint_username))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement(FakeUserProvider.firstUser.username)
+
+            onNodeWithText(getStringResource(R.string.user_hint_password))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement(FakeUserProvider.firstUser.password)
+
+            onNodeWithText(getStringResource(R.string.user_login_btn))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
 
             advanceUntilIdle()
 
-            val user = userViewModel.loggedUser.getOrAwaitValue()
-            assertThat(user).isNotNull()
-            assertThat(user?.username).isEqualTo(firstUser.username)
-            assertThat(user?.password).isEqualTo(firstUser.password)
+            assertThat(isDataLoaded.value).isTrue()
+            assertThat(user.value).isNotNull()
 
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_login_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.products_fragment)
-        }
-    }
+            onNodeWithText(getStringResource(R.string.user_error_not_found))
+                .assertDoesNotExist()
 
-    @Test
-    fun launchUserLoginFragment_clickRegisterBtn_navigateToRegisterFragment() {
-        launchFragmentInHiltContainer<UserLoginFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_login_fragment)
-
-            onView(withId(R.id.user_login_register_btn)).perform(noConstraintsClick())
-
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.user_login_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.user_register_fragment)
+            onNodeWithText(getStringResource(R.string.user_profile_welcome_message, FakeUserProvider.firstUser.username))
+                .assertExists()
+                .assertIsDisplayed()
         }
     }
 }

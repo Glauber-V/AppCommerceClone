@@ -26,7 +26,6 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
@@ -119,11 +118,7 @@ fun CartScreen(
                     bottom = dimensionResource(id = R.dimen.padding_medium)
                 ),
             onPrimaryAction = onConfirmPurchase,
-            primaryActionEnabled = cartProducts.isNotEmpty(),
-            primaryButtonColors = ButtonDefaults.buttonColors(
-                backgroundColor = colorResource(id = R.color.primaryColor),
-                contentColor = colorResource(id = R.color.white_100)
-            ),
+            isPrimaryActionEnabled = cartProducts.isNotEmpty(),
             primaryContent = {
                 Text(
                     text = stringResource(id = R.string.cart_confirm_purchase_btn),
@@ -132,11 +127,7 @@ fun CartScreen(
                 )
             },
             onSecondaryAction = onAbandonCart,
-            secondaryActionEnabled = cartProducts.isNotEmpty(),
-            secondaryButtonColors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent,
-                contentColor = colorResource(id = R.color.primaryColor)
-            ),
+            isSecondaryActionEnabled = cartProducts.isNotEmpty(),
             secondaryContent = {
                 Text(
                     text = stringResource(id = R.string.cart_cancel_purchase_btn),

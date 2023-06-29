@@ -19,6 +19,12 @@ class UserViewModel @Inject constructor(
     private val dispatcherProvider: DispatcherProvider
 ) : ViewModel() {
 
+    private val _isLoading = MutableLiveData(false)
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    private val _isDataLoaded = MutableLiveData(false)
+    val isDataLoaded: LiveData<Boolean> = _isDataLoaded
+
     private val _loggedUser = MutableLiveData<User?>(null)
     val loggedUser: LiveData<User?> = _loggedUser
 
@@ -28,7 +34,11 @@ class UserViewModel @Inject constructor(
 
     fun login(username: String, password: String) {
         viewModelScope.launch(dispatcherProvider.main) {
+            _isDataLoaded.value = false
+            _isLoading.value = true
             _loggedUser.value = userAuthenticator.getUserByUsernameAndPassword(username, password)
+            _isDataLoaded.value = true
+            _isLoading.value = false
         }
     }
 

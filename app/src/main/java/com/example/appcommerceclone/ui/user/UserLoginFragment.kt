@@ -1,124 +1,232 @@
 package com.example.appcommerceclone.ui.user
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Icon
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.SnackbarHost
+import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.Text
+import androidx.compose.material.TextButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.databinding.FragmentUserLoginBinding
-import com.example.appcommerceclone.util.ViewExt.hideTextEditor
-import com.example.appcommerceclone.util.ViewExt.showSnackbar
-import com.example.appcommerceclone.util.ViewExt.showTextEditor
-import com.example.appcommerceclone.util.ViewExt.validateEditText
+import com.example.appcommerceclone.model.user.User
+import com.example.appcommerceclone.ui.common.PrimaryActionButton
+import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
+import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
 import com.example.appcommerceclone.viewmodels.UserViewModel
 import com.google.android.material.progressindicator.BaseProgressIndicator.*
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class UserLoginFragment(private val userViewModel: UserViewModel) : Fragment() {
 
-    private lateinit var binding: FragmentUserLoginBinding
-
-    private var isLoadingUser = false
-
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val navController = findNavController()
-                val startDestination = navController.graph.startDestinationId
-                val navOptions = NavOptions.Builder().setPopUpTo(startDestination, true).build()
-                navController.navigate(startDestination, null, navOptions)
-            }
-        })
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        binding = FragmentUserLoginBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        observeLoginProcess()
-        setupProgressBar()
-        setupUserLoginBtnListener()
-        setupRegisterBtnListener()
-    }
-
-
-    private fun setupProgressBar() {
-        binding.userLoginProgression.showAnimationBehavior = SHOW_OUTWARD
-        binding.userLoginProgression.hideAnimationBehavior = HIDE_INWARD
-        hideProgressBar()
-    }
-
-    private fun setupUserLoginBtnListener() {
-        binding.userLoginBtn.setOnClickListener {
-            val usernameInput = binding.userLoginUsernameText.text.toString()
-            val passwordInput = binding.userLoginPasswordText.text.toString()
-            if (validateLoginCredentials()) startLoginProcess(usernameInput, passwordInput)
+        return ComposeView(requireContext()).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                val isLoading by userViewModel.isLoading.observeAsState(initial = false)
+                val isDataLoaded by userViewModel.isDataLoaded.observeAsState(initial = false)
+                val user by userViewModel.loggedUser.observeAsState(initial = null)
+                UserLoginScreen(
+                    userState = user,
+                    isLoading = isLoading,
+                    isDataLoaded = isDataLoaded,
+                    onLoginRequest = { username: String, password: String ->
+                        userViewModel.login(username, password)
+                    },
+                    onLoginRequestComplete = {
+                        user?.let {
+                            findNavController().popBackStack()
+                        }
+                    },
+                    onRegisterRequest = {
+                        findNavController().navigate(
+                            UserLoginFragmentDirections.actionUserLoginFragmentToUserRegisterFragment()
+                        )
+                    }
+                )
+            }
         }
     }
+}
 
-    private fun setupRegisterBtnListener() {
-        binding.userLoginRegisterBtn.setOnClickListener {
-            navigateToRegisterFragment()
-        }
-    }
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun UserLoginScreen(
+    modifier: Modifier = Modifier,
+    userState: User?,
+    isLoading: Boolean,
+    isDataLoaded: Boolean,
+    onLoginRequest: (username: String, password: String) -> Unit,
+    onLoginRequestComplete: () -> Unit,
+    onRegisterRequest: () -> Unit
+) {
+    val context = LocalContext.current
+    val snackbarScope = rememberCoroutineScope()
+    val snackbarHostState = remember { SnackbarHostState() }
 
+    var usernameText by rememberSaveable { mutableStateOf("") }
+    var passwordText by rememberSaveable { mutableStateOf("") }
 
-    private fun showProgressBar() {
-        binding.userLoginProgression.show()
-    }
+    val canLogin = usernameText.isNotEmpty() && passwordText.isNotEmpty()
 
-    private fun hideProgressBar() {
-        binding.userLoginProgression.hide()
-    }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
-
-    private fun observeLoginProcess() {
-        userViewModel.loggedUser.observe(viewLifecycleOwner) { user ->
-            hideProgressBar()
-            showTextEditor(binding.userLoginUsername, binding.userLoginPassword)
-
-            if (isLoadingUser) {
-                if (user == null) {
-                    showSnackbar(binding.root, getString(R.string.user_error_not_found))
-                } else {
-                    showSnackbar(binding.root, getString(R.string.user_profile_welcome_message, user.username))
-                    findNavController().popBackStack()
+    LaunchedEffect(isDataLoaded) {
+        if (isDataLoaded) {
+            snackbarScope.launch {
+                with(snackbarHostState) {
+                    if (userState != null) {
+                        showSnackbar(message = context.getString(R.string.user_profile_welcome_message, userState.username))
+                    } else {
+                        showSnackbar(message = context.getString(R.string.user_error_not_found))
+                    }
+                    onLoginRequestComplete()
                 }
-                isLoadingUser = false
             }
         }
     }
 
-    private fun validateLoginCredentials(): Boolean {
-        val isValid1 = validateEditText(binding.userLoginUsername, binding.userLoginUsernameText, getString(R.string.user_error_no_username))
-        val isValid2 = validateEditText(binding.userLoginPassword, binding.userLoginPasswordText, getString(R.string.user_error_no_password))
-        return isValid1 && isValid2
+    Scaffold(
+        modifier = modifier,
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+    ) { contentPadding ->
+        Column(
+            modifier = Modifier
+                .padding(contentPadding)
+                .padding(dimensionResource(id = R.dimen.padding_extra_large)),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
+                contentAlignment = Alignment.Center
+            ) {
+                if (isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(150.dp),
+                        strokeWidth = 4.dp,
+                        color = colorResource(id = R.color.progress_indicator_color),
+                        backgroundColor = colorResource(id = R.color.progress_track_color)
+                    )
+                }
+                Icon(
+                    modifier = Modifier.size(125.dp),
+                    imageVector = Icons.Filled.Person,
+                    contentDescription = null
+                )
+            }
+            UserNameOutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+                userNameText = usernameText,
+                onUserNameTextChange = { usernameText = it },
+            )
+            UserPasswordOutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.padding_large)),
+                userPasswordText = passwordText,
+                onUserPasswordChange = { passwordText = it },
+            )
+            PrimaryActionButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+                onPrimaryAction = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                    onLoginRequest(usernameText, passwordText)
+                },
+                isPrimaryActionEnabled = canLogin,
+                primaryContent = {
+                    Text(
+                        text = stringResource(id = R.string.user_login_btn),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.button
+                    )
+                }
+            )
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+                text = stringResource(id = R.string.user_no_account_warning),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.button
+            )
+            TextButton(
+                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
+                onClick = onRegisterRequest,
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color.Transparent,
+                    contentColor = colorResource(id = R.color.primaryColor)
+                ),
+                content = {
+                    Text(
+                        text = stringResource(id = R.string.user_register_btn),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.button
+                    )
+                }
+            )
+        }
     }
+}
 
-    private fun startLoginProcess(usernameInput: String, passwordInput: String) {
-        isLoadingUser = true
-        hideTextEditor(binding.userLoginUsername, binding.userLoginPassword)
-        showProgressBar()
-
-        userViewModel.login(usernameInput, passwordInput)
-    }
-
-
-    private fun navigateToRegisterFragment() {
-        val toDestination = UserLoginFragmentDirections.actionUserLoginFragmentToUserRegisterFragment()
-        findNavController().navigate(toDestination)
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun PreviewUserLoginScreen() {
+    MaterialTheme {
+        UserLoginScreen(
+            userState = null,
+            isLoading = true,
+            isDataLoaded = false,
+            onLoginRequest = { _, _ -> },
+            onLoginRequestComplete = {},
+            onRegisterRequest = {}
+        )
     }
 }
