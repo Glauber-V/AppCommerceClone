@@ -13,4 +13,9 @@ data class Order(
 
     fun getFormattedPrice(): String =
         NumberFormat.getCurrencyInstance().format(orderedProducts.sumOf { it.product.price * it.quantity })
+
+    fun getOrderedProductListAsString(): String {
+        val namesList = orderedProducts.map { it.product.name }
+        return namesList.joinToString()
+    }
 }

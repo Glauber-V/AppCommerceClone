@@ -14,12 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
+import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -29,9 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,6 +43,8 @@ import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.order.OrderedProduct
 import com.example.appcommerceclone.ui.common.DoubleActionButton
 import com.example.appcommerceclone.ui.common.LeftToRightCard
+import com.example.appcommerceclone.ui.common.PrimaryActionButton
+import com.example.appcommerceclone.ui.common.SecondaryActionButton
 import com.example.appcommerceclone.util.formatPrice
 import com.example.appcommerceclone.util.orderedProductList
 import com.example.appcommerceclone.viewmodels.CartViewModel
@@ -119,7 +119,7 @@ fun CartScreen(
                 ),
             onPrimaryAction = onConfirmPurchase,
             isPrimaryActionEnabled = cartProducts.isNotEmpty(),
-            primaryContent = {
+            primaryActionContent = {
                 Text(
                     text = stringResource(id = R.string.cart_confirm_purchase_btn),
                     textAlign = TextAlign.Center,
@@ -128,7 +128,7 @@ fun CartScreen(
             },
             onSecondaryAction = onAbandonCart,
             isSecondaryActionEnabled = cartProducts.isNotEmpty(),
-            secondaryContent = {
+            secondaryActionContent = {
                 Text(
                     text = stringResource(id = R.string.cart_cancel_purchase_btn),
                     textAlign = TextAlign.Center,
@@ -203,15 +203,16 @@ fun CartProductItem(
                     style = MaterialTheme.typography.subtitle1
                 )
                 Row(
+                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    OutlinedButton(
-                        onClick = onQuantityDecrease,
+                    SecondaryActionButton(
                         shape = CircleShape,
-                        content = {
+                        onSecondaryAction = onQuantityDecrease,
+                        secondaryActionContent = {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_baseline_remove_24),
+                                imageVector = Icons.Rounded.Remove,
                                 contentDescription = stringResource(id = R.string.content_desc_item_cart_decrease_btn)
                             )
                         }
@@ -225,16 +226,12 @@ fun CartProductItem(
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.h6
                     )
-                    Button(
-                        onClick = onQuantityIncrease,
+                    PrimaryActionButton(
+                        onPrimaryAction = onQuantityIncrease,
                         shape = CircleShape,
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(id = R.color.primaryColor),
-                            contentColor = colorResource(id = R.color.white_100)
-                        ),
-                        content = {
+                        primaryActionContent = {
                             Icon(
-                                painter = painterResource(id = R.drawable.ic_baseline_add_24),
+                                imageVector = Icons.Rounded.Add,
                                 contentDescription = stringResource(id = R.string.content_desc_item_cart_increase_btn)
                             )
                         }

@@ -105,16 +105,11 @@
     <string name="cart_dialog_negative">Cancel</string>
 
     <!--Order Fragment-->
+    <string name="order_empty_history">You have no purchases</string>
     <string name="order_item_id">Order Id: %1s</string>
     <string name="order_item_date">Date: %1s</string>
     <string name="order_item_products">Products: %1s</string>
     <string name="order_item_total_price">Total: %1s</string>
-    <string name="order_status_pendent">Pendent</string>
-    <string name="order_status_paid">Paid</string>
-    <string name="order_status_processed">Processed</string>
-    <string name="order_status_canceled">Canceled</string>
-    <string name="order_method_credit_card">Credit Card</string>
-    <string name="order_method_none">None</string>
 
     <!--Connection Fragment-->
     <string name="connection_lost">No Internet connection</string>

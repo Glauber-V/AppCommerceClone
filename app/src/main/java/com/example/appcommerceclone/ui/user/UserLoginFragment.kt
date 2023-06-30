@@ -1,15 +1,18 @@
 package com.example.appcommerceclone.ui.user
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
@@ -46,7 +49,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.user.User
 import com.example.appcommerceclone.ui.common.PrimaryActionButton
@@ -59,6 +64,19 @@ import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class UserLoginFragment(private val userViewModel: UserViewModel) : Fragment() {
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                val navController = findNavController()
+                val startDestination = navController.graph.startDestinationId
+                val navOptions = NavOptions.Builder().setPopUpTo(startDestination, true).build()
+                navController.navigate(startDestination, null, navOptions)
+            }
+        })
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ComposeView(requireContext()).apply {
@@ -175,13 +193,14 @@ fun UserLoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
                 onPrimaryAction = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
                     onLoginRequest(usernameText, passwordText)
                 },
                 isPrimaryActionEnabled = canLogin,
-                primaryContent = {
+                primaryActionContent = {
                     Text(
                         text = stringResource(id = R.string.user_login_btn),
                         textAlign = TextAlign.Center,

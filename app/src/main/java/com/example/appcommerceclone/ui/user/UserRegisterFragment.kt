@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
@@ -115,6 +116,7 @@ fun UserRegisterScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+                shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
                 onPrimaryAction = {
                     snackbarScope.launch {
                         focusManager.clearFocus()
@@ -124,7 +126,7 @@ fun UserRegisterScreen(
                     }
                 },
                 isPrimaryActionEnabled = canRegister,
-                primaryContent = {
+                primaryActionContent = {
                     Text(
                         text = stringResource(id = R.string.user_register_btn),
                         textAlign = TextAlign.Center,
