@@ -36,6 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
@@ -56,13 +57,20 @@ class FavoritesFragment(
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                val favoriteProducts by favoritesViewModel.favorites.observeAsState(initial = emptyList())
-                FavoritesScreen(
-                    favoriteProducts = favoriteProducts,
-                    onRemoveFavoriteProduct = { product: Product ->
-                        favoritesViewModel.removeFromFavorites(product)
-                    }
-                )
+                val user by userViewModel.loggedUser.observeAsState(initial = null)
+                if (user != null) {
+                    val favoriteProducts by favoritesViewModel.favorites.observeAsState(initial = emptyList())
+                    FavoritesScreen(
+                        favoriteProducts = favoriteProducts,
+                        onRemoveFavoriteProduct = { product: Product ->
+                            favoritesViewModel.removeFromFavorites(product)
+                        }
+                    )
+                } else {
+                    findNavController().navigate(
+                        FavoritesFragmentDirections.actionGlobalUserLoginFragment()
+                    )
+                }
             }
         }
     }
@@ -81,7 +89,7 @@ fun FavoritesScreen(
     ) {
         items(
             items = favoriteProducts,
-            key = { it: Product -> it.id }
+            key = { product: Product -> product.id }
         ) { favoriteProduct: Product ->
             FavoriteProductItem(
                 product = favoriteProduct,

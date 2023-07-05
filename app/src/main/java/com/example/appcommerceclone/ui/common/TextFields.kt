@@ -1,13 +1,11 @@
 package com.example.appcommerceclone.ui.common
 
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
@@ -23,14 +21,11 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -43,7 +38,6 @@ fun OutlinedTextFieldWithValidation(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
-    textStyle: TextStyle = LocalTextStyle.current,
     label: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
@@ -52,9 +46,6 @@ fun OutlinedTextFieldWithValidation(
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
-    singleLine: Boolean = true,
-    interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-    shape: Shape = MaterialTheme.shapes.small,
     colors: TextFieldColors = TextFieldDefaults.outlinedTextFieldColors(
         focusedBorderColor = colorResource(id = R.color.primaryColor),
         focusedLabelColor = colorResource(id = R.color.primaryColor),
@@ -73,8 +64,7 @@ fun OutlinedTextFieldWithValidation(
             modifier = modifier,
             enabled = enabled,
             readOnly = readOnly,
-            singleLine = singleLine,
-            textStyle = textStyle,
+            singleLine = true,
             label = label,
             leadingIcon = leadingIcon,
             placeholder = placeholder,
@@ -93,11 +83,9 @@ fun OutlinedTextFieldWithValidation(
             visualTransformation = visualTransformation,
             keyboardOptions = keyboardOptions,
             keyboardActions = keyboardActions,
-            interactionSource = interactionSource,
-            shape = shape,
             colors = colors
         )
-        if (showError) {
+        if (showError && errorMessage.isNotEmpty()) {
             Text(
                 text = errorMessage,
                 color = MaterialTheme.colors.error,
@@ -111,6 +99,8 @@ fun OutlinedTextFieldWithValidation(
 @Composable
 fun UserEmailOutlinedTextField(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
     userEmailText: String,
     onEmailTextChange: (String) -> Unit
 ) {
@@ -118,6 +108,8 @@ fun UserEmailOutlinedTextField(
         value = userEmailText,
         onValueChange = onEmailTextChange,
         modifier = modifier,
+        enabled = enabled,
+        readOnly = readOnly,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Email,
@@ -144,6 +136,8 @@ fun UserEmailOutlinedTextField(
 @Composable
 fun UserNameOutlinedTextField(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
     userNameText: String,
     onUserNameTextChange: (String) -> Unit
 ) {
@@ -151,6 +145,8 @@ fun UserNameOutlinedTextField(
         value = userNameText,
         onValueChange = onUserNameTextChange,
         modifier = modifier,
+        enabled = enabled,
+        readOnly = readOnly,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Person,
@@ -177,6 +173,8 @@ fun UserNameOutlinedTextField(
 @Composable
 fun UserPasswordOutlinedTextField(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    readOnly: Boolean = false,
     userPasswordText: String,
     onUserPasswordChange: (String) -> Unit
 ) {
@@ -186,6 +184,8 @@ fun UserPasswordOutlinedTextField(
         value = userPasswordText,
         onValueChange = onUserPasswordChange,
         modifier = modifier,
+        enabled = enabled,
+        readOnly = readOnly,
         leadingIcon = {
             Icon(
                 imageVector = Icons.Filled.Lock,
