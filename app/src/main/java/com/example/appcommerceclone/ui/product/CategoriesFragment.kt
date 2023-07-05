@@ -1,9 +1,5 @@
 package com.example.appcommerceclone.ui.product
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,35 +11,13 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.viewmodels.ProductCategories
-import com.example.appcommerceclone.viewmodels.ProductViewModel
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class CategoriesFragment(private val productViewModel: ProductViewModel) : Fragment() {
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                CategoriesScreen { selectedProductCategory: ProductCategories ->
-                    productViewModel.filterProductList(selectedProductCategory)
-                    findNavController().navigateUp()
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun CategoriesScreen(

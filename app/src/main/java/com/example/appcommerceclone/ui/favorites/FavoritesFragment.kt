@@ -1,9 +1,5 @@
 package com.example.appcommerceclone.ui.favorites
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -20,14 +16,10 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Favorite
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -35,46 +27,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.util.productList
-import com.example.appcommerceclone.viewmodels.FavoritesViewModel
-import com.example.appcommerceclone.viewmodels.UserViewModel
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class FavoritesFragment(
-    private val userViewModel: UserViewModel,
-    private val favoritesViewModel: FavoritesViewModel
-) : Fragment() {
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val user by userViewModel.loggedUser.observeAsState(initial = null)
-                if (user != null) {
-                    val favoriteProducts by favoritesViewModel.favorites.observeAsState(initial = emptyList())
-                    FavoritesScreen(
-                        favoriteProducts = favoriteProducts,
-                        onRemoveFavoriteProduct = { product: Product ->
-                            favoritesViewModel.removeFromFavorites(product)
-                        }
-                    )
-                } else {
-                    findNavController().navigate(
-                        FavoritesFragmentDirections.actionGlobalUserLoginFragment()
-                    )
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun FavoritesScreen(
@@ -118,7 +76,7 @@ fun FavoriteProductItem(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(product.imageUrl)
                     .placeholder(R.drawable.place_holder)
-                    .error(R.drawable.ic_baseline_broken_image_24)
+                    .error(R.drawable.ic_broken_image)
                     .build(),
                 contentDescription = null
             )

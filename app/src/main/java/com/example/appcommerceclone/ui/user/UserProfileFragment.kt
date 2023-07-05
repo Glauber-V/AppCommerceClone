@@ -1,9 +1,5 @@
 package com.example.appcommerceclone.ui.user
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
@@ -27,23 +23,17 @@ import androidx.compose.material.icons.filled.Phone
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavOptions
-import androidx.navigation.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.model.user.Address
 import com.example.appcommerceclone.model.user.Name
@@ -55,8 +45,6 @@ import com.example.appcommerceclone.ui.common.SecondaryActionButton
 import com.example.appcommerceclone.ui.common.UserEmailOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
-import com.example.appcommerceclone.viewmodels.UserViewModel
-import dagger.hilt.android.AndroidEntryPoint
 
 @Stable
 class UserProfileState(private val user: User) {
@@ -183,39 +171,6 @@ class UserProfileState(private val user: User) {
 @Composable
 fun rememberUserProfileState(user: User): UserProfileState {
     return remember(user) { UserProfileState(user) }
-}
-
-@AndroidEntryPoint
-class UserProfileFragment(private val userViewModel: UserViewModel) : Fragment() {
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val user by userViewModel.loggedUser.observeAsState(initial = null)
-                if (user != null) {
-                    UserProfileScreen(
-                        user = user!!,
-                        onUpdateUserProfile = {
-                            userViewModel.updateUser(it)
-                        },
-                        onPictureRequest = {},
-                        onLogout = {
-                            val navController = findNavController()
-                            val startDestination = navController.graph.startDestinationId
-                            val navOptions = NavOptions.Builder().setPopUpTo(startDestination, true).build()
-                            navController.navigate(startDestination, null, navOptions)
-                            userViewModel.logout()
-                        }
-                    )
-                } else {
-                    findNavController().navigate(
-                        UserProfileFragmentDirections.actionGlobalUserLoginFragment()
-                    )
-                }
-            }
-        }
-    }
 }
 
 @Composable

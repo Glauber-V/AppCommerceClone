@@ -1,9 +1,5 @@
 package com.example.appcommerceclone.ui.user
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,41 +21,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.ui.common.PrimaryActionButton
 import com.example.appcommerceclone.ui.common.UserEmailOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-
-@AndroidEntryPoint
-class UserRegisterFragment : Fragment() {
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                UserRegisterScreen(
-                    onRegisterRequest = {
-                        findNavController().navigateUp()
-                    }
-                )
-            }
-        }
-    }
-}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

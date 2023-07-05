@@ -1,9 +1,5 @@
 package com.example.appcommerceclone.ui.cart
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,22 +17,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.fragment.app.Fragment
-import androidx.navigation.findNavController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
@@ -45,42 +35,7 @@ import com.example.appcommerceclone.ui.common.DoubleActionButton
 import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.ui.common.PrimaryActionButton
 import com.example.appcommerceclone.ui.common.SecondaryActionButton
-import com.example.appcommerceclone.util.formatPrice
 import com.example.appcommerceclone.util.orderedProductList
-import com.example.appcommerceclone.viewmodels.CartViewModel
-import com.example.appcommerceclone.viewmodels.UserOrdersViewModel
-import dagger.hilt.android.AndroidEntryPoint
-
-@AndroidEntryPoint
-class CartFragment(
-    private val cartViewModel: CartViewModel,
-    private val userOrdersViewModel: UserOrdersViewModel
-) : Fragment() {
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return ComposeView(requireContext()).apply {
-            setViewCompositionStrategy(DisposeOnViewTreeLifecycleDestroyed)
-            setContent {
-                val cartProducts by cartViewModel.cartProducts.observeAsState(initial = emptyList())
-                val cartTotalPrice by cartViewModel.cartTotalPrice.observeAsState(initial = 0.0)
-                CartScreen(
-                    cartProducts = cartProducts,
-                    onQuantityIncrease = { cartViewModel.increaseQuantity(it) },
-                    onQuantityDecrease = { cartViewModel.decreaseQuantity(it) },
-                    cartTotalPrice = cartTotalPrice.formatPrice(),
-                    onAbandonCart = { cartViewModel.abandonCart() },
-                    onConfirmPurchase = {
-                        val order = cartViewModel.createOrder(cartProducts)
-                        userOrdersViewModel.receiveOrder(order)
-                        findNavController().navigate(
-                            CartFragmentDirections.actionCartFragmentToOrdersFragment()
-                        )
-                    }
-                )
-            }
-        }
-    }
-}
 
 @Composable
 fun CartScreen(
@@ -179,7 +134,7 @@ fun CartProductItem(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(orderedProduct.product.imageUrl)
                     .placeholder(R.drawable.place_holder)
-                    .error(R.drawable.ic_baseline_broken_image_24)
+                    .error(R.drawable.ic_broken_image)
                     .build(),
                 contentDescription = null
             )
