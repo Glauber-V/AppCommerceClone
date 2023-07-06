@@ -4,6 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.dispatcher.FakeDispatcherProvider
 import com.example.appcommerceclone.data.product.FakeProductsProvider
 import com.example.appcommerceclone.data.product.FakeProductsRepository
+import com.example.appcommerceclone.ui.product.ProductCategories
+import com.example.appcommerceclone.ui.product.ProductViewModel
 import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.getOrAwaitValue
 import com.example.appcommerceclone.util.productElectronic

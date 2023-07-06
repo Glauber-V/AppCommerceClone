@@ -15,13 +15,13 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.model.order.OrderedProduct
+import com.example.appcommerceclone.data.model.order.OrderedProduct
 import com.example.appcommerceclone.ui.cart.CartScreen
+import com.example.appcommerceclone.ui.cart.CartViewModel
 import com.example.appcommerceclone.util.formatPrice
 import com.example.appcommerceclone.util.getStringResource
 import com.example.appcommerceclone.util.productJewelry
 import com.example.appcommerceclone.util.showSemanticTreeInConsole
-import com.example.appcommerceclone.viewmodels.CartViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

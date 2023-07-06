@@ -35,9 +35,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.model.user.Address
-import com.example.appcommerceclone.model.user.Name
-import com.example.appcommerceclone.model.user.User
+import com.example.appcommerceclone.data.model.user.Address
+import com.example.appcommerceclone.data.model.user.Name
+import com.example.appcommerceclone.data.model.user.User
 import com.example.appcommerceclone.ui.common.DoubleActionButton
 import com.example.appcommerceclone.ui.common.OutlinedTextFieldWithValidation
 import com.example.appcommerceclone.ui.common.PrimaryActionButton

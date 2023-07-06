@@ -1,11 +1,10 @@
-package com.example.appcommerceclone.viewmodels
+package com.example.appcommerceclone.ui.cart
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.appcommerceclone.model.order.Order
-import com.example.appcommerceclone.model.order.OrderedProduct
-import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.data.model.order.OrderedProduct
+import com.example.appcommerceclone.data.model.product.Product
 import com.example.appcommerceclone.util.getTotalPrice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -47,13 +46,6 @@ class CartViewModel @Inject constructor() : ViewModel() {
         orderedProduct.quantity -= 1
         if (orderedProduct.quantity < 1) _cartProducts.value?.remove(orderedProduct)
         updateTotalPrice()
-    }
-
-    fun createOrder(orderedProduct: List<OrderedProduct>): Order {
-        return Order(
-            orderedProducts = orderedProduct,
-            total = orderedProduct.getTotalPrice()
-        ).also { abandonCart() }
     }
 
     fun abandonCart() {

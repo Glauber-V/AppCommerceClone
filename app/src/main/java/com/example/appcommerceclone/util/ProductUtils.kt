@@ -1,8 +1,8 @@
 package com.example.appcommerceclone.util
 
-import com.example.appcommerceclone.model.order.OrderedProduct
-import com.example.appcommerceclone.model.product.Product
-import com.example.appcommerceclone.viewmodels.ProductCategories
+import com.example.appcommerceclone.data.model.order.OrderedProduct
+import com.example.appcommerceclone.data.model.product.Product
+import com.example.appcommerceclone.ui.product.ProductCategories
 
 val baseExampleProduct = Product(
     description = "Product crafted by specialists in the industry. Satisfaction guaranteed. " +

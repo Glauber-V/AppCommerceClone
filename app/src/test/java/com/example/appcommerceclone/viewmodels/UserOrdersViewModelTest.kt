@@ -2,8 +2,9 @@ package com.example.appcommerceclone.viewmodels
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
-import com.example.appcommerceclone.model.order.Order
+import com.example.appcommerceclone.ui.order.UserOrdersViewModel
 import com.example.appcommerceclone.util.getOrAwaitValue
+import com.example.appcommerceclone.util.orderedProductList
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -22,18 +23,17 @@ class UserOrdersViewModelTest {
     }
 
     @Test
-    fun receiveOrder_processOrder_withUserId_verifyOrderWasAddedToOrderList() {
-        val order = Order(id = 1)
-        userOrdersViewModel.receiveOrder(order)
+    fun createNewUserOder_verifyOrderWasAddedToOrderList() {
+        var orders = userOrdersViewModel.orders.getOrAwaitValue()
+        assertThat(orders).isEmpty()
 
-        val orderReceived = userOrdersViewModel.order.getOrAwaitValue()
-        assertThat(orderReceived).isNotNull()
-        assertThat(orderReceived).isEqualTo(order)
+        userOrdersViewModel.createOrder(
+            userId = firstUser.id,
+            orderedProductList = orderedProductList
+        )
 
-        userOrdersViewModel.processOrder(order = orderReceived!!, userId = firstUser.id)
-
-        val orders = userOrdersViewModel.orders.getOrAwaitValue()
+        orders = userOrdersViewModel.orders.getOrAwaitValue()
         assertThat(orders).isNotEmpty()
-        assertThat(orders).contains(order)
+        assertThat(orders).hasSize(1)
     }
 }

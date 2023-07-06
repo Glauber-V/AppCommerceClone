@@ -1,6 +1,6 @@
 package com.example.appcommerceclone.data.user
 
-import com.example.appcommerceclone.model.user.User
+import com.example.appcommerceclone.data.model.user.User
 
 interface UserAuthenticator {
 

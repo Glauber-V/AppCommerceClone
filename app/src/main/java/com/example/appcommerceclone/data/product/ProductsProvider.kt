@@ -1,6 +1,6 @@
 package com.example.appcommerceclone.data.product
 
-import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.data.model.product.Product
 import retrofit2.http.GET
 
 interface ProductsProvider {

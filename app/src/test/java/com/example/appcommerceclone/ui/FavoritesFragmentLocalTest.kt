@@ -16,15 +16,15 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performScrollTo
 import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.data.model.product.Product
 import com.example.appcommerceclone.ui.favorites.FavoritesScreen
+import com.example.appcommerceclone.ui.favorites.FavoritesViewModel
 import com.example.appcommerceclone.util.getStringResource
 import com.example.appcommerceclone.util.productElectronic
 import com.example.appcommerceclone.util.productJewelry
 import com.example.appcommerceclone.util.productMensClothing
 import com.example.appcommerceclone.util.productWomensClothing
 import com.example.appcommerceclone.util.showSemanticTreeInConsole
-import com.example.appcommerceclone.viewmodels.FavoritesViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

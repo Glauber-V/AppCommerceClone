@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.model.user
+package com.example.appcommerceclone.data.model.user
 
 import com.squareup.moshi.Json
 

@@ -12,11 +12,12 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
+import com.example.appcommerceclone.data.model.product.Product
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
-import com.example.appcommerceclone.model.product.Product
 import com.example.appcommerceclone.ui.product.CategoriesScreen
+import com.example.appcommerceclone.ui.product.ProductViewModel
 import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.getStringResource
 import com.example.appcommerceclone.util.productElectronic
@@ -24,7 +25,6 @@ import com.example.appcommerceclone.util.productJewelry
 import com.example.appcommerceclone.util.productMensClothing
 import com.example.appcommerceclone.util.productWomensClothing
 import com.example.appcommerceclone.util.showSemanticTreeInConsole
-import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

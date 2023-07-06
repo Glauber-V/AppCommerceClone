@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.viewmodels
+package com.example.appcommerceclone.ui.product
 
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.LiveData
@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
+import com.example.appcommerceclone.data.model.product.Product
 import com.example.appcommerceclone.data.product.ProductsRepository
-import com.example.appcommerceclone.model.product.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

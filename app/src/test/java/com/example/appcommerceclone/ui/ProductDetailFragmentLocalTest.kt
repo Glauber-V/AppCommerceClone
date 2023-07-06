@@ -19,8 +19,8 @@ import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.ui.product.ProductDetailScreen
+import com.example.appcommerceclone.ui.product.ProductViewModel
 import com.example.appcommerceclone.util.*
-import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.google.common.truth.Truth.*
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest

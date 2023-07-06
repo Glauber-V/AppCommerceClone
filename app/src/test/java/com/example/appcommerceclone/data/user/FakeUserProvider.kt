@@ -1,9 +1,9 @@
 package com.example.appcommerceclone.data.user
 
-import com.example.appcommerceclone.model.user.Address
-import com.example.appcommerceclone.model.user.Name
-import com.example.appcommerceclone.model.user.User
-import com.example.appcommerceclone.model.user.UserToken
+import com.example.appcommerceclone.data.model.user.Address
+import com.example.appcommerceclone.data.model.user.Name
+import com.example.appcommerceclone.data.model.user.User
+import com.example.appcommerceclone.data.model.user.UserToken
 
 class FakeUserProvider : UsersProvider {
 

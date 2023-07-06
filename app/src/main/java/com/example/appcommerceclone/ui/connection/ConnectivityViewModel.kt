@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.viewmodels
+package com.example.appcommerceclone.ui.connection
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

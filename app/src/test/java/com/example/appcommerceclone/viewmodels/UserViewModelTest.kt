@@ -6,6 +6,7 @@ import com.example.appcommerceclone.data.user.FakeUserAuthenticator
 import com.example.appcommerceclone.data.user.FakeUserProvider
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.secondUser
+import com.example.appcommerceclone.ui.user.UserViewModel
 import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.getOrAwaitValue
 import com.google.common.truth.Truth.assertThat

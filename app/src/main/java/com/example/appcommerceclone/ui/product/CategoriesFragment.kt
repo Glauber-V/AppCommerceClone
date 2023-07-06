@@ -17,7 +17,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.ui.common.LeftToRightCard
-import com.example.appcommerceclone.viewmodels.ProductCategories
 
 @Composable
 fun CategoriesScreen(
