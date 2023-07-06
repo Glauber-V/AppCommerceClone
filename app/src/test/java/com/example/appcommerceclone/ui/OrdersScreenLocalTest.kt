@@ -30,7 +30,7 @@ import org.robolectric.annotation.Config
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
-class OrdersFragmentLocalTest {
+class OrdersScreenLocalTest {
 
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()

@@ -38,7 +38,7 @@ import javax.inject.Inject
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
-class ProductDetailFragmentLocalTest {
+class ProductDetailScreenLocalTest {
 
     @get:Rule(order = 0)
     val hiltAndroidRule = HiltAndroidRule(this)

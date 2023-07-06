@@ -36,7 +36,7 @@ import org.robolectric.annotation.Config
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
-class CartFragmentLocalTest {
+class CartScreenLocalTest {
 
     @get:Rule(order = 0)
     val hiltAndroidRule = HiltAndroidRule(this)

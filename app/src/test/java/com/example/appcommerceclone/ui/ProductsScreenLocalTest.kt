@@ -1,30 +1,24 @@
 package com.example.appcommerceclone.ui
 
-import androidx.activity.ComponentActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
-import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToLog
-import com.example.appcommerceclone.R
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.contrib.RecyclerViewActions.*
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.model.product.Product
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
-import com.example.appcommerceclone.ui.product.CategoriesScreen
 import com.example.appcommerceclone.ui.product.ProductViewModel
-import com.example.appcommerceclone.util.TestMainDispatcherRule
-import com.example.appcommerceclone.util.getStringResource
-import com.example.appcommerceclone.util.productElectronic
-import com.example.appcommerceclone.util.productJewelry
-import com.example.appcommerceclone.util.productMensClothing
-import com.example.appcommerceclone.util.productWomensClothing
-import com.example.appcommerceclone.util.showSemanticTreeInConsole
+import com.example.appcommerceclone.ui.product.ProductsScreen
+import com.example.appcommerceclone.util.*
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -46,7 +40,7 @@ import javax.inject.Inject
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
-class CategoriesFragmentLocalTest {
+class ProductsScreenLocalTest {
 
     @get:Rule(order = 0)
     val hiltAndroidRule = HiltAndroidRule(this)
@@ -55,7 +49,7 @@ class CategoriesFragmentLocalTest {
     val testMainDispatcherRule = TestMainDispatcherRule()
 
     @get:Rule(order = 2)
-    val composeRule = createAndroidComposeRule<ComponentActivity>()
+    val composeRule = createComposeRule()
 
     @Inject
     lateinit var productsRepository: ProductsRepository
@@ -64,6 +58,8 @@ class CategoriesFragmentLocalTest {
     lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var productViewModel: ProductViewModel
+    private lateinit var isDataLoaded: State<Boolean>
+    private lateinit var isLoading: State<Boolean>
     private lateinit var products: State<List<Product>>
 
     @Before
@@ -71,36 +67,55 @@ class CategoriesFragmentLocalTest {
         hiltAndroidRule.inject()
         showSemanticTreeInConsole()
         composeRule.setContent {
+            productViewModel = ProductViewModel(productsRepository, dispatcherProvider)
+            isLoading = productViewModel.isLoading.observeAsState(initial = false)
+            isDataLoaded = productViewModel.isDataLoaded.observeAsState(initial = false)
+            products = productViewModel.products.observeAsState(initial = emptyList())
             MaterialTheme {
-                productViewModel = ProductViewModel(productsRepository, dispatcherProvider)
-                products = productViewModel.products.observeAsState(initial = emptyList())
-                CategoriesScreen(onProductCategorySelected = { productViewModel.filterProductList(it) })
+                ProductsScreen(
+                    isLoading = isLoading.value,
+                    products = products.value,
+                    onProductClicked = {},
+                    onRefresh = {}
+                )
             }
         }
     }
 
     @Test
-    fun onCategoriesScreen_selectCategory_verifyProductListHasSize1() = runTest {
-
-        productViewModel.updateProductList()
-        advanceUntilIdle()
-
-        assertThat(products.value).hasSize(4)
-        assertThat(products.value).contains(productJewelry)
-        assertThat(products.value).contains(productElectronic)
-        assertThat(products.value).contains(productMensClothing)
-        assertThat(products.value).contains(productWomensClothing)
+    fun onProductsScreen_verifyProductsAreVisible() = runTest {
 
         with(composeRule) {
-            onRoot().printToLog("onCategoriesScreen")
 
-            onNodeWithText(getStringResource(R.string.category_name_women_s_clothing))
+            productViewModel.updateProductList()
+            advanceUntilIdle()
+
+            onRoot().printToLog("onProductScreen")
+
+            assertThat(isLoading.value).isFalse()
+            assertThat(isDataLoaded.value).isTrue()
+            assertThat(products.value).isNotEmpty()
+            assertThat(products.value).hasSize(4)
+            assertThat(products.value).contains(productJewelry)
+            assertThat(products.value).contains(productElectronic)
+            assertThat(products.value).contains(productMensClothing)
+            assertThat(products.value).contains(productWomensClothing)
+
+            onNodeWithText(productJewelry.name)
                 .assertExists()
                 .assertIsDisplayed()
-                .performClick()
 
-            assertThat(products.value).hasSize(1)
-            assertThat(products.value).contains(productWomensClothing)
+            onNodeWithText(productElectronic.name)
+                .assertExists()
+                .assertIsDisplayed()
+
+            onNodeWithText(productMensClothing.name)
+                .assertExists()
+                .assertIsDisplayed()
+
+            onNodeWithText(productWomensClothing.name)
+                .assertExists()
+                .assertIsDisplayed()
         }
     }
 }

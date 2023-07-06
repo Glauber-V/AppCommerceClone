@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class UserProfileFragmentLocalTest {
+class UserProfileScreenLocalTest {
 
     @get:Rule(order = 0)
     val composeRule = createAndroidComposeRule<ComponentActivity>()
