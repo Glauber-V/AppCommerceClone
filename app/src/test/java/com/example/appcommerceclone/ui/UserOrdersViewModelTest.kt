@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.viewmodels
+package com.example.appcommerceclone.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
