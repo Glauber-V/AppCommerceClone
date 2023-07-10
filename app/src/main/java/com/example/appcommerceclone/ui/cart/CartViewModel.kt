@@ -3,8 +3,8 @@ package com.example.appcommerceclone.ui.cart
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.appcommerceclone.data.model.order.OrderedProduct
-import com.example.appcommerceclone.data.model.product.Product
+import com.example.appcommerceclone.data.product.model.OrderedProduct
+import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.util.getTotalPrice
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

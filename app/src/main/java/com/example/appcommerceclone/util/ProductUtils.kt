@@ -1,7 +1,7 @@
 package com.example.appcommerceclone.util
 
-import com.example.appcommerceclone.data.model.order.OrderedProduct
-import com.example.appcommerceclone.data.model.product.Product
+import com.example.appcommerceclone.data.product.model.OrderedProduct
+import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.ui.product.ProductCategories
 
 val baseExampleProduct = Product(

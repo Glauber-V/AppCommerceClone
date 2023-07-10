@@ -14,9 +14,9 @@ import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.model.user.User
 import com.example.appcommerceclone.data.user.FakeUserProvider
 import com.example.appcommerceclone.data.user.UserAuthenticator
+import com.example.appcommerceclone.data.user.model.User
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.UsersModule
 import com.example.appcommerceclone.ui.user.UserLoginScreen

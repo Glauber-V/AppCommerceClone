@@ -1,7 +1,7 @@
 package com.example.appcommerceclone.data.user
 
-import com.example.appcommerceclone.data.model.user.User
-import com.example.appcommerceclone.data.model.user.UserToken
+import com.example.appcommerceclone.data.user.model.User
+import com.example.appcommerceclone.data.user.model.UserToken
 import retrofit2.http.*
 
 interface UsersProvider {

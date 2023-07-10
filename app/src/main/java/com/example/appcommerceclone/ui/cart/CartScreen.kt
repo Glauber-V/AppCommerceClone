@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.model.order.OrderedProduct
+import com.example.appcommerceclone.data.product.model.OrderedProduct
 import com.example.appcommerceclone.ui.common.DoubleActionButton
 import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.ui.common.PrimaryActionButton

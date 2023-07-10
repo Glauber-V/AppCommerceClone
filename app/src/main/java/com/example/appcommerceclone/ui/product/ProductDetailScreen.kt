@@ -60,7 +60,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.model.product.Product
+import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.util.productMensClothing
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch

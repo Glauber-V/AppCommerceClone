@@ -12,8 +12,8 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.model.product.Product
 import com.example.appcommerceclone.data.product.ProductsRepository
+import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.ui.product.ProductViewModel

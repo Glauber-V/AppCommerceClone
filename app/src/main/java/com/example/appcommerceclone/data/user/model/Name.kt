@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.data.model.user
+package com.example.appcommerceclone.data.user.model
 
 data class Name(
     var firstname: String = "",

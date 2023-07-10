@@ -47,7 +47,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.model.user.User
+import com.example.appcommerceclone.data.user.model.User
 import com.example.appcommerceclone.ui.common.PrimaryActionButton
 import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField

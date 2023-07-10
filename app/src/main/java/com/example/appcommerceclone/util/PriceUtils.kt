@@ -1,6 +1,6 @@
 package com.example.appcommerceclone.util
 
-import com.example.appcommerceclone.data.model.order.OrderedProduct
+import com.example.appcommerceclone.data.product.model.OrderedProduct
 import java.text.NumberFormat
 
 fun Collection<OrderedProduct>.getTotalPrice(): Double =

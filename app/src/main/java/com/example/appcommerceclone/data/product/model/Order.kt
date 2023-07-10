@@ -1,4 +1,4 @@
-package com.example.appcommerceclone.data.model.order
+package com.example.appcommerceclone.data.product.model
 
 import com.squareup.moshi.Json
 import java.text.NumberFormat

@@ -3,7 +3,7 @@ package com.example.appcommerceclone.ui.favorites
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.appcommerceclone.data.model.product.Product
+import com.example.appcommerceclone.data.product.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

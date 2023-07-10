@@ -15,7 +15,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.model.order.OrderedProduct
+import com.example.appcommerceclone.data.product.model.OrderedProduct
 import com.example.appcommerceclone.ui.cart.CartScreen
 import com.example.appcommerceclone.ui.cart.CartViewModel
 import com.example.appcommerceclone.util.formatPrice

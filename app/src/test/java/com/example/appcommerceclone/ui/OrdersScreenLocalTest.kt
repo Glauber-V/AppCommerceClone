@@ -10,7 +10,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.model.order.Order
+import com.example.appcommerceclone.data.product.model.Order
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.ui.order.OrdersScreen
 import com.example.appcommerceclone.ui.order.UserOrdersViewModel

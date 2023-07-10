@@ -35,7 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.model.product.Product
+import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.ui.common.shimmerEffect
 import com.example.appcommerceclone.util.productList
 

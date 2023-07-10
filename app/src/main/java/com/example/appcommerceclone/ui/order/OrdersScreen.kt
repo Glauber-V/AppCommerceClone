@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.data.model.order.Order
+import com.example.appcommerceclone.data.product.model.Order
 import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.util.getTotalPrice
 import com.example.appcommerceclone.util.orderedProductList
