@@ -1,31 +1,38 @@
 package com.example.appcommerceclone.ui.user
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.SnackbarHost
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.appcommerceclone.R
@@ -33,29 +40,55 @@ import com.example.appcommerceclone.ui.common.PrimaryActionButton
 import com.example.appcommerceclone.ui.common.UserEmailOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
+@Stable
+class UserRegisterState {
+
+    var userEmailText by mutableStateOf("")
+        private set
+
+    var usernameText by mutableStateOf("")
+        private set
+
+    var userPasswordText by mutableStateOf("")
+        private set
+
+    fun onEmailTextChanged(email: String) {
+        userEmailText = email
+    }
+
+    fun onUsernameTextChanged(username: String) {
+        usernameText = username
+    }
+
+    fun onPasswordTextChanged(password: String) {
+        userPasswordText = password
+    }
+
+    fun canRegister(): Boolean {
+        return userEmailText.isNotEmpty() && usernameText.isNotEmpty() && userPasswordText.isNotEmpty()
+    }
+}
+
+@Composable
+fun rememberUserRegisterState(): UserRegisterState {
+    return remember { UserRegisterState() }
+}
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserRegisterScreen(
     modifier: Modifier = Modifier,
-    onRegisterRequest: () -> Unit
+    userRegisterState: UserRegisterState = rememberUserRegisterState(),
+    onRegisterRequest: () -> Unit,
+    context: Context = LocalContext.current,
+    focusManager: FocusManager = LocalFocusManager.current,
+    snackbarScope: CoroutineScope = rememberCoroutineScope(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
 ) {
-    val context = LocalContext.current
-    val snackbarScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    var userEmailText by rememberSaveable { mutableStateOf("") }
-    var userNameText by rememberSaveable { mutableStateOf("") }
-    var userPasswordText by rememberSaveable { mutableStateOf("") }
-
-    val canRegister = userEmailText.isNotEmpty()
-            && userNameText.isNotEmpty()
-            && userPasswordText.isNotEmpty()
-
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val focusManager = LocalFocusManager.current
-
     Scaffold(
         modifier = modifier.fillMaxSize(),
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
@@ -64,27 +97,44 @@ fun UserRegisterScreen(
             modifier = Modifier
                 .padding(contentPadding)
                 .padding(dimensionResource(id = R.dimen.padding_extra_large)),
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_medium),
+                alignment = Alignment.Top
+            ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             UserEmailOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                userEmailText = userEmailText,
-                onEmailTextChange = { userEmailText = it }
+                userEmailText = userRegisterState.userEmailText,
+                onEmailTextChange = { userRegisterState.onEmailTextChanged(it) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                )
             )
             UserNameOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.padding_large)),
-                userNameText = userNameText,
-                onUserNameTextChange = { userNameText = it }
+                modifier = Modifier.fillMaxWidth(),
+                userNameText = userRegisterState.usernameText,
+                onUserNameTextChange = { userRegisterState.onUsernameTextChanged(it) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Down)
+                    }
+                )
             )
             UserPasswordOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.padding_large)),
-                userPasswordText = userPasswordText,
-                onUserPasswordChange = { userPasswordText = it }
+                modifier = Modifier.fillMaxWidth(),
+                userPasswordText = userRegisterState.userPasswordText,
+                onUserPasswordChange = { userRegisterState.onPasswordTextChanged(it) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                    }
+                )
             )
             PrimaryActionButton(
                 modifier = Modifier
@@ -99,7 +149,7 @@ fun UserRegisterScreen(
                         onRegisterRequest()
                     }
                 },
-                isPrimaryActionEnabled = canRegister,
+                isPrimaryActionEnabled = userRegisterState.canRegister(),
                 primaryActionContent = {
                     Text(
                         text = stringResource(id = R.string.user_register_btn),
@@ -112,6 +162,7 @@ fun UserRegisterScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreviewUserRegisterScreen() {

@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -27,10 +29,17 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,9 +57,6 @@ import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
 
 @Stable
 class UserProfileState(private val user: User) {
-
-    val scrollState: ScrollState
-        @Composable get() = rememberScrollState()
 
     var isEditMode: Boolean by mutableStateOf(false)
         private set
@@ -173,6 +179,7 @@ fun rememberUserProfileState(user: User): UserProfileState {
     return remember(user) { UserProfileState(user) }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun UserProfileScreen(
     modifier: Modifier = Modifier,
@@ -180,13 +187,19 @@ fun UserProfileScreen(
     userProfileState: UserProfileState = rememberUserProfileState(user),
     onPictureRequest: () -> Unit,
     onUpdateUserProfile: (updatedUser: User) -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    focusManager: FocusManager = LocalFocusManager.current,
+    scrollState: ScrollState = rememberScrollState(),
+    keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
 ) {
     Column(
         modifier = modifier
-            .verticalScroll(userProfileState.scrollState)
+            .verticalScroll(scrollState)
             .padding(dimensionResource(id = R.dimen.padding_large)),
-        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_large)),
+        verticalArrangement = Arrangement.spacedBy(
+            space = dimensionResource(id = R.dimen.padding_medium),
+            alignment = Alignment.Top
+        ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
@@ -220,13 +233,25 @@ fun UserProfileScreen(
             modifier = Modifier.fillMaxWidth(),
             readOnly = userProfileState.isEditMode,
             userEmailText = userProfileState.emailText,
-            onEmailTextChange = { userProfileState.onEmailTextChange(it) }
+            onEmailTextChange = { userProfileState.onEmailTextChange(it) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            )
         )
         UserNameOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             readOnly = userProfileState.isEditMode,
             userNameText = userProfileState.usernameText,
-            onUserNameTextChange = { userProfileState.onUsernameTextChange(it) }
+            onUserNameTextChange = { userProfileState.onUsernameTextChange(it) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            )
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -243,7 +268,13 @@ fun UserProfileScreen(
                     )
                 },
                 value = userProfileState.firstNameText,
-                onValueChange = { userProfileState.onFirstNameTextChange(it) }
+                onValueChange = { userProfileState.onFirstNameTextChange(it) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Right)
+                    }
+                )
             )
             OutlinedTextFieldWithValidation(
                 modifier = Modifier.fillMaxWidth(),
@@ -255,14 +286,26 @@ fun UserProfileScreen(
                     )
                 },
                 value = userProfileState.lastNameText,
-                onValueChange = { userProfileState.onLastNameTextChange(it) }
+                onValueChange = { userProfileState.onLastNameTextChange(it) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Next)
+                    }
+                )
             )
         }
         UserPasswordOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
             readOnly = userProfileState.isEditMode,
             userPasswordText = userProfileState.passwordText,
-            onUserPasswordChange = { userProfileState.onPasswordTextChange(it) }
+            onUserPasswordChange = { userProfileState.onPasswordTextChange(it) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            )
         )
         OutlinedTextFieldWithValidation(
             modifier = Modifier.fillMaxWidth(),
@@ -281,7 +324,13 @@ fun UserProfileScreen(
                 )
             },
             value = userProfileState.phoneText,
-            onValueChange = { userProfileState.onPhoneTextChange(it) }
+            onValueChange = { userProfileState.onPhoneTextChange(it) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            )
         )
         OutlinedTextFieldWithValidation(
             modifier = Modifier.fillMaxWidth(),
@@ -293,7 +342,13 @@ fun UserProfileScreen(
                 )
             },
             value = userProfileState.zipcodeText,
-            onValueChange = { userProfileState.onZipcodeTextChange(it) }
+            onValueChange = { userProfileState.onZipcodeTextChange(it) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            )
         )
         OutlinedTextFieldWithValidation(
             modifier = Modifier.fillMaxWidth(),
@@ -312,7 +367,13 @@ fun UserProfileScreen(
                 )
             },
             value = userProfileState.cityText,
-            onValueChange = { userProfileState.onCityTextChange(it) }
+            onValueChange = { userProfileState.onCityTextChange(it) },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            )
         )
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -329,7 +390,13 @@ fun UserProfileScreen(
                     )
                 },
                 value = userProfileState.streetText,
-                onValueChange = { userProfileState.onStreetTextChange(it) }
+                onValueChange = { userProfileState.onStreetTextChange(it) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(
+                    onNext = {
+                        focusManager.moveFocus(FocusDirection.Right)
+                    }
+                )
             )
             OutlinedTextFieldWithValidation(
                 modifier = Modifier.fillMaxWidth(),
@@ -341,7 +408,13 @@ fun UserProfileScreen(
                     )
                 },
                 value = userProfileState.streetNumber.toString(),
-                onValueChange = { userProfileState.onNumberTextChange(it) }
+                onValueChange = { userProfileState.onNumberTextChange(it) },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        keyboardController?.hide()
+                    }
+                )
             )
         }
         if (!userProfileState.isEditMode) {
@@ -398,6 +471,7 @@ fun UserProfileScreen(
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreviewUserProfileScreenWithUser() {

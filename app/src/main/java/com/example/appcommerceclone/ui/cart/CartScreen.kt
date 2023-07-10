@@ -48,16 +48,33 @@ fun CartScreen(
     onConfirmPurchase: () -> Unit
 ) {
     Column(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(vertical = dimensionResource(id = R.dimen.padding_medium)),
+        verticalArrangement = Arrangement.spacedBy(
+            space = dimensionResource(id = R.dimen.padding_medium),
+            alignment = Alignment.Top
+        ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OrderedProductListColumn(
+        LazyColumn(
             modifier = Modifier.weight(1f),
-            cartProducts = cartProducts,
-            onQuantityIncrease = onQuantityIncrease,
-            onQuantityDecrease = onQuantityDecrease
-        )
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_medium),
+                alignment = Alignment.Top
+            ),
+            horizontalAlignment = Alignment.Start
+        ) {
+            items(
+                items = cartProducts,
+                key = { it.id }
+            ) { orderedProduct: OrderedProduct ->
+                CartProductItem(
+                    orderedProduct = orderedProduct,
+                    onQuantityIncrease = { onQuantityIncrease(orderedProduct) },
+                    onQuantityDecrease = { onQuantityDecrease(orderedProduct) })
+            }
+        }
         Text(
             text = stringResource(id = R.string.cart_total_price, cartTotalPrice),
             textAlign = TextAlign.Center,
@@ -66,12 +83,7 @@ fun CartScreen(
         DoubleActionButton(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(
-                    top = dimensionResource(id = R.dimen.padding_medium),
-                    start = dimensionResource(id = R.dimen.padding_large),
-                    end = dimensionResource(id = R.dimen.padding_large),
-                    bottom = dimensionResource(id = R.dimen.padding_medium)
-                ),
+                .padding(horizontal = dimensionResource(id = R.dimen.padding_large)),
             onPrimaryAction = onConfirmPurchase,
             isPrimaryActionEnabled = cartProducts.isNotEmpty(),
             primaryActionContent = {
@@ -95,36 +107,23 @@ fun CartScreen(
 }
 
 @Composable
-fun OrderedProductListColumn(
-    modifier: Modifier = Modifier,
-    cartProducts: List<OrderedProduct>,
-    onQuantityIncrease: (OrderedProduct) -> Unit,
-    onQuantityDecrease: (OrderedProduct) -> Unit
-) {
-    LazyColumn(modifier) {
-        items(
-            items = cartProducts,
-            key = { it.id }
-        ) { orderedProduct: OrderedProduct ->
-            CartProductItem(
-                orderedProduct = orderedProduct,
-                onQuantityIncrease = { onQuantityIncrease(orderedProduct) },
-                onQuantityDecrease = { onQuantityDecrease(orderedProduct) })
-        }
-    }
-}
-
-@Composable
 fun CartProductItem(
     modifier: Modifier = Modifier,
     orderedProduct: OrderedProduct,
     onQuantityIncrease: () -> Unit,
     onQuantityDecrease: () -> Unit
 ) {
-    LeftToRightCard(modifier) {
+    LeftToRightCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(end = dimensionResource(id = R.dimen.padding_large))
+    ) {
         Row(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_medium),
+                alignment = Alignment.Start
+            ),
             verticalAlignment = Alignment.Top
         ) {
             AsyncImage(
@@ -139,9 +138,11 @@ fun CartProductItem(
                 contentDescription = null
             )
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = dimensionResource(id = R.dimen.padding_medium))
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(
+                    space = dimensionResource(id = R.dimen.padding_small),
+                    alignment = Alignment.Top
+                )
             ) {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -152,14 +153,15 @@ fun CartProductItem(
                     style = MaterialTheme.typography.h6
                 )
                 Text(
-                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)),
                     text = orderedProduct.getFormattedPrice(),
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.subtitle1
                 )
                 Row(
-                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                    horizontalArrangement = Arrangement.spacedBy(
+                        space = dimensionResource(id = R.dimen.padding_extra_large),
+                        alignment = Alignment.Start
+                    ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     SecondaryActionButton(
@@ -173,17 +175,13 @@ fun CartProductItem(
                         }
                     )
                     Text(
-                        modifier = Modifier.padding(
-                            start = dimensionResource(id = R.dimen.padding_extra_large),
-                            end = dimensionResource(id = R.dimen.padding_extra_large)
-                        ),
                         text = orderedProduct.quantity.toString(),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.h6
                     )
                     PrimaryActionButton(
-                        onPrimaryAction = onQuantityIncrease,
                         shape = CircleShape,
+                        onPrimaryAction = onQuantityIncrease,
                         primaryActionContent = {
                             Icon(
                                 imageVector = Icons.Rounded.Add,

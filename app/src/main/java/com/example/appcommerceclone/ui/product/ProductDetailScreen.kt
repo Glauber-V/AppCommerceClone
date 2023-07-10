@@ -2,7 +2,9 @@ package com.example.appcommerceclone.ui.product
 
 import android.content.Context
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -36,11 +39,11 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -59,246 +62,264 @@ import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.model.product.Product
 import com.example.appcommerceclone.util.productMensClothing
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+
+@Stable
+class ProductDetailState(private val product: Product) {
+
+    val showOptions: Boolean
+        get() {
+            return when (product.category) {
+                ProductCategories.JEWELERY.categoryName -> false
+                ProductCategories.ELECTRONICS.categoryName -> false
+                else -> true
+            }
+        }
+
+    var selectedColor by mutableStateOf(ProductColors.NONE)
+        private set
+
+    var selectedSize by mutableStateOf(ProductSizes.NONE)
+        private set
+
+    fun validateSelections(): Boolean {
+        return if (showOptions) {
+            selectedColor != ProductColors.NONE && selectedSize != ProductSizes.NONE
+        } else {
+            true
+        }
+    }
+
+    fun onSelectedColorChange(productColor: ProductColors) {
+        selectedColor = productColor
+    }
+
+    fun onSelectedSizeChange(productSize: ProductSizes) {
+        selectedSize = productSize
+    }
+
+    fun createSnackbarMessage(context: Context): String {
+        if (selectedColor == ProductColors.NONE && selectedSize == ProductSizes.NONE)
+            return context.getString(R.string.product_detail_chip_color_and_size_warning)
+
+        if (selectedColor == ProductColors.NONE && selectedSize != ProductSizes.NONE)
+            return context.getString(R.string.product_detail_chip_color_warning)
+
+        if (selectedColor != ProductColors.NONE && selectedSize == ProductSizes.NONE)
+            return context.getString(R.string.product_detail_chip_size_warning)
+
+        return ""
+    }
+}
+
+@Composable
+fun rememberProductDetailState(product: Product): ProductDetailState {
+    return remember(product) { ProductDetailState(product) }
+}
 
 @Composable
 fun ProductDetailScreen(
     modifier: Modifier = Modifier,
     product: Product,
-    showOptions: Boolean,
+    productDetailState: ProductDetailState = rememberProductDetailState(product),
     onAddToFavorites: () -> Unit,
     onBuyNow: () -> Unit,
-    onAddToCart: () -> Unit
+    onAddToCart: () -> Unit,
+    context: Context = LocalContext.current,
+    snackBarScope: CoroutineScope = rememberCoroutineScope(),
+    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
+    verticaScrollState: ScrollState = rememberScrollState()
 ) {
-    val context = LocalContext.current
-    val verticaScrollState = rememberScrollState()
-    val snackBarScope = rememberCoroutineScope()
-    val snackbarHostState = remember { SnackbarHostState() }
-
-    var selectedColor by rememberSaveable { mutableStateOf(ProductColors.NONE) }
-    var selectedSize by rememberSaveable { mutableStateOf(ProductSizes.NONE) }
-    val canProceed = if (showOptions) selectedColor != ProductColors.NONE && selectedSize != ProductSizes.NONE else true
-
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         }
     ) { contentPadding ->
-        Column(modifier = modifier.verticalScroll(state = verticaScrollState)) {
+        Box(modifier = modifier.verticalScroll(verticaScrollState)) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(contentPadding),
-                verticalArrangement = Arrangement.Top,
+                    .padding(contentPadding)
+                    .padding(dimensionResource(id = R.dimen.padding_large)),
+                verticalArrangement = Arrangement.spacedBy(
+                    space = dimensionResource(id = R.dimen.padding_large),
+                    alignment = Alignment.Top
+                ),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                ProductDetails(
-                    modifier = Modifier.padding(
-                        top = dimensionResource(id = R.dimen.padding_large),
-                        start = dimensionResource(id = R.dimen.padding_large),
-                        end = dimensionResource(id = R.dimen.padding_large)
-                    ),
-                    product = product,
-                    onAddToFavorites = onAddToFavorites
+                AsyncImage(
+                    modifier = Modifier.size(width = 400.dp, height = 220.dp),
+                    model = ImageRequest.Builder(context)
+                        .data(product.imageUrl)
+                        .placeholder(R.drawable.place_holder)
+                        .error(R.drawable.ic_broken_image)
+                        .build(),
+                    contentDescription = null
                 )
-                ProductOptions(
-                    modifier = Modifier.padding(
-                        top = dimensionResource(id = R.dimen.padding_large),
-                        start = dimensionResource(id = R.dimen.padding_large),
-                        end = dimensionResource(id = R.dimen.padding_large)
-                    ),
-                    isShowFullDetail = showOptions,
-                    selectedColor = selectedColor,
-                    onSelectedColorChange = { selectedColor = it },
-                    selectedSize = selectedSize,
-                    onSelectedSizeChange = { selectedSize = it }
-                )
-                PurchaseActions(
-                    modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_large)),
-                    canProceed = canProceed,
-                    onProceedFailed = {
-                        snackBarScope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = context.createSnackbarMessage(selectedColor, selectedSize)
-                            )
-                        }
-                    },
-                    onAddToCart = onAddToCart,
-                    onBuyNow = onBuyNow
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun ProductDetails(
-    modifier: Modifier = Modifier,
-    product: Product,
-    onAddToFavorites: () -> Unit
-) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.Start
-    ) {
-        AsyncImage(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(dimensionResource(id = R.dimen.item_product_image_height)),
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(product.imageUrl)
-                .placeholder(R.drawable.place_holder)
-                .error(R.drawable.ic_broken_image)
-                .build(),
-            contentDescription = null
-        )
-        Row(
-            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
-            verticalAlignment = Alignment.Top
-        ) {
-            Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    text = product.name,
-                    textAlign = TextAlign.Start,
-                    style = MaterialTheme.typography.h5
-                )
-                Text(
-                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_medium)),
-                    text = product.getFormattedPrice(),
-                    textAlign = TextAlign.Start,
-                    style = MaterialTheme.typography.h6
-                )
-            }
-            IconButton(
-                onClick = onAddToFavorites,
-                content = {
-                    Icon(
-                        tint = colorResource(id = R.color.primaryColor),
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = stringResource(id = R.string.content_desc_add_to_favorites_btn)
-                    )
-                }
-            )
-        }
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = dimensionResource(id = R.dimen.padding_medium)),
-            text = product.description,
-            textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.body1
-        )
-    }
-}
-
-@Composable
-fun ProductOptions(
-    modifier: Modifier = Modifier,
-    isShowFullDetail: Boolean,
-    selectedColor: ProductColors,
-    onSelectedColorChange: (ProductColors) -> Unit,
-    selectedSize: ProductSizes,
-    onSelectedSizeChange: (ProductSizes) -> Unit
-) {
-    if (isShowFullDetail) {
-        Column(
-            modifier = modifier,
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.Start
-        ) {
-            Divider(
-                modifier = Modifier
-                    .padding(top = dimensionResource(id = R.dimen.padding_large))
-                    .fillMaxWidth(),
-                color = colorResource(id = R.color.divider_color),
-                thickness = dimensionResource(id = R.dimen.divider_size)
-            )
-            ColorChipGroup(
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
-                selectedColor = selectedColor,
-                onSelectedColorChange = { onSelectedColorChange(it) }
-            )
-            Divider(
-                modifier = Modifier
-                    .padding(top = dimensionResource(id = R.dimen.padding_large))
-                    .fillMaxWidth(),
-                color = colorResource(id = R.color.divider_color),
-                thickness = dimensionResource(id = R.dimen.divider_size)
-            )
-            SizeChipGroup(
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
-                selectedSize = selectedSize,
-                onSelectedSizeChange = { onSelectedSizeChange(it) }
-            )
-        }
-    }
-}
-
-@Composable
-fun ColorChipGroup(
-    modifier: Modifier = Modifier,
-    selectedColor: ProductColors,
-    onSelectedColorChange: (ProductColors) -> Unit
-) {
-    LazyRow(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        items(ProductColors.values()) { colorOption ->
-            if (colorOption != ProductColors.NONE) {
-                ProductDetailChip(
-                    modifier = Modifier
-                        .testTag(colorOption.name)
-                        .requiredSize(48.dp),
-                    isSelected = colorOption == selectedColor,
-                    onChipSelected = { isChipSelected ->
-                        if (isChipSelected) onSelectedColorChange(colorOption)
-                        else onSelectedColorChange(ProductColors.NONE)
-                    },
-                    backGroundColor = colorOption.color
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun SizeChipGroup(
-    modifier: Modifier = Modifier,
-    selectedSize: ProductSizes,
-    onSelectedSizeChange: (ProductSizes) -> Unit
-) {
-    LazyRow(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        items(ProductSizes.values()) { sizeOption ->
-            if (sizeOption != ProductSizes.NONE) {
-                ProductDetailChip(
-                    modifier = Modifier
-                        .testTag(sizeOption.name)
-                        .sizeIn(minWidth = 48.dp, minHeight = 48.dp),
-                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-                    isSelected = sizeOption == selectedSize,
-                    onChipSelected = { isChipSelected ->
-                        if (isChipSelected) onSelectedSizeChange(sizeOption)
-                        else onSelectedSizeChange(ProductSizes.NONE)
-                    },
-                    chipContent = {
+                Row(verticalAlignment = Alignment.Top) {
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+                        horizontalAlignment = Alignment.Start
+                    ) {
                         Text(
-                            text = sizeOption.size,
-                            textAlign = TextAlign.Center,
-                            style = MaterialTheme.typography.body1
+                            text = product.name,
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.h5
+                        )
+                        Text(
+                            text = product.getFormattedPrice(),
+                            textAlign = TextAlign.Start,
+                            style = MaterialTheme.typography.h6
                         )
                     }
+                    IconButton(
+                        onClick = onAddToFavorites,
+                        content = {
+                            Icon(
+                                tint = colorResource(id = R.color.primaryColor),
+                                imageVector = Icons.Filled.Favorite,
+                                contentDescription = stringResource(id = R.string.content_desc_add_to_favorites_btn)
+                            )
+                        }
+                    )
+                }
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = product.description,
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.body1
                 )
+                if (productDetailState.showOptions) {
+                    Divider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = colorResource(id = R.color.divider_color),
+                        thickness = dimensionResource(id = R.dimen.divider_size)
+                    )
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            space = dimensionResource(id = R.dimen.padding_small),
+                            alignment = Alignment.Start
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items(ProductColors.values()) { colorOption ->
+                            if (colorOption != ProductColors.NONE) {
+                                ProductDetailChip(
+                                    modifier = Modifier
+                                        .testTag(colorOption.name)
+                                        .requiredSize(48.dp),
+                                    isSelected = colorOption == productDetailState.selectedColor,
+                                    onChipSelected = { isChipSelected ->
+                                        productDetailState.onSelectedColorChange(
+                                            if (isChipSelected) colorOption else ProductColors.NONE
+                                        )
+                                    },
+                                    backGroundColor = colorOption.color
+                                )
+                            }
+                        }
+                    }
+                    Divider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = colorResource(id = R.color.divider_color),
+                        thickness = dimensionResource(id = R.dimen.divider_size)
+                    )
+                    LazyRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(
+                            space = dimensionResource(id = R.dimen.padding_small),
+                            alignment = Alignment.Start
+                        ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        items(ProductSizes.values()) { sizeOption ->
+                            if (sizeOption != ProductSizes.NONE) {
+                                ProductDetailChip(
+                                    modifier = Modifier
+                                        .testTag(sizeOption.name)
+                                        .sizeIn(minWidth = 48.dp, minHeight = 48.dp),
+                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
+                                    isSelected = sizeOption == productDetailState.selectedSize,
+                                    onChipSelected = { isChipSelected ->
+                                        productDetailState.onSelectedSizeChange(
+                                            if (isChipSelected) sizeOption else ProductSizes.NONE
+                                        )
+                                    },
+                                    chipContent = {
+                                        Text(
+                                            text = sizeOption.size,
+                                            textAlign = TextAlign.Center,
+                                            style = MaterialTheme.typography.body1
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    }
+                }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            if (productDetailState.validateSelections()) {
+                                onAddToCart()
+                            } else {
+                                snackBarScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = productDetailState.createSnackbarMessage(context)
+                                    )
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen.btn_min_height_size))
+                            .width(dimensionResource(id = R.dimen.btn_min_width_size)),
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Transparent,
+                            contentColor = colorResource(id = R.color.icon_color_black)
+                        ),
+                        content = {
+                            Icon(
+                                imageVector = Icons.Default.ShoppingCart,
+                                contentDescription = stringResource(id = R.string.content_desc_add_to_cart_btn)
+                            )
+                        }
+                    )
+                    TextButton(
+                        onClick = {
+                            if (productDetailState.validateSelections()) {
+                                onBuyNow()
+                            } else {
+                                snackBarScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        message = productDetailState.createSnackbarMessage(context)
+                                    )
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .height(dimensionResource(id = R.dimen.btn_min_height_size))
+                            .weight(1f),
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(id = R.color.primaryColor),
+                            contentColor = colorResource(id = R.color.white_100)
+                        ),
+                        content = {
+                            Text(
+                                text = stringResource(id = R.string.product_detail_buy_now),
+                                textAlign = TextAlign.Center,
+                                style = MaterialTheme.typography.button
+                            )
+                        }
+                    )
+                }
             }
         }
     }
@@ -317,7 +338,7 @@ fun ProductDetailChip(
     Surface(
         checked = isSelected,
         onCheckedChange = onChipSelected,
-        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_small)),
+        modifier = modifier,
         shape = shape,
         color = backGroundColor,
         border = BorderStroke(
@@ -337,7 +358,7 @@ fun ProductDetailChip(
                         start = if (chipContent != null) dimensionResource(id = R.dimen.padding_small) else 0.dp,
                         end = if (chipContent != null) dimensionResource(id = R.dimen.padding_small) else 0.dp
                     ),
-                    imageVector = Icons.Default.Done,
+                    imageVector = Icons.Filled.Done,
                     contentDescription = null
                 )
             }
@@ -346,76 +367,15 @@ fun ProductDetailChip(
     }
 }
 
-@Composable
-fun PurchaseActions(
-    modifier: Modifier = Modifier,
-    canProceed: Boolean,
-    onAddToCart: () -> Unit,
-    onBuyNow: () -> Unit,
-    onProceedFailed: () -> Unit
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedButton(
-            onClick = { if (canProceed) onAddToCart() else onProceedFailed() },
-            modifier = Modifier
-                .height(dimensionResource(id = R.dimen.btn_min_height_size))
-                .width(dimensionResource(id = R.dimen.btn_min_width_size)),
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Transparent,
-                contentColor = colorResource(id = R.color.icon_color_black)
-            ),
-            content = {
-                Icon(
-                    imageVector = Icons.Default.ShoppingCart,
-                    contentDescription = stringResource(id = R.string.content_desc_add_to_cart_btn)
-                )
-            }
-        )
-        TextButton(
-            onClick = { if (canProceed) onBuyNow() else onProceedFailed() },
-            modifier = Modifier
-                .padding(start = dimensionResource(id = R.dimen.padding_medium))
-                .height(dimensionResource(id = R.dimen.btn_min_height_size))
-                .weight(1f),
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = colorResource(id = R.color.primaryColor),
-                contentColor = colorResource(id = R.color.white_100)
-            ),
-            content = {
-                Text(
-                    text = stringResource(id = R.string.product_detail_buy_now),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.button
-                )
-            }
-        )
-    }
-}
-
-fun Context.createSnackbarMessage(selectedColor: ProductColors, selectedSize: ProductSizes): String {
-    if (selectedColor == ProductColors.NONE && selectedSize == ProductSizes.NONE) return getString(R.string.product_detail_chip_color_and_size_warning)
-    if (selectedColor == ProductColors.NONE) return getString(R.string.product_detail_chip_color_warning)
-    if (selectedSize == ProductSizes.NONE) return getString(R.string.product_detail_chip_size_warning)
-
-    return ""
-}
-
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
 fun PreviewProductDetailScreenContent() {
     MaterialTheme {
         ProductDetailScreen(
-            showOptions = true,
             product = productMensClothing,
-            onAddToFavorites = { },
-            onBuyNow = { },
-            onAddToCart = { }
+            onAddToFavorites = {},
+            onBuyNow = {},
+            onAddToCart = {}
         )
     }
 }

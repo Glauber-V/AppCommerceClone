@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,8 +42,13 @@ fun FavoritesScreen(
     onRemoveFavoriteProduct: (Product) -> Unit
 ) {
     LazyColumn(
-        modifier = modifier.fillMaxSize(),
-        verticalArrangement = Arrangement.Top,
+        modifier = modifier
+            .fillMaxSize()
+            .padding(top = dimensionResource(id = R.dimen.padding_small)),
+        verticalArrangement = Arrangement.spacedBy(
+            space = dimensionResource(id = R.dimen.padding_small),
+            alignment = Alignment.Top
+        ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         items(
@@ -63,10 +69,17 @@ fun FavoriteProductItem(
     product: Product,
     onRemoveFavoriteProduct: (Product) -> Unit
 ) {
-    LeftToRightCard(modifier) {
+    LeftToRightCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(end = dimensionResource(id = R.dimen.padding_large))
+    ) {
         Row(
             modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-            horizontalArrangement = Arrangement.Start,
+            horizontalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_medium),
+                alignment = Alignment.Start
+            ),
             verticalAlignment = Alignment.Top
         ) {
             AsyncImage(
@@ -81,9 +94,11 @@ fun FavoriteProductItem(
                 contentDescription = null
             )
             Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(start = dimensionResource(id = R.dimen.padding_medium))
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(
+                    space = dimensionResource(id = R.dimen.padding_small),
+                    alignment = Alignment.Top
+                )
             ) {
                 Text(
                     text = product.name,
@@ -93,14 +108,12 @@ fun FavoriteProductItem(
                     style = MaterialTheme.typography.h6
                 )
                 Text(
-                    modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)),
                     text = product.getFormattedPrice(),
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.subtitle1
                 )
             }
             IconButton(
-                modifier = Modifier.padding(start = dimensionResource(id = R.dimen.padding_medium)),
                 onClick = { onRemoveFavoriteProduct(product) },
                 content = {
                     Icon(

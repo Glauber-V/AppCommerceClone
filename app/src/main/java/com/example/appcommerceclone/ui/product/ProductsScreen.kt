@@ -17,6 +17,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.PullRefreshState
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
@@ -47,46 +48,44 @@ fun ProductsScreen(
     onProductClicked: (Product) -> Unit,
     onRefresh: () -> Unit
 ) {
-    val isRefreshing by rememberSaveable { mutableStateOf(false) }
-    val pullRefreshState = rememberPullRefreshState(
+    val isRefreshing: Boolean by rememberSaveable { mutableStateOf(false) }
+    val pullRefreshState: PullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = onRefresh
     )
 
     Box(modifier = modifier.pullRefresh(pullRefreshState)) {
-        if (isLoading) {
-            ProductsScreenContentWithShimmer(modifier = Modifier.fillMaxSize())
-        } else {
-            ProductsScreenContent(
-                modifier = Modifier.fillMaxSize(),
-                products = products,
-                onProductClicked = onProductClicked
-            )
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxSize(),
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_small),
+                alignment = Alignment.Top
+            ),
+            horizontalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_small),
+                alignment = Alignment.CenterHorizontally
+            ),
+            contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding_small))
+        ) {
+            if (isLoading) {
+                items(12) {
+                    ProductItemWithShimmer()
+                }
+            } else {
+                items(products) { product: Product ->
+                    ProductItem(
+                        product = product,
+                        onProductClicked = { onProductClicked(product) }
+                    )
+                }
+            }
         }
         PullRefreshIndicator(
             modifier = Modifier.align(alignment = Alignment.TopCenter),
             refreshing = isRefreshing,
             state = pullRefreshState
         )
-    }
-}
-
-@Composable
-fun ProductsScreenContent(
-    modifier: Modifier = Modifier,
-    products: List<Product>,
-    onProductClicked: (Product) -> Unit
-) {
-    LazyVerticalGrid(
-        modifier = modifier,
-        columns = GridCells.Fixed(2)
-    ) {
-        items(products) { product: Product ->
-            ProductItem(
-                product = product,
-                onProductClicked = { onProductClicked(product) }
-            )
-        }
     }
 }
 
@@ -98,21 +97,17 @@ fun ProductItem(
     onProductClicked: () -> Unit
 ) {
     Card(
+        modifier = modifier,
         onClick = onProductClicked,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.padding_small)),
         shape = RoundedCornerShape(dimensionResource(R.dimen.corner_size_small)),
     ) {
         Column(
-            verticalArrangement = Arrangement.Top,
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_small),
+                alignment = Alignment.Top
+            ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val paddingValues = PaddingValues(
-                top = dimensionResource(id = R.dimen.padding_small),
-                start = dimensionResource(id = R.dimen.padding_medium),
-                end = dimensionResource(id = R.dimen.padding_medium)
-            )
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -125,10 +120,10 @@ fun ProductItem(
                 contentDescription = null
             )
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .height(dimensionResource(id = R.dimen.item_product_title_height))
-                    .padding(paddingValues),
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
                 text = product.name,
                 textAlign = TextAlign.Justify,
                 maxLines = 2,
@@ -136,9 +131,9 @@ fun ProductItem(
                 style = MaterialTheme.typography.h6
             )
             Text(
-                modifier = modifier
+                modifier = Modifier
                     .height(dimensionResource(id = R.dimen.item_product_subtitle_height))
-                    .padding(paddingValues),
+                    .padding(horizontal = dimensionResource(id = R.dimen.padding_small)),
                 text = product.getFormattedPrice(),
                 textAlign = TextAlign.Justify,
                 maxLines = 1,
@@ -150,52 +145,37 @@ fun ProductItem(
 }
 
 @Composable
-fun ProductsScreenContentWithShimmer(modifier: Modifier = Modifier) {
-    LazyVerticalGrid(
-        modifier = modifier,
-        columns = GridCells.Fixed(2)
-    ) {
-        items(12) {
-            ProductItemWithShimmer()
-        }
-    }
-}
-
-@Composable
 fun ProductItemWithShimmer(modifier: Modifier = Modifier) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(id = R.dimen.padding_small)),
-        verticalArrangement = Arrangement.Bottom,
-        horizontalAlignment = Alignment.CenterHorizontally
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(dimensionResource(R.dimen.corner_size_small)),
     ) {
-        val paddingValues = PaddingValues(
-            top = dimensionResource(id = R.dimen.padding_small),
-            start = dimensionResource(id = R.dimen.padding_medium),
-            end = dimensionResource(id = R.dimen.padding_medium)
-        )
-        Box(
-            modifier = modifier
-                .height(dimensionResource(id = R.dimen.item_product_image_height))
-                .fillMaxWidth()
-                .padding(paddingValues)
-                .shimmerEffect()
-        )
-        Box(
-            modifier = modifier
-                .height(dimensionResource(id = R.dimen.item_product_title_height))
-                .fillMaxWidth()
-                .padding(paddingValues)
-                .shimmerEffect()
-        )
-        Box(
-            modifier = modifier
-                .height(dimensionResource(id = R.dimen.item_product_subtitle_height))
-                .fillMaxWidth()
-                .padding(paddingValues)
-                .shimmerEffect()
-        )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_small),
+                alignment = Alignment.Top
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Box(
+                modifier = Modifier
+                    .height(dimensionResource(id = R.dimen.item_product_image_height))
+                    .fillMaxWidth()
+                    .shimmerEffect()
+            )
+            Box(
+                modifier = Modifier
+                    .height(dimensionResource(id = R.dimen.item_product_title_height))
+                    .fillMaxWidth()
+                    .shimmerEffect()
+            )
+            Box(
+                modifier = Modifier
+                    .height(dimensionResource(id = R.dimen.item_product_subtitle_height))
+                    .fillMaxWidth()
+                    .shimmerEffect()
+            )
+        }
     }
 }
 

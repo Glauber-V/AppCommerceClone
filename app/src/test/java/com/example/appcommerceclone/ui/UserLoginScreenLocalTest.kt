@@ -4,6 +4,7 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -40,7 +41,7 @@ import org.robolectric.annotation.Config
 import javax.inject.Inject
 
 @UninstallModules(UsersModule::class, DispatcherModule::class)
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalComposeUiApi::class)
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
@@ -77,7 +78,7 @@ class UserLoginScreenLocalTest {
                 isDataLoaded = userViewModel.isDataLoaded.observeAsState(initial = false)
                 user = userViewModel.loggedUser.observeAsState(initial = null)
                 UserLoginScreen(
-                    userState = user.value,
+                    user = user.value,
                     isLoading = isLoading.value,
                     isDataLoaded = isDataLoaded.value,
                     onLoginRequest = { username: String, password: String ->

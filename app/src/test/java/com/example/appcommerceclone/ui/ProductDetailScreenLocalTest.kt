@@ -2,8 +2,10 @@ package com.example.appcommerceclone.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.SnackbarHostState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
@@ -18,7 +20,9 @@ import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
+import com.example.appcommerceclone.ui.product.ProductColors
 import com.example.appcommerceclone.ui.product.ProductDetailScreen
+import com.example.appcommerceclone.ui.product.ProductSizes
 import com.example.appcommerceclone.ui.product.ProductViewModel
 import com.example.appcommerceclone.util.*
 import com.google.common.truth.Truth.*
@@ -62,19 +66,16 @@ class ProductDetailScreenLocalTest {
     }
 
     @Test
-    fun onProductDetailScreen_noOptions_verifyTransaction() {
-
-        var transactionStatus = false
+    fun onProductDetailScreen_noOptions_noOptionNotSelectedSnackbar() {
 
         with(composeRule) {
             setContent {
                 MaterialTheme {
                     ProductDetailScreen(
                         product = productElectronic,
-                        showOptions = productViewModel.showMoreOptions(productElectronic),
-                        onAddToFavorites = { },
-                        onBuyNow = { transactionStatus = true },
-                        onAddToCart = { }
+                        onAddToFavorites = {},
+                        onBuyNow = {},
+                        onAddToCart = {}
                     )
                 }
             }
@@ -89,8 +90,67 @@ class ProductDetailScreenLocalTest {
 
             onNodeWithText(getStringResource(R.string.product_detail_chip_color_and_size_warning))
                 .assertDoesNotExist()
+        }
+    }
 
-            assertThat(transactionStatus).isTrue()
+    @Test
+    fun onProductDetailScreen_withOptions_noOptionNotSelectedSnackbar() {
+
+        val snackbar = SnackbarHostState()
+
+        with(composeRule) {
+            setContent {
+                MaterialTheme {
+                    ProductDetailScreen(
+                        product = productMensClothing,
+                        onAddToFavorites = {},
+                        onBuyNow = {},
+                        onAddToCart = {},
+                        snackbarHostState = snackbar
+                    )
+                }
+            }
+
+            onRoot().printToLog("onProductDetailScreen|WithOptions")
+
+            onNodeWithText(getStringResource(R.string.product_detail_buy_now))
+                .assertExists()
+                .performScrollTo()
+                .assertIsDisplayed()
+                .performClick()
+
+            onNodeWithText(getStringResource(R.string.product_detail_chip_color_and_size_warning))
+                .assertExists()
+
+            onRoot().printToLog("onProductDetailScreen|WithOptions|NoOptionSelected")
+
+            onNodeWithTag(ProductColors.BLUE.name)
+                .assertExists()
+                .performScrollTo()
+                .assertIsDisplayed()
+                .performClick()
+
+            onNodeWithTag(ProductSizes.P.name)
+                .assertExists()
+                .performScrollTo()
+                .assertIsDisplayed()
+                .performClick()
+
+            snackbar.currentSnackbarData?.dismiss()
+            onNodeWithText(getStringResource(R.string.product_detail_buy_now))
+                .assertExists()
+                .performScrollTo()
+                .assertIsDisplayed()
+                .performClick()
+
+            onNodeWithText(getStringResource(R.string.product_detail_chip_color_and_size_warning))
+                .assertDoesNotExist()
+
+            onNodeWithText(getStringResource(R.string.product_detail_chip_color_warning))
+                .assertDoesNotExist()
+
+            onNodeWithText(getStringResource(R.string.product_detail_chip_size_warning))
+                .assertDoesNotExist()
         }
     }
 }

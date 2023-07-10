@@ -1,8 +1,6 @@
 package com.example.appcommerceclone.ui.common
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.ExperimentalMaterialApi
@@ -18,13 +16,7 @@ fun LeftToRightCard(
     content: @Composable () -> Unit
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                top = dimensionResource(id = R.dimen.padding_small),
-                end = dimensionResource(id = R.dimen.padding_small),
-                bottom = dimensionResource(id = R.dimen.padding_small)
-            ),
+        modifier = modifier,
         shape = RoundedCornerShape(
             topEnd = dimensionResource(id = R.dimen.corner_size_small),
             bottomEnd = dimensionResource(id = R.dimen.corner_size_small)
@@ -45,14 +37,8 @@ fun LeftToRightCard(
     content: @Composable () -> Unit
 ) {
     Card(
+        modifier = modifier,
         onClick = onClick,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                top = dimensionResource(id = R.dimen.padding_small),
-                end = dimensionResource(id = R.dimen.padding_small),
-                bottom = dimensionResource(id = R.dimen.padding_small)
-            ),
         shape = RoundedCornerShape(
             topEnd = dimensionResource(id = R.dimen.corner_size_small),
             bottomEnd = dimensionResource(id = R.dimen.corner_size_small)

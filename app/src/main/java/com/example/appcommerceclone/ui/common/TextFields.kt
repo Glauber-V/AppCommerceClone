@@ -102,7 +102,9 @@ fun UserEmailOutlinedTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     userEmailText: String,
-    onEmailTextChange: (String) -> Unit
+    onEmailTextChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     OutlinedTextFieldWithValidation(
         value = userEmailText,
@@ -129,7 +131,9 @@ fun UserEmailOutlinedTextField(
                 style = MaterialTheme.typography.subtitle1
             )
         },
-        errorMessage = stringResource(id = R.string.user_error_no_email)
+        errorMessage = stringResource(id = R.string.user_error_no_email),
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
 }
 
@@ -139,7 +143,9 @@ fun UserNameOutlinedTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     userNameText: String,
-    onUserNameTextChange: (String) -> Unit
+    onUserNameTextChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     OutlinedTextFieldWithValidation(
         value = userNameText,
@@ -166,7 +172,9 @@ fun UserNameOutlinedTextField(
                 style = MaterialTheme.typography.subtitle1
             )
         },
-        errorMessage = stringResource(id = R.string.user_error_no_username)
+        errorMessage = stringResource(id = R.string.user_error_no_username),
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
 }
 
@@ -176,7 +184,9 @@ fun UserPasswordOutlinedTextField(
     enabled: Boolean = true,
     readOnly: Boolean = false,
     userPasswordText: String,
-    onUserPasswordChange: (String) -> Unit
+    onUserPasswordChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    keyboardActions: KeyboardActions = KeyboardActions.Default
 ) {
     var isPasswordVisible by rememberSaveable { mutableStateOf(false) }
 
@@ -224,5 +234,7 @@ fun UserPasswordOutlinedTextField(
         visualTransformation = if (isPasswordVisible) VisualTransformation.None
         else PasswordVisualTransformation(),
         errorMessage = stringResource(id = R.string.user_error_no_password),
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions
     )
 }

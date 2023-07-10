@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -16,7 +17,6 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.model.order.Order
 import com.example.appcommerceclone.ui.common.LeftToRightCard
@@ -30,8 +30,13 @@ fun OrdersScreen(
 ) {
     if (orders.isNotEmpty()) {
         LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Top,
+            modifier = modifier
+                .fillMaxSize()
+                .padding(top = dimensionResource(id = R.dimen.padding_small)),
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_medium),
+                alignment = Alignment.Top
+            ),
             horizontalAlignment = Alignment.Start
         ) {
             items(orders) { order: Order ->
@@ -57,10 +62,17 @@ fun OrderItem(
     modifier: Modifier = Modifier,
     order: Order
 ) {
-    LeftToRightCard(modifier) {
+    LeftToRightCard(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(end = dimensionResource(id = R.dimen.padding_large))
+    ) {
         Column(
-            modifier = modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
-            verticalArrangement = Arrangement.Top,
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_medium)),
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_small),
+                alignment = Alignment.Top
+            ),
             horizontalAlignment = Alignment.Start
         ) {
             Text(
@@ -72,7 +84,6 @@ fun OrderItem(
                 style = MaterialTheme.typography.body1
             )
             Text(
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)),
                 text = stringResource(
                     id = R.string.order_item_date,
                     order.date
@@ -81,7 +92,6 @@ fun OrderItem(
                 style = MaterialTheme.typography.body1
             )
             Text(
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)),
                 text = stringResource(
                     id = R.string.order_item_products,
                     order.getOrderedProductListAsString()
@@ -90,7 +100,6 @@ fun OrderItem(
                 style = MaterialTheme.typography.body1
             )
             Text(
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_small)),
                 text = stringResource(
                     id = R.string.order_item_total_price,
                     order.getFormattedPrice()
@@ -104,24 +113,28 @@ fun OrderItem(
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun PreviewOrdersScreen() {
+fun PreviewOrdersScreenWithNoPurchases() {
     MaterialTheme {
         OrdersScreen(orders = emptyList())
     }
 }
 
-@Preview
+@Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun PreviewOrderItem() {
+fun PreviewOrdersScreen() {
     MaterialTheme {
-        OrderItem(
-            modifier = Modifier.padding(8.dp),
-            order = Order(
-                id = 3846,
-                userId = 9256,
-                date = "29/06/2023",
-                orderedProducts = orderedProductList,
-                total = orderedProductList.getTotalPrice()
+        OrdersScreen(
+            orders = List(
+                size = 4,
+                init = {
+                    Order(
+                        id = it,
+                        userId = 9256,
+                        date = "29/06/2023",
+                        orderedProducts = orderedProductList,
+                        total = orderedProductList.getTotalPrice()
+                    )
+                }
             )
         )
     }

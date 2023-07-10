@@ -72,14 +72,6 @@ class ProductViewModel @Inject constructor(
         else _allProducts.filter { it.category == category.categoryName }
     }
 
-    fun showMoreOptions(product: Product): Boolean {
-        return when (product.category) {
-            ProductCategories.JEWELERY.categoryName -> false
-            ProductCategories.ELECTRONICS.categoryName -> false
-            else -> true
-        }
-    }
-
     fun selectProduct(product: Product) {
         _selectedProduct.value = product
     }
