@@ -1,7 +1,6 @@
 package com.example.appcommerceclone.di
 
 import com.example.appcommerceclone.data.FAKE_STORE_API_URL
-import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.DefaultProductsRepository
 import com.example.appcommerceclone.data.product.ProductsProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
@@ -36,8 +35,6 @@ object ProductsModule {
 
     @Singleton
     @Provides
-    fun provideProductsRepository(
-        productsProvider: ProductsProvider,
-        dispatcherProvider: DispatcherProvider
-    ): ProductsRepository = DefaultProductsRepository(productsProvider, dispatcherProvider)
+    fun provideProductsRepository(productsProvider: ProductsProvider): ProductsRepository =
+        DefaultProductsRepository(productsProvider)
 }

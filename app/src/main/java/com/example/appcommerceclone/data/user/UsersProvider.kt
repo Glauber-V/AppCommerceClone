@@ -19,6 +19,6 @@ interface UsersProvider {
     @GET("users/{id}")
     suspend fun getUserById(
         @Path("id") id: Int
-    ): User
+    ): User?
 }
 

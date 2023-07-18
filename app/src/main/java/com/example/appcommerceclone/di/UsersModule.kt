@@ -1,7 +1,6 @@
 package com.example.appcommerceclone.di
 
 import com.example.appcommerceclone.data.FAKE_STORE_API_URL
-import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.*
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -42,8 +41,6 @@ object UsersModule {
 
     @Singleton
     @Provides
-    fun provideUserAuthenticator(
-        usersProvider: UsersProvider,
-        dispatcherProvider: DispatcherProvider
-    ): UserAuthenticator = DefaultUserAuthenticator(usersProvider, dispatcherProvider)
+    fun provideUserAuthenticator(usersProvider: UsersProvider): UserAuthenticator =
+        DefaultUserAuthenticator(usersProvider)
 }

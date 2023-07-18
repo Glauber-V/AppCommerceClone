@@ -1,29 +1,16 @@
 package com.example.appcommerceclone.data.user
 
-import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.model.User
-import kotlinx.coroutines.withContext
 
-class DefaultUserAuthenticator(
-    private val usersProvider: UsersProvider,
-    private val dispatcherProvider: DispatcherProvider
-) : UserAuthenticator {
+class DefaultUserAuthenticator(private val usersProvider: UsersProvider) : UserAuthenticator {
 
     override suspend fun getUserByUsernameAndPassword(username: String, password: String): User? {
-        return runCatching {
-            withContext(dispatcherProvider.default) {
-                val users = usersProvider.getAllUsers()
-                val user = users.firstOrNull { it.username == username && it.password == password }
-                user
-            }
-        }.getOrNull()
+        return usersProvider.getAllUsers().firstOrNull {
+            it.username == username && it.password == password
+        }
     }
 
     override suspend fun getUserById(userId: Int): User? {
-        return runCatching {
-            withContext(dispatcherProvider.default) {
-                usersProvider.getUserById(userId)
-            }
-        }.getOrNull()
+        return usersProvider.getUserById(userId)
     }
 }
