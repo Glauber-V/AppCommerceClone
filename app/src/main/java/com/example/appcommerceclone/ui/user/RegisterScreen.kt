@@ -33,6 +33,7 @@ import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.appcommerceclone.R
@@ -44,7 +45,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Stable
-class UserRegisterState {
+class RegisterScreenUiState {
 
     var userEmailText by mutableStateOf("")
         private set
@@ -73,15 +74,15 @@ class UserRegisterState {
 }
 
 @Composable
-fun rememberUserRegisterState(): UserRegisterState {
-    return remember { UserRegisterState() }
+fun rememberRegisterScreenUiState(): RegisterScreenUiState {
+    return remember { RegisterScreenUiState() }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun UserRegisterScreen(
+fun RegisterScreen(
     modifier: Modifier = Modifier,
-    userRegisterState: UserRegisterState = rememberUserRegisterState(),
+    registerScreenUiState: RegisterScreenUiState = rememberRegisterScreenUiState(),
     onRegisterRequest: () -> Unit,
     context: Context = LocalContext.current,
     focusManager: FocusManager = LocalFocusManager.current,
@@ -105,9 +106,13 @@ fun UserRegisterScreen(
         ) {
             UserEmailOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                userEmailText = userRegisterState.userEmailText,
-                onEmailTextChange = { userRegisterState.onEmailTextChanged(it) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                userEmailText = registerScreenUiState.userEmailText,
+                onEmailTextChange = { registerScreenUiState.onEmailTextChanged(it) },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Email,
+                    imeAction = ImeAction.Next
+                ),
                 keyboardActions = KeyboardActions(
                     onNext = {
                         focusManager.moveFocus(FocusDirection.Down)
@@ -116,9 +121,13 @@ fun UserRegisterScreen(
             )
             UserNameOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                userNameText = userRegisterState.usernameText,
-                onUserNameTextChange = { userRegisterState.onUsernameTextChanged(it) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                userNameText = registerScreenUiState.usernameText,
+                onUserNameTextChange = { registerScreenUiState.onUsernameTextChanged(it) },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
                 keyboardActions = KeyboardActions(
                     onNext = {
                         focusManager.moveFocus(FocusDirection.Down)
@@ -127,9 +136,12 @@ fun UserRegisterScreen(
             )
             UserPasswordOutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                userPasswordText = userRegisterState.userPasswordText,
-                onUserPasswordChange = { userRegisterState.onPasswordTextChanged(it) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                userPasswordText = registerScreenUiState.userPasswordText,
+                onUserPasswordChange = { registerScreenUiState.onPasswordTextChanged(it) },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Password,
+                    imeAction = ImeAction.Done
+                ),
                 keyboardActions = KeyboardActions(
                     onDone = {
                         keyboardController?.hide()
@@ -149,7 +161,7 @@ fun UserRegisterScreen(
                         onRegisterRequest()
                     }
                 },
-                isPrimaryActionEnabled = userRegisterState.canRegister(),
+                isPrimaryActionEnabled = registerScreenUiState.canRegister(),
                 primaryActionContent = {
                     Text(
                         text = stringResource(id = R.string.user_register_btn),
@@ -167,6 +179,6 @@ fun UserRegisterScreen(
 @Composable
 fun PreviewUserRegisterScreen() {
     MaterialTheme {
-        UserRegisterScreen(onRegisterRequest = {})
+        RegisterScreen(onRegisterRequest = {})
     }
 }

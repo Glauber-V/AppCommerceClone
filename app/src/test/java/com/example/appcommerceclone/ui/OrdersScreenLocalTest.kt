@@ -36,6 +36,7 @@ class OrdersScreenLocalTest {
     val composeRule = createAndroidComposeRule<ComponentActivity>()
 
     private lateinit var userOrdersViewModel: UserOrdersViewModel
+
     private lateinit var orders: State<List<Order>>
 
     @Before
@@ -57,14 +58,12 @@ class OrdersScreenLocalTest {
 
     @Test
     fun onOrderScreen_verifyOrderListIsDisplayed() {
-
         assertThat(orders.value).isNotEmpty()
         assertThat(orders.value).hasSize(1)
 
         val order = orders.value.first()
 
         with(composeRule) {
-
             onRoot().printToLog("onOderScreen")
 
             onNodeWithText(getStringResource(R.string.order_item_id, order.id))

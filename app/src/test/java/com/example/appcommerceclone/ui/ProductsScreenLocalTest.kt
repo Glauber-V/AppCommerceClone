@@ -11,6 +11,7 @@ import androidx.compose.ui.test.printToLog
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.data.product.model.Product
@@ -58,8 +59,8 @@ class ProductsScreenLocalTest {
     lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var productViewModel: ProductViewModel
-    private lateinit var isDataLoaded: State<Boolean>
-    private lateinit var isLoading: State<Boolean>
+
+    private lateinit var loadingState: State<LoadingState>
     private lateinit var products: State<List<Product>>
 
     @Before
@@ -68,12 +69,12 @@ class ProductsScreenLocalTest {
         showSemanticTreeInConsole()
         composeRule.setContent {
             productViewModel = ProductViewModel(productsRepository, dispatcherProvider)
-            isLoading = productViewModel.isLoading.observeAsState(initial = false)
-            isDataLoaded = productViewModel.isDataLoaded.observeAsState(initial = false)
+            loadingState = productViewModel.loadingState.observeAsState(initial = LoadingState.NOT_STARTED)
             products = productViewModel.products.observeAsState(initial = emptyList())
             MaterialTheme {
                 ProductsScreen(
-                    isLoading = isLoading.value,
+                    isConnected = true,
+                    loadingState = loadingState.value,
                     products = products.value,
                     onProductClicked = {},
                     onRefresh = {}
@@ -84,16 +85,15 @@ class ProductsScreenLocalTest {
 
     @Test
     fun onProductsScreen_verifyProductsAreVisible() = runTest {
-
         with(composeRule) {
+            assertThat(loadingState.value).isEqualTo(LoadingState.NOT_STARTED)
 
             productViewModel.updateProductList()
             advanceUntilIdle()
 
             onRoot().printToLog("onProductScreen")
 
-            assertThat(isLoading.value).isFalse()
-            assertThat(isDataLoaded.value).isTrue()
+            assertThat(loadingState.value).isEqualTo(LoadingState.SUCCESS)
             assertThat(products.value).isNotEmpty()
             assertThat(products.value).hasSize(4)
             assertThat(products.value).contains(productJewelry)

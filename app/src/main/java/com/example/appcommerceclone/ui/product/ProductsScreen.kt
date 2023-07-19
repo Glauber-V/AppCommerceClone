@@ -34,8 +34,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Product
+import com.example.appcommerceclone.ui.common.NoConnectionPlaceHolder
 import com.example.appcommerceclone.ui.common.shimmerEffect
 import com.example.appcommerceclone.util.productList
 
@@ -43,7 +45,8 @@ import com.example.appcommerceclone.util.productList
 @Composable
 fun ProductsScreen(
     modifier: Modifier = Modifier,
-    isLoading: Boolean,
+    isConnected: Boolean,
+    loadingState: LoadingState,
     products: List<Product>,
     onProductClicked: (Product) -> Unit,
     onRefresh: () -> Unit
@@ -54,38 +57,42 @@ fun ProductsScreen(
         onRefresh = onRefresh
     )
 
-    Box(modifier = modifier.pullRefresh(pullRefreshState)) {
-        LazyVerticalGrid(
-            modifier = Modifier.fillMaxSize(),
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(
-                space = dimensionResource(id = R.dimen.padding_small),
-                alignment = Alignment.Top
-            ),
-            horizontalArrangement = Arrangement.spacedBy(
-                space = dimensionResource(id = R.dimen.padding_small),
-                alignment = Alignment.CenterHorizontally
-            ),
-            contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding_small))
-        ) {
-            if (isLoading) {
-                items(12) {
-                    ProductItemWithShimmer()
-                }
-            } else {
-                items(products) { product: Product ->
-                    ProductItem(
-                        product = product,
-                        onProductClicked = { onProductClicked(product) }
-                    )
+    if (isConnected) {
+        Box(modifier = modifier.pullRefresh(pullRefreshState)) {
+            LazyVerticalGrid(
+                modifier = Modifier.fillMaxSize(),
+                columns = GridCells.Fixed(2),
+                verticalArrangement = Arrangement.spacedBy(
+                    space = dimensionResource(id = R.dimen.padding_small),
+                    alignment = Alignment.Top
+                ),
+                horizontalArrangement = Arrangement.spacedBy(
+                    space = dimensionResource(id = R.dimen.padding_small),
+                    alignment = Alignment.CenterHorizontally
+                ),
+                contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding_small))
+            ) {
+                if (loadingState == LoadingState.LOADING) {
+                    items(12) {
+                        ProductItemWithShimmer()
+                    }
+                } else {
+                    items(products) { product: Product ->
+                        ProductItem(
+                            product = product,
+                            onProductClicked = { onProductClicked(product) }
+                        )
+                    }
                 }
             }
+            PullRefreshIndicator(
+                modifier = Modifier.align(alignment = Alignment.TopCenter),
+                refreshing = isRefreshing,
+                state = pullRefreshState
+            )
         }
-        PullRefreshIndicator(
-            modifier = Modifier.align(alignment = Alignment.TopCenter),
-            refreshing = isRefreshing,
-            state = pullRefreshState
-        )
+    } else {
+        NoConnectionPlaceHolder(modifier.fillMaxSize())
     }
 }
 
@@ -184,7 +191,8 @@ fun ProductItemWithShimmer(modifier: Modifier = Modifier) {
 fun PreviewProductsScreen() {
     MaterialTheme {
         ProductsScreen(
-            isLoading = false,
+            isConnected = true,
+            loadingState = LoadingState.NOT_STARTED,
             products = productList,
             onProductClicked = {},
             onRefresh = {}
@@ -197,7 +205,8 @@ fun PreviewProductsScreen() {
 fun PreviewProductsScreenWhileLoading() {
     MaterialTheme {
         ProductsScreen(
-            isLoading = true,
+            isConnected = true,
+            loadingState = LoadingState.LOADING,
             products = emptyList(),
             onProductClicked = {},
             onRefresh = {}

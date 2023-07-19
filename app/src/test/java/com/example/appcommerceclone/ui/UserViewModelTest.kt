@@ -35,7 +35,7 @@ class UserViewModelTest {
     fun setup() {
         usersProvider = FakeUserProvider()
         dispatcherProvider = FakeDispatcherProvider()
-        userAuthenticator = FakeUserAuthenticator(usersProvider, dispatcherProvider)
+        userAuthenticator = FakeUserAuthenticator(usersProvider)
         userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
     }
 

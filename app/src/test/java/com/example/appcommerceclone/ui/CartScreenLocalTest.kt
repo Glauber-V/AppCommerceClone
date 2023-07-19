@@ -4,7 +4,9 @@ import androidx.activity.ComponentActivity
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasContentDescription
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -45,8 +47,11 @@ class CartScreenLocalTest {
     val composeAndroidRule = createAndroidComposeRule<ComponentActivity>()
 
     private lateinit var cartViewModel: CartViewModel
+
     private lateinit var cartProducts: State<List<OrderedProduct>>
     private lateinit var cartTotalPrice: State<Double>
+
+    private val purchaseCompletionStatus = mutableStateOf(false)
 
     @Before
     fun setUp() {
@@ -63,15 +68,14 @@ class CartScreenLocalTest {
                     onQuantityDecrease = { cartViewModel.decreaseQuantity(it) },
                     cartTotalPrice = cartTotalPrice.value.formatPrice(),
                     onAbandonCart = { cartViewModel.abandonCart() },
-                    onConfirmPurchase = { }
+                    onConfirmPurchase = { purchaseCompletionStatus.value = true }
                 )
             }
         }
     }
 
     @Test
-    fun onCartScreen_clickIncreaseQuantityBtn_verifyCartWasUpdatedCorrectly() {
-
+    fun onCartScreen_clickIncreaseQuantityBtn_verifyCartWasUpdatedCorrectly_verifyPurchaseCompletionStatusIsTrue() {
         assertThat(cartProducts.value).isEmpty()
 
         cartViewModel.addToCart(productJewelry)
@@ -79,7 +83,6 @@ class CartScreenLocalTest {
         assertThat(cartProducts.value).hasSize(1)
 
         with(composeAndroidRule) {
-
             onRoot().printToLog("onCartScreen|IncreaseQuantity")
 
             val orderedProduct = cartProducts.value.first()
@@ -94,12 +97,18 @@ class CartScreenLocalTest {
                 .performClick()
 
             assertThat(orderedProduct.quantity).isEqualTo(2)
+
+            onNodeWithText(getStringResource(R.string.cart_confirm_purchase_btn))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+
+            assertThat(purchaseCompletionStatus.value).isTrue()
         }
     }
 
     @Test
-    fun onCartScreen_clickDecreaseQuantityBtn_verifyCartWasUpdatedCorrectly() {
-
+    fun onCartScreen_clickDecreaseQuantityBtn_verifyCartWasUpdatedCorrectly_verifyPurchaseCompletionStatusIsTrue() {
         assertThat(cartProducts.value).isEmpty()
 
         cartViewModel.addToCart(productJewelry)
@@ -109,7 +118,6 @@ class CartScreenLocalTest {
         assertThat(cartProducts.value).hasSize(1)
 
         with(composeAndroidRule) {
-
             onRoot().printToLog("onCartScreen|DecreaseQuantity")
 
             val orderedProduct = cartProducts.value.first()
@@ -124,12 +132,18 @@ class CartScreenLocalTest {
                 .performClick()
 
             assertThat(orderedProduct.quantity).isEqualTo(1)
+
+            onNodeWithText(getStringResource(R.string.cart_confirm_purchase_btn))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+
+            assertThat(purchaseCompletionStatus.value).isTrue()
         }
     }
 
     @Test
-    fun onCartScreen_clickDecreaseQuantityBtn_whenQuantityIs1_verifyCartWasUpdatedCorrectly() {
-
+    fun onCartScreen_clickDecreaseQuantityBtn_whenQuantityIs1_verifyCartWasUpdatedCorrectly_verifyPurchaseCompletionStatusIsFalse() {
         assertThat(cartProducts.value).isEmpty()
 
         cartViewModel.addToCart(productJewelry)
@@ -137,7 +151,6 @@ class CartScreenLocalTest {
         assertThat(cartProducts.value).hasSize(1)
 
         with(composeAndroidRule) {
-
             onRoot().printToLog("onCartScreen|RemoveProduct")
 
             val orderedProduct = cartProducts.value.first()
@@ -152,6 +165,13 @@ class CartScreenLocalTest {
                 .performClick()
 
             assertThat(cartProducts.value).isEmpty()
+
+            onNodeWithText(getStringResource(R.string.cart_confirm_purchase_btn))
+                .assertExists()
+                .assertIsDisplayed()
+                .assertIsNotEnabled()
+
+            assertThat(purchaseCompletionStatus.value).isFalse()
         }
     }
 }

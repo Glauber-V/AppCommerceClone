@@ -13,7 +13,7 @@ import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
-import com.example.appcommerceclone.ui.user.UserProfileScreen
+import com.example.appcommerceclone.ui.user.ProfileScreen
 import com.example.appcommerceclone.util.getStringResource
 import com.example.appcommerceclone.util.showSemanticTreeInConsole
 import org.junit.Before
@@ -24,7 +24,7 @@ import org.robolectric.RobolectricTestRunner
 
 @OptIn(ExperimentalComposeUiApi::class)
 @RunWith(RobolectricTestRunner::class)
-class UserProfileScreenLocalTest {
+class ProfileScreenLocalTest {
 
     @get:Rule(order = 0)
     val composeRule = createAndroidComposeRule<ComponentActivity>()
@@ -34,7 +34,7 @@ class UserProfileScreenLocalTest {
         showSemanticTreeInConsole()
         composeRule.setContent {
             MaterialTheme {
-                UserProfileScreen(
+                ProfileScreen(
                     user = firstUser,
                     onPictureRequest = {},
                     onUpdateUserProfile = {},
@@ -45,11 +45,20 @@ class UserProfileScreenLocalTest {
     }
 
     @Test
-    fun onUserProfileScreen_cancelProfileUpdate_userStateRestored() {
-
+    fun onProfileScreen_cancelProfileUpdate_userProfileStateRestored() {
         with(composeRule) {
-
             onRoot().printToLog("onUserProfileScreen|CancelProfileUpdate")
+
+            onNodeWithText(firstUser.username)
+                .assertExists()
+                .performScrollTo()
+                .assertIsDisplayed()
+
+            onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))
+                .assertDoesNotExist()
+
+            onNodeWithText(getStringResource(R.string.user_profile_save_update_btn))
+                .assertDoesNotExist()
 
             onNodeWithText(getStringResource(R.string.user_profile_start_update_btn))
                 .assertExists()
@@ -81,14 +90,24 @@ class UserProfileScreenLocalTest {
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
+
+            onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))
+                .assertDoesNotExist()
+
+            onNodeWithText(getStringResource(R.string.user_profile_save_update_btn))
+                .assertDoesNotExist()
+
+            onNodeWithText(getStringResource(R.string.user_profile_start_update_btn))
+                .assertExists()
+                .performScrollTo()
+                .assertIsDisplayed()
+                .performClick()
         }
     }
 
     @Test
     fun onUserProfileScreen_finishProfileUpdate_userStateUpdated() {
-
         with(composeRule) {
-
             onRoot().printToLog("onUserProfileScreen|FinishProfileUpdate")
 
             onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))

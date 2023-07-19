@@ -28,9 +28,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
@@ -43,7 +40,6 @@ import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -62,11 +58,9 @@ import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.util.productMensClothing
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Stable
-class ProductDetailState(private val product: Product) {
+class ProductDetailScreenUiState(private val product: Product) {
 
     val showOptions: Boolean
         get() {
@@ -99,7 +93,7 @@ class ProductDetailState(private val product: Product) {
         selectedSize = productSize
     }
 
-    fun createSnackbarMessage(context: Context): String {
+    fun createValidationErrorMessage(context: Context): String {
         if (selectedColor == ProductColors.NONE && selectedSize == ProductSizes.NONE)
             return context.getString(R.string.product_detail_chip_color_and_size_warning)
 
@@ -114,212 +108,204 @@ class ProductDetailState(private val product: Product) {
 }
 
 @Composable
-fun rememberProductDetailState(product: Product): ProductDetailState {
-    return remember(product) { ProductDetailState(product) }
+fun rememberProductDetailScreenUiState(product: Product): ProductDetailScreenUiState {
+    return remember(product) { ProductDetailScreenUiState(product) }
 }
 
 @Composable
 fun ProductDetailScreen(
     modifier: Modifier = Modifier,
     product: Product,
-    productDetailState: ProductDetailState = rememberProductDetailState(product),
-    onAddToFavorites: () -> Unit,
-    onBuyNow: () -> Unit,
-    onAddToCart: () -> Unit,
+    isFavorite: Boolean,
+    productDetailScreenUiState: ProductDetailScreenUiState = rememberProductDetailScreenUiState(product),
+    onAddToFavorites: (Product) -> Unit,
+    onAddToFavoritesFailed: (errorMessage: String) -> Unit,
+    onBuyNow: (message: String) -> Unit,
+    onAddToCart: (Product) -> Unit,
+    onPurchaseFailed: (errorMessage: String) -> Unit,
     context: Context = LocalContext.current,
-    snackBarScope: CoroutineScope = rememberCoroutineScope(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     verticaScrollState: ScrollState = rememberScrollState()
 ) {
-    Scaffold(
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        }
-    ) { contentPadding ->
-        Box(modifier = modifier.verticalScroll(verticaScrollState)) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(contentPadding)
-                    .padding(dimensionResource(id = R.dimen.padding_large)),
-                verticalArrangement = Arrangement.spacedBy(
-                    space = dimensionResource(id = R.dimen.padding_large),
-                    alignment = Alignment.Top
-                ),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                AsyncImage(
-                    modifier = Modifier.size(width = 400.dp, height = 220.dp),
-                    model = ImageRequest.Builder(context)
-                        .data(product.imageUrl)
-                        .placeholder(R.drawable.place_holder)
-                        .error(R.drawable.ic_broken_image)
-                        .build(),
-                    contentDescription = null
-                )
-                Row(verticalAlignment = Alignment.Top) {
-                    Column(
-                        modifier = Modifier.weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
-                        horizontalAlignment = Alignment.Start
-                    ) {
-                        Text(
-                            text = product.name,
-                            textAlign = TextAlign.Start,
-                            style = MaterialTheme.typography.h5
-                        )
-                        Text(
-                            text = product.getFormattedPrice(),
-                            textAlign = TextAlign.Start,
-                            style = MaterialTheme.typography.h6
-                        )
-                    }
-                    IconButton(
-                        onClick = onAddToFavorites,
-                        content = {
-                            Icon(
-                                tint = colorResource(id = R.color.primaryColor),
-                                imageVector = Icons.Filled.Favorite,
-                                contentDescription = stringResource(id = R.string.content_desc_add_to_favorites_btn)
-                            )
-                        }
+    Box(modifier = modifier.verticalScroll(verticaScrollState)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(dimensionResource(id = R.dimen.padding_large)),
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_large),
+                alignment = Alignment.Top
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            AsyncImage(
+                modifier = Modifier.size(width = 400.dp, height = 220.dp),
+                model = ImageRequest.Builder(context)
+                    .data(product.imageUrl)
+                    .placeholder(R.drawable.place_holder)
+                    .error(R.drawable.ic_broken_image)
+                    .build(),
+                contentDescription = null
+            )
+            Row(verticalAlignment = Alignment.Top) {
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    Text(
+                        text = product.name,
+                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.h5
+                    )
+                    Text(
+                        text = product.getFormattedPrice(),
+                        textAlign = TextAlign.Start,
+                        style = MaterialTheme.typography.h6
                     )
                 }
-                Text(
+                IconButton(
+                    onClick = {
+                        if (!isFavorite) {
+                            onAddToFavorites(product)
+                        } else {
+                            onAddToFavoritesFailed(context.getString(R.string.product_detail_favorites_warning))
+                        }
+                    },
+                    content = {
+                        Icon(
+                            tint = colorResource(id = R.color.primaryColor),
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = stringResource(id = R.string.content_desc_add_to_favorites_btn)
+                        )
+                    }
+                )
+            }
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = product.description,
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.body1
+            )
+            if (productDetailScreenUiState.showOptions) {
+                Divider(
                     modifier = Modifier.fillMaxWidth(),
-                    text = product.description,
-                    textAlign = TextAlign.Start,
-                    style = MaterialTheme.typography.body1
+                    color = colorResource(id = R.color.divider_color),
+                    thickness = dimensionResource(id = R.dimen.divider_size)
                 )
-                if (productDetailState.showOptions) {
-                    Divider(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = colorResource(id = R.color.divider_color),
-                        thickness = dimensionResource(id = R.dimen.divider_size)
-                    )
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(
-                            space = dimensionResource(id = R.dimen.padding_small),
-                            alignment = Alignment.Start
-                        ),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        items(ProductColors.values()) { colorOption ->
-                            if (colorOption != ProductColors.NONE) {
-                                ProductDetailChip(
-                                    modifier = Modifier
-                                        .testTag(colorOption.name)
-                                        .requiredSize(48.dp),
-                                    isSelected = colorOption == productDetailState.selectedColor,
-                                    onChipSelected = { isChipSelected ->
-                                        productDetailState.onSelectedColorChange(
-                                            if (isChipSelected) colorOption else ProductColors.NONE
-                                        )
-                                    },
-                                    backGroundColor = colorOption.color
-                                )
-                            }
-                        }
-                    }
-                    Divider(
-                        modifier = Modifier.fillMaxWidth(),
-                        color = colorResource(id = R.color.divider_color),
-                        thickness = dimensionResource(id = R.dimen.divider_size)
-                    )
-                    LazyRow(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(
-                            space = dimensionResource(id = R.dimen.padding_small),
-                            alignment = Alignment.Start
-                        ),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        items(ProductSizes.values()) { sizeOption ->
-                            if (sizeOption != ProductSizes.NONE) {
-                                ProductDetailChip(
-                                    modifier = Modifier
-                                        .testTag(sizeOption.name)
-                                        .sizeIn(minWidth = 48.dp, minHeight = 48.dp),
-                                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-                                    isSelected = sizeOption == productDetailState.selectedSize,
-                                    onChipSelected = { isChipSelected ->
-                                        productDetailState.onSelectedSizeChange(
-                                            if (isChipSelected) sizeOption else ProductSizes.NONE
-                                        )
-                                    },
-                                    chipContent = {
-                                        Text(
-                                            text = sizeOption.size,
-                                            textAlign = TextAlign.Center,
-                                            style = MaterialTheme.typography.body1
-                                        )
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        space = dimensionResource(id = R.dimen.padding_small),
+                        alignment = Alignment.Start
+                    ),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    OutlinedButton(
-                        onClick = {
-                            if (productDetailState.validateSelections()) {
-                                onAddToCart()
-                            } else {
-                                snackBarScope.launch {
-                                    snackbarHostState.showSnackbar(
-                                        message = productDetailState.createSnackbarMessage(context)
+                    items(ProductColors.values()) { colorOption ->
+                        if (colorOption != ProductColors.NONE) {
+                            ProductDetailChip(
+                                modifier = Modifier
+                                    .testTag(colorOption.name)
+                                    .requiredSize(48.dp),
+                                isSelected = colorOption == productDetailScreenUiState.selectedColor,
+                                onChipSelected = { isChipSelected ->
+                                    productDetailScreenUiState.onSelectedColorChange(
+                                        if (isChipSelected) colorOption else ProductColors.NONE
                                     )
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .height(dimensionResource(id = R.dimen.btn_min_height_size))
-                            .width(dimensionResource(id = R.dimen.btn_min_width_size)),
-                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color.Transparent,
-                            contentColor = colorResource(id = R.color.icon_color_black)
-                        ),
-                        content = {
-                            Icon(
-                                imageVector = Icons.Default.ShoppingCart,
-                                contentDescription = stringResource(id = R.string.content_desc_add_to_cart_btn)
+                                },
+                                backGroundColor = colorOption.color
                             )
                         }
-                    )
-                    TextButton(
-                        onClick = {
-                            if (productDetailState.validateSelections()) {
-                                onBuyNow()
-                            } else {
-                                snackBarScope.launch {
-                                    snackbarHostState.showSnackbar(
-                                        message = productDetailState.createSnackbarMessage(context)
-                                    )
-                                }
-                            }
-                        },
-                        modifier = Modifier
-                            .height(dimensionResource(id = R.dimen.btn_min_height_size))
-                            .weight(1f),
-                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = colorResource(id = R.color.primaryColor),
-                            contentColor = colorResource(id = R.color.white_100)
-                        ),
-                        content = {
-                            Text(
-                                text = stringResource(id = R.string.product_detail_buy_now),
-                                textAlign = TextAlign.Center,
-                                style = MaterialTheme.typography.button
-                            )
-                        }
-                    )
+                    }
                 }
+                Divider(
+                    modifier = Modifier.fillMaxWidth(),
+                    color = colorResource(id = R.color.divider_color),
+                    thickness = dimensionResource(id = R.dimen.divider_size)
+                )
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        space = dimensionResource(id = R.dimen.padding_small),
+                        alignment = Alignment.Start
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    items(ProductSizes.values()) { sizeOption ->
+                        if (sizeOption != ProductSizes.NONE) {
+                            ProductDetailChip(
+                                modifier = Modifier
+                                    .testTag(sizeOption.name)
+                                    .sizeIn(minWidth = 48.dp, minHeight = 48.dp),
+                                shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
+                                isSelected = sizeOption == productDetailScreenUiState.selectedSize,
+                                onChipSelected = { isChipSelected ->
+                                    productDetailScreenUiState.onSelectedSizeChange(
+                                        if (isChipSelected) sizeOption else ProductSizes.NONE
+                                    )
+                                },
+                                chipContent = {
+                                    Text(
+                                        text = sizeOption.size,
+                                        textAlign = TextAlign.Center,
+                                        style = MaterialTheme.typography.body1
+                                    )
+                                }
+                            )
+                        }
+                    }
+                }
+            }
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                OutlinedButton(
+                    onClick = {
+                        if (productDetailScreenUiState.validateSelections()) {
+                            onAddToCart(product)
+                        } else {
+                            onPurchaseFailed(productDetailScreenUiState.createValidationErrorMessage(context))
+                        }
+                    },
+                    modifier = Modifier
+                        .height(dimensionResource(id = R.dimen.btn_min_height_size))
+                        .width(dimensionResource(id = R.dimen.btn_min_width_size)),
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = Color.Transparent,
+                        contentColor = colorResource(id = R.color.icon_color_black)
+                    ),
+                    content = {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = stringResource(id = R.string.content_desc_add_to_cart_btn)
+                        )
+                    }
+                )
+                TextButton(
+                    onClick = {
+                        if (productDetailScreenUiState.validateSelections()) {
+                            onBuyNow(context.getString(R.string.product_detail_thanks_for_purchase))
+                        } else {
+                            onPurchaseFailed(productDetailScreenUiState.createValidationErrorMessage(context))
+                        }
+                    },
+                    modifier = Modifier
+                        .height(dimensionResource(id = R.dimen.btn_min_height_size))
+                        .weight(1f),
+                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
+                    colors = ButtonDefaults.buttonColors(
+                        backgroundColor = colorResource(id = R.color.primaryColor),
+                        contentColor = colorResource(id = R.color.white_100)
+                    ),
+                    content = {
+                        Text(
+                            text = stringResource(id = R.string.product_detail_buy_now),
+                            textAlign = TextAlign.Center,
+                            style = MaterialTheme.typography.button
+                        )
+                    }
+                )
             }
         }
     }
@@ -373,9 +359,12 @@ fun PreviewProductDetailScreenContent() {
     MaterialTheme {
         ProductDetailScreen(
             product = productMensClothing,
+            isFavorite = false,
             onAddToFavorites = {},
+            onAddToFavoritesFailed = {},
             onBuyNow = {},
-            onAddToCart = {}
+            onAddToCart = {},
+            onPurchaseFailed = {}
         )
     }
 }

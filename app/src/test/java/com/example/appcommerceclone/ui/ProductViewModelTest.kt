@@ -1,6 +1,7 @@
 package com.example.appcommerceclone.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.data.dispatcher.FakeDispatcherProvider
 import com.example.appcommerceclone.data.product.FakeProductsProvider
 import com.example.appcommerceclone.data.product.FakeProductsRepository
@@ -38,45 +39,37 @@ class ProductViewModelTest {
     fun setup() {
         productsProvider = FakeProductsProvider()
         dispatcherProvider = FakeDispatcherProvider()
-        productsRepository = FakeProductsRepository(productsProvider, dispatcherProvider)
+        productsRepository = FakeProductsRepository(productsProvider)
         productViewModel = ProductViewModel(productsRepository, dispatcherProvider)
     }
 
     @Test
-    fun updateProductsList_withCategorySelected_verifyAllProductsHaveSameCategory() = runTest {
+    fun updateProductList_listHasSize4_filterListWithElectronicCategory_verifyElementsCategory() = runTest {
+        var loadingState = productViewModel.loadingState.getOrAwaitValue()
+        assertThat(loadingState).isEqualTo(LoadingState.NOT_STARTED)
+
         productViewModel.updateProductList()
         advanceUntilIdle()
 
-        productViewModel.filterProductList(ProductCategories.ELECTRONICS)
+        loadingState = productViewModel.loadingState.getOrAwaitValue()
+        assertThat(loadingState).isEqualTo(LoadingState.SUCCESS)
 
-        val products = productViewModel.products.getOrAwaitValue()
-        assertThat(products.size).isEqualTo(1)
-        assertThat(products.first().category).isEqualTo(ProductCategories.ELECTRONICS.categoryName)
-    }
-
-    @Test
-    fun updateProductsList_noCategorySelected_verifyAllProductsHaveSameCategory() = runTest {
-        productViewModel.updateProductList()
-        advanceUntilIdle()
-
-        val products = productViewModel.products.getOrAwaitValue()
+        var products = productViewModel.products.getOrAwaitValue()
         assertThat(products.size).isEqualTo(4)
         assertThat(products).contains(productJewelry)
         assertThat(products).contains(productElectronic)
         assertThat(products).contains(productMensClothing)
         assertThat(products).contains(productWomensClothing)
+
+        productViewModel.filterProductList(ProductCategories.ELECTRONICS)
+
+        products = productViewModel.products.getOrAwaitValue()
+        assertThat(products.size).isEqualTo(1)
+        assertThat(products.first().category).isEqualTo(ProductCategories.ELECTRONICS.categoryName)
     }
 
     @Test
-    fun selectProduct_confirmSelectedProduct() {
-        productViewModel.selectProduct(productJewelry)
-
-        val selectedProduct = productViewModel.selectedProduct.getOrAwaitValue()
-        assertThat(selectedProduct).isEqualTo(productJewelry)
-    }
-
-    @Test
-    fun selectProduct_onSelectedProductFinish_selectedProductsIsNull() {
+    fun selectAProduct_confirmSelectedProduct_callOnSelectedProductFinish_selectedProductsShouldBeNull() {
         productViewModel.selectProduct(productJewelry)
 
         var selectedProduct = productViewModel.selectedProduct.getOrAwaitValue()

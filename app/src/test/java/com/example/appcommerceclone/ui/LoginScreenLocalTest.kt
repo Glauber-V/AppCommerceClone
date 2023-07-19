@@ -12,6 +12,7 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.printToLog
+import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.FakeUserProvider
@@ -19,7 +20,7 @@ import com.example.appcommerceclone.data.user.UserAuthenticator
 import com.example.appcommerceclone.data.user.model.User
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.UsersModule
-import com.example.appcommerceclone.ui.user.UserLoginScreen
+import com.example.appcommerceclone.ui.user.LoginScreen
 import com.example.appcommerceclone.ui.user.UserViewModel
 import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.getStringResource
@@ -45,7 +46,7 @@ import javax.inject.Inject
 @HiltAndroidTest
 @RunWith(RobolectricTestRunner::class)
 @Config(application = HiltTestApplication::class)
-class UserLoginScreenLocalTest {
+class LoginScreenLocalTest {
 
     @get:Rule(order = 0)
     val hiltAndroidRule = HiltAndroidRule(this)
@@ -63,8 +64,8 @@ class UserLoginScreenLocalTest {
     lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var userViewModel: UserViewModel
-    private lateinit var isLoading: State<Boolean>
-    private lateinit var isDataLoaded: State<Boolean>
+
+    private lateinit var loadingState: State<LoadingState>
     private lateinit var user: State<User?>
 
     @Before
@@ -74,17 +75,14 @@ class UserLoginScreenLocalTest {
         composeRule.setContent {
             MaterialTheme {
                 userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
-                isLoading = userViewModel.isLoading.observeAsState(initial = false)
-                isDataLoaded = userViewModel.isDataLoaded.observeAsState(initial = false)
+                loadingState = userViewModel.loadingState.observeAsState(initial = LoadingState.NOT_STARTED)
                 user = userViewModel.loggedUser.observeAsState(initial = null)
-                UserLoginScreen(
-                    user = user.value,
-                    isLoading = isLoading.value,
-                    isDataLoaded = isDataLoaded.value,
+                LoginScreen(
+                    isConnected = true,
+                    loadingState = loadingState.value,
                     onLoginRequest = { username: String, password: String ->
                         userViewModel.login(username, password)
                     },
-                    onLoginRequestComplete = {},
                     onRegisterRequest = {}
                 )
             }
@@ -93,9 +91,7 @@ class UserLoginScreenLocalTest {
 
     @Test
     fun onUserLoginScreen_wrongCredentials_failedLogin() = runTest {
-
         with(composeRule) {
-
             onRoot().printToLog("onUserLoginScreen|FailedLogin")
 
             assertThat(user.value).isNull()
@@ -117,7 +113,7 @@ class UserLoginScreenLocalTest {
 
             advanceUntilIdle()
 
-            assertThat(isDataLoaded.value).isTrue()
+            assertThat(loadingState.value).isEqualTo(LoadingState.SUCCESS)
             assertThat(user.value).isNull()
 
             onNodeWithText(getStringResource(R.string.user_profile_welcome_message, FakeUserProvider.firstUser.username))
@@ -131,11 +127,10 @@ class UserLoginScreenLocalTest {
 
     @Test
     fun onUserLoginScreen_correctCredentials_successfulLogin() = runTest {
-
         with(composeRule) {
-
             onRoot().printToLog("onUserLoginScreen|SuccessfulLogin")
 
+            assertThat(loadingState.value).isEqualTo(LoadingState.NOT_STARTED)
             assertThat(user.value).isNull()
 
             onNodeWithText(getStringResource(R.string.user_hint_username))
@@ -155,7 +150,7 @@ class UserLoginScreenLocalTest {
 
             advanceUntilIdle()
 
-            assertThat(isDataLoaded.value).isTrue()
+            assertThat(loadingState.value).isEqualTo(LoadingState.SUCCESS)
             assertThat(user.value).isNotNull()
 
             onNodeWithText(getStringResource(R.string.user_error_not_found))

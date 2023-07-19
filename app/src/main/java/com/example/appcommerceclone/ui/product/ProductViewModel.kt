@@ -5,11 +5,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.data.product.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 enum class ProductCategories(val categoryName: String) {
@@ -43,11 +45,8 @@ class ProductViewModel @Inject constructor(
 
     private var _allProducts: List<Product> = emptyList()
 
-    private val _isLoading = MutableLiveData(false)
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _isDataLoaded = MutableLiveData(false)
-    val isDataLoaded: LiveData<Boolean> = _isDataLoaded
+    private val _loadingState = MutableLiveData(LoadingState.NOT_STARTED)
+    val loadingState: LiveData<LoadingState> = _loadingState
 
     private val _products = MutableLiveData<List<Product>>(mutableListOf())
     val products: LiveData<List<Product>> = _products
@@ -58,12 +57,15 @@ class ProductViewModel @Inject constructor(
 
     fun updateProductList() {
         viewModelScope.launch(dispatcherProvider.main) {
-            _isDataLoaded.value = false
-            _isLoading.value = true
-            _allProducts = repository.loadProductsList()
-            _products.value = _allProducts
-            _isDataLoaded.value = true
-            _isLoading.value = false
+            _loadingState.value = LoadingState.LOADING
+            try {
+                _allProducts = repository.loadProductsList()
+                _products.value = _allProducts
+                _loadingState.value = LoadingState.SUCCESS
+            } catch (e: HttpException) {
+                _products.value = emptyList()
+                _loadingState.value = LoadingState.FAILURE
+            }
         }
     }
 

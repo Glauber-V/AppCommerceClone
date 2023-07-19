@@ -40,6 +40,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -56,7 +57,7 @@ import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
 
 @Stable
-class UserProfileState(private val user: User) {
+class ProfileScreenUiState(private val user: User) {
 
     var isEditMode: Boolean by mutableStateOf(false)
         private set
@@ -175,16 +176,16 @@ class UserProfileState(private val user: User) {
 }
 
 @Composable
-fun rememberUserProfileState(user: User): UserProfileState {
-    return remember(user) { UserProfileState(user) }
+fun rememberProfileScreenUiState(user: User): ProfileScreenUiState {
+    return remember(user) { ProfileScreenUiState(user) }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun UserProfileScreen(
+fun ProfileScreen(
     modifier: Modifier = Modifier,
     user: User,
-    userProfileState: UserProfileState = rememberUserProfileState(user),
+    profileScreenUiState: ProfileScreenUiState = rememberProfileScreenUiState(user),
     onPictureRequest: () -> Unit,
     onUpdateUserProfile: (updatedUser: User) -> Unit,
     onLogout: () -> Unit,
@@ -216,7 +217,7 @@ fun UserProfileScreen(
             contentDescription = null,
             tint = colorResource(id = R.color.icon_color_black)
         )
-        if (userProfileState.isEditMode) {
+        if (profileScreenUiState.isEditMode) {
             PrimaryActionButton(
                 onPrimaryAction = onPictureRequest,
                 primaryActionContent = {
@@ -231,10 +232,14 @@ fun UserProfileScreen(
         }
         UserEmailOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            readOnly = userProfileState.isEditMode,
-            userEmailText = userProfileState.emailText,
-            onEmailTextChange = { userProfileState.onEmailTextChange(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            readOnly = !profileScreenUiState.isEditMode,
+            userEmailText = profileScreenUiState.emailText,
+            onEmailTextChange = { profileScreenUiState.onEmailTextChange(it) },
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -243,10 +248,14 @@ fun UserProfileScreen(
         )
         UserNameOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            readOnly = userProfileState.isEditMode,
-            userNameText = userProfileState.usernameText,
-            onUserNameTextChange = { userProfileState.onUsernameTextChange(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            readOnly = !profileScreenUiState.isEditMode,
+            userNameText = profileScreenUiState.usernameText,
+            onUserNameTextChange = { profileScreenUiState.onUsernameTextChange(it) },
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -260,15 +269,15 @@ fun UserProfileScreen(
         ) {
             OutlinedTextFieldWithValidation(
                 modifier = Modifier.fillMaxWidth(0.5f),
-                readOnly = userProfileState.isEditMode,
+                readOnly = !profileScreenUiState.isEditMode,
                 label = {
                     Text(
                         text = stringResource(id = R.string.user_hint_name_first_name),
                         style = MaterialTheme.typography.subtitle1
                     )
                 },
-                value = userProfileState.firstNameText,
-                onValueChange = { userProfileState.onFirstNameTextChange(it) },
+                value = profileScreenUiState.firstNameText,
+                onValueChange = { profileScreenUiState.onFirstNameTextChange(it) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(
                     onNext = {
@@ -278,15 +287,15 @@ fun UserProfileScreen(
             )
             OutlinedTextFieldWithValidation(
                 modifier = Modifier.fillMaxWidth(),
-                readOnly = userProfileState.isEditMode,
+                readOnly = !profileScreenUiState.isEditMode,
                 label = {
                     Text(
                         text = stringResource(id = R.string.user_hint_name_last_name),
                         style = MaterialTheme.typography.subtitle1
                     )
                 },
-                value = userProfileState.lastNameText,
-                onValueChange = { userProfileState.onLastNameTextChange(it) },
+                value = profileScreenUiState.lastNameText,
+                onValueChange = { profileScreenUiState.onLastNameTextChange(it) },
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(
                     onNext = {
@@ -297,10 +306,13 @@ fun UserProfileScreen(
         }
         UserPasswordOutlinedTextField(
             modifier = Modifier.fillMaxWidth(),
-            readOnly = userProfileState.isEditMode,
-            userPasswordText = userProfileState.passwordText,
-            onUserPasswordChange = { userProfileState.onPasswordTextChange(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            readOnly = !profileScreenUiState.isEditMode,
+            userPasswordText = profileScreenUiState.passwordText,
+            onUserPasswordChange = { profileScreenUiState.onPasswordTextChange(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -309,7 +321,7 @@ fun UserProfileScreen(
         )
         OutlinedTextFieldWithValidation(
             modifier = Modifier.fillMaxWidth(),
-            readOnly = userProfileState.isEditMode,
+            readOnly = !profileScreenUiState.isEditMode,
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.Phone,
@@ -323,9 +335,12 @@ fun UserProfileScreen(
                     style = MaterialTheme.typography.subtitle1
                 )
             },
-            value = userProfileState.phoneText,
-            onValueChange = { userProfileState.onPhoneTextChange(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            value = profileScreenUiState.phoneText,
+            onValueChange = { profileScreenUiState.onPhoneTextChange(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -334,16 +349,19 @@ fun UserProfileScreen(
         )
         OutlinedTextFieldWithValidation(
             modifier = Modifier.fillMaxWidth(),
-            readOnly = userProfileState.isEditMode,
+            readOnly = !profileScreenUiState.isEditMode,
             label = {
                 Text(
                     text = stringResource(id = R.string.user_hint_address_zipcode),
                     style = MaterialTheme.typography.subtitle1
                 )
             },
-            value = userProfileState.zipcodeText,
-            onValueChange = { userProfileState.onZipcodeTextChange(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            value = profileScreenUiState.zipcodeText,
+            onValueChange = { profileScreenUiState.onZipcodeTextChange(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -352,7 +370,7 @@ fun UserProfileScreen(
         )
         OutlinedTextFieldWithValidation(
             modifier = Modifier.fillMaxWidth(),
-            readOnly = userProfileState.isEditMode,
+            readOnly = !profileScreenUiState.isEditMode,
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Filled.LocationCity,
@@ -366,9 +384,13 @@ fun UserProfileScreen(
                     style = MaterialTheme.typography.subtitle1
                 )
             },
-            value = userProfileState.cityText,
-            onValueChange = { userProfileState.onCityTextChange(it) },
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+            value = profileScreenUiState.cityText,
+            onValueChange = { profileScreenUiState.onCityTextChange(it) },
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = true,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Down)
@@ -382,16 +404,20 @@ fun UserProfileScreen(
         ) {
             OutlinedTextFieldWithValidation(
                 modifier = Modifier.fillMaxWidth(0.6f),
-                readOnly = userProfileState.isEditMode,
+                readOnly = !profileScreenUiState.isEditMode,
                 label = {
                     Text(
                         text = stringResource(id = R.string.user_hint_address_street),
                         style = MaterialTheme.typography.subtitle1
                     )
                 },
-                value = userProfileState.streetText,
-                onValueChange = { userProfileState.onStreetTextChange(it) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                value = profileScreenUiState.streetText,
+                onValueChange = { profileScreenUiState.onStreetTextChange(it) },
+                keyboardOptions = KeyboardOptions(
+                    autoCorrect = false,
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Next
+                ),
                 keyboardActions = KeyboardActions(
                     onNext = {
                         focusManager.moveFocus(FocusDirection.Right)
@@ -400,27 +426,31 @@ fun UserProfileScreen(
             )
             OutlinedTextFieldWithValidation(
                 modifier = Modifier.fillMaxWidth(),
-                readOnly = userProfileState.isEditMode,
+                readOnly = !profileScreenUiState.isEditMode,
                 label = {
                     Text(
                         text = stringResource(id = R.string.user_hint_address_number),
                         style = MaterialTheme.typography.subtitle1
                     )
                 },
-                value = userProfileState.streetNumber.toString(),
-                onValueChange = { userProfileState.onNumberTextChange(it) },
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                value = profileScreenUiState.streetNumber.toString(),
+                onValueChange = { profileScreenUiState.onNumberTextChange(it) },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Done
+                ),
                 keyboardActions = KeyboardActions(
                     onDone = {
                         keyboardController?.hide()
+                        if (profileScreenUiState.isEditMode) profileScreenUiState.onEditModeChange()
                     }
                 )
             )
         }
-        if (!userProfileState.isEditMode) {
+        if (!profileScreenUiState.isEditMode) {
             PrimaryActionButton(
                 modifier = Modifier.fillMaxWidth(),
-                onPrimaryAction = { userProfileState.onEditModeChange() },
+                onPrimaryAction = { profileScreenUiState.onEditModeChange() },
                 primaryActionContent = {
                     Text(
                         text = stringResource(id = R.string.user_profile_start_update_btn),
@@ -433,10 +463,10 @@ fun UserProfileScreen(
             DoubleActionButton(
                 modifier = Modifier.fillMaxWidth(),
                 onPrimaryAction = {
-                    onUpdateUserProfile(userProfileState.createUpdatedUser())
-                    userProfileState.onEditModeChange()
+                    onUpdateUserProfile(profileScreenUiState.createUpdatedUser())
+                    profileScreenUiState.onEditModeChange()
                 },
-                isPrimaryActionEnabled = userProfileState.validateUpdate(),
+                isPrimaryActionEnabled = profileScreenUiState.validateUpdate(),
                 primaryActionContent = {
                     Text(
                         text = stringResource(id = R.string.user_profile_save_update_btn),
@@ -445,8 +475,8 @@ fun UserProfileScreen(
                     )
                 },
                 onSecondaryAction = {
-                    userProfileState.restoreUserState()
-                    userProfileState.onEditModeChange()
+                    profileScreenUiState.restoreUserState()
+                    profileScreenUiState.onEditModeChange()
                 },
                 secondaryActionContent = {
                     Text(
@@ -476,7 +506,7 @@ fun UserProfileScreen(
 @Composable
 fun PreviewUserProfileScreenWithUser() {
     MaterialTheme {
-        UserProfileScreen(
+        ProfileScreen(
             user = User(
                 id = 3708,
                 name = Name(

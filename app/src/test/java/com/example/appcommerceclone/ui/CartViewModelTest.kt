@@ -26,7 +26,6 @@ class CartViewModelTest {
 
     @Test
     fun increaseOrderedProductQuantity_verifyQuantityIsEqualTo2() {
-
         val product = productJewelry
         cartViewModel.addToCart(product)
 

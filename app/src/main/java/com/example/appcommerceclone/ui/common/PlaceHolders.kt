@@ -1,9 +1,8 @@
-package com.example.appcommerceclone.ui.connection
+package com.example.appcommerceclone.ui.common
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -18,9 +17,9 @@ import androidx.compose.ui.unit.dp
 import com.example.appcommerceclone.R
 
 @Composable
-fun ConnectionScreen(modifier: Modifier = Modifier) {
+fun NoConnectionPlaceHolder(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -39,8 +38,8 @@ fun ConnectionScreen(modifier: Modifier = Modifier) {
 
 @Preview(showSystemUi = true, showBackground = true)
 @Composable
-fun PreviewConnectionScreen() {
+fun PreviewNoConnectionPlaceHolder() {
     MaterialTheme {
-        ConnectionScreen()
+        NoConnectionPlaceHolder()
     }
 }

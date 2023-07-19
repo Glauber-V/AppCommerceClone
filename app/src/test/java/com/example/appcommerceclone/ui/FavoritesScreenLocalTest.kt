@@ -48,6 +48,7 @@ class FavoritesScreenLocalTest {
     val composeAndroidRule = createAndroidComposeRule<ComponentActivity>()
 
     private lateinit var favoritesViewModel: FavoritesViewModel
+
     private lateinit var favoriteProducts: State<List<Product>>
 
     @Before
@@ -75,7 +76,6 @@ class FavoritesScreenLocalTest {
 
     @Test
     fun onFavoriteScreen_removeFavoriteProduct_verifyProductWasRemoved() {
-
         assertThat(favoriteProducts.value).hasSize(4)
 
         with(composeAndroidRule) {
@@ -91,8 +91,6 @@ class FavoritesScreenLocalTest {
                 .performClick()
 
             assertThat(favoriteProducts.value).hasSize(3)
-
-            onRoot().printToLog("onFavoriteScreen|ProductJeweleryRemoved")
         }
     }
 }

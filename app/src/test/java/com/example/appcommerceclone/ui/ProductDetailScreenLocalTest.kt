@@ -2,7 +2,7 @@ package com.example.appcommerceclone.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.SnackbarHostState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
@@ -58,6 +58,8 @@ class ProductDetailScreenLocalTest {
 
     private lateinit var productViewModel: ProductViewModel
 
+    private val purchaseCompletionStatus = mutableStateOf(false)
+
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
@@ -66,21 +68,25 @@ class ProductDetailScreenLocalTest {
     }
 
     @Test
-    fun onProductDetailScreen_noOptions_noOptionNotSelectedSnackbar() {
-
+    fun onProductDetailScreen_noOptions_verifyPurchaseCompletionStatus() {
         with(composeRule) {
             setContent {
                 MaterialTheme {
                     ProductDetailScreen(
                         product = productElectronic,
+                        isFavorite = false,
                         onAddToFavorites = {},
-                        onBuyNow = {},
-                        onAddToCart = {}
+                        onAddToFavoritesFailed = {},
+                        onBuyNow = { purchaseCompletionStatus.value = true },
+                        onAddToCart = {},
+                        onPurchaseFailed = {}
                     )
                 }
             }
 
             onRoot().printToLog("onProductDetailScreen|NoOptions")
+
+            assertThat(purchaseCompletionStatus.value).isFalse()
 
             onNodeWithText(getStringResource(R.string.product_detail_buy_now))
                 .assertExists()
@@ -90,23 +96,24 @@ class ProductDetailScreenLocalTest {
 
             onNodeWithText(getStringResource(R.string.product_detail_chip_color_and_size_warning))
                 .assertDoesNotExist()
+
+            assertThat(purchaseCompletionStatus.value).isTrue()
         }
     }
 
     @Test
-    fun onProductDetailScreen_withOptions_noOptionNotSelectedSnackbar() {
-
-        val snackbar = SnackbarHostState()
-
+    fun onProductDetailScreen_withOptions_verifyPurchaseCompletionStatus() {
         with(composeRule) {
             setContent {
                 MaterialTheme {
                     ProductDetailScreen(
                         product = productMensClothing,
+                        isFavorite = false,
                         onAddToFavorites = {},
-                        onBuyNow = {},
+                        onAddToFavoritesFailed = {},
+                        onBuyNow = { purchaseCompletionStatus.value = true },
                         onAddToCart = {},
-                        snackbarHostState = snackbar
+                        onPurchaseFailed = {}
                     )
                 }
             }
@@ -119,10 +126,7 @@ class ProductDetailScreenLocalTest {
                 .assertIsDisplayed()
                 .performClick()
 
-            onNodeWithText(getStringResource(R.string.product_detail_chip_color_and_size_warning))
-                .assertExists()
-
-            onRoot().printToLog("onProductDetailScreen|WithOptions|NoOptionSelected")
+            assertThat(purchaseCompletionStatus.value).isFalse()
 
             onNodeWithTag(ProductColors.BLUE.name)
                 .assertExists()
@@ -136,21 +140,13 @@ class ProductDetailScreenLocalTest {
                 .assertIsDisplayed()
                 .performClick()
 
-            snackbar.currentSnackbarData?.dismiss()
             onNodeWithText(getStringResource(R.string.product_detail_buy_now))
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
                 .performClick()
 
-            onNodeWithText(getStringResource(R.string.product_detail_chip_color_and_size_warning))
-                .assertDoesNotExist()
-
-            onNodeWithText(getStringResource(R.string.product_detail_chip_color_warning))
-                .assertDoesNotExist()
-
-            onNodeWithText(getStringResource(R.string.product_detail_chip_size_warning))
-                .assertDoesNotExist()
+            assertThat(purchaseCompletionStatus.value).isTrue()
         }
     }
 }

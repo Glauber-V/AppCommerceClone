@@ -64,6 +64,7 @@ class CategoriesScreenLocalTest {
     lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var productViewModel: ProductViewModel
+
     private lateinit var products: State<List<Product>>
 
     @Before
@@ -81,7 +82,6 @@ class CategoriesScreenLocalTest {
 
     @Test
     fun onCategoriesScreen_selectCategory_verifyProductListHasSize1() = runTest {
-
         productViewModel.updateProductList()
         advanceUntilIdle()
 

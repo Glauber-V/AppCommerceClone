@@ -23,7 +23,7 @@ class FavoritesViewModelTest {
     }
 
     @Test
-    fun addProductToFavoriteList_returnTrueIfProductWasAdded() {
+    fun addProductToFavoriteList_verifyFavoriteListContainsAddedProduct() {
         favoritesViewModel.addToFavorites(productJewelry)
 
         val favorites = favoritesViewModel.favorites.getOrAwaitValue()
@@ -31,7 +31,7 @@ class FavoritesViewModelTest {
     }
 
     @Test
-    fun removeProductFromFavoriteList_returnTrueIfProductWasRemoved() {
+    fun removeProductFromFavoriteList_verifyFavoriteListDoesNotContainRemovedProduct() {
         favoritesViewModel.addToFavorites(productJewelry)
 
         var favorites = favoritesViewModel.favorites.getOrAwaitValue()
@@ -44,12 +44,13 @@ class FavoritesViewModelTest {
     }
 
     @Test
-    fun removeAllProductsFromTheList_favoritesListShouldBeEmpty() {
+    fun removeAllProductsFromTheList_verifyFavoriteListIsEmpty() {
         favoritesViewModel.addToFavorites(productJewelry)
         favoritesViewModel.addToFavorites(productElectronic)
 
         var favorites = favoritesViewModel.favorites.getOrAwaitValue()
         assertThat(favorites).isNotEmpty()
+        assertThat(favorites).hasSize(2)
         assertThat(favorites).contains(productJewelry)
         assertThat(favorites).contains(productElectronic)
 

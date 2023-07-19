@@ -14,13 +14,12 @@ class FavoritesViewModel @Inject constructor() : ViewModel() {
     val favorites: LiveData<MutableList<Product>> = _favorites
 
 
-    fun addToFavorites(product: Product): Boolean {
-        return if (!_favorites.value!!.contains(product)) {
-            _favorites.value?.add(product)
-            true
-        } else {
-            false
-        }
+    fun isFavorite(product: Product): Boolean {
+        return _favorites.value?.contains(product) ?: false
+    }
+
+    fun addToFavorites(product: Product) {
+        _favorites.value?.add(product)
     }
 
     fun removeFromFavorites(product: Product) {
