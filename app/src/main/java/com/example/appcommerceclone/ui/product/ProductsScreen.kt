@@ -213,3 +213,17 @@ fun PreviewProductsScreenWhileLoading() {
         )
     }
 }
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun PreviewProductsScreenWhileNotConnected() {
+    MaterialTheme {
+        ProductsScreen(
+            isConnected = false,
+            loadingState = LoadingState.FAILURE,
+            products = emptyList(),
+            onProductClicked = {},
+            onRefresh = {}
+        )
+    }
+}

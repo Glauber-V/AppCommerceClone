@@ -121,17 +121,17 @@ fun UserEmailOutlinedTextField(
         },
         label = {
             Text(
-                text = stringResource(id = R.string.user_hint_email),
+                text = stringResource(id = R.string.hint_email),
                 style = MaterialTheme.typography.subtitle1
             )
         },
         placeholder = {
             Text(
-                text = stringResource(id = R.string.user_hint_email),
+                text = stringResource(id = R.string.hint_email),
                 style = MaterialTheme.typography.subtitle1
             )
         },
-        errorMessage = stringResource(id = R.string.user_error_no_email),
+        errorMessage = stringResource(id = R.string.error_no_email),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions
     )
@@ -162,17 +162,17 @@ fun UserNameOutlinedTextField(
         },
         label = {
             Text(
-                text = stringResource(id = R.string.user_hint_username),
+                text = stringResource(id = R.string.hint_username),
                 style = MaterialTheme.typography.subtitle1
             )
         },
         placeholder = {
             Text(
-                text = stringResource(id = R.string.user_hint_username),
+                text = stringResource(id = R.string.hint_username),
                 style = MaterialTheme.typography.subtitle1
             )
         },
-        errorMessage = stringResource(id = R.string.user_error_no_username),
+        errorMessage = stringResource(id = R.string.error_no_username),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions
     )
@@ -205,13 +205,13 @@ fun UserPasswordOutlinedTextField(
         },
         label = {
             Text(
-                text = stringResource(id = R.string.user_hint_password),
+                text = stringResource(id = R.string.hint_password),
                 style = MaterialTheme.typography.subtitle1
             )
         },
         placeholder = {
             Text(
-                text = stringResource(id = R.string.user_hint_password),
+                text = stringResource(id = R.string.hint_password),
                 style = MaterialTheme.typography.subtitle1
             )
         },
@@ -233,7 +233,7 @@ fun UserPasswordOutlinedTextField(
         },
         visualTransformation = if (isPasswordVisible) VisualTransformation.None
         else PasswordVisualTransformation(),
-        errorMessage = stringResource(id = R.string.user_error_no_password),
+        errorMessage = stringResource(id = R.string.error_no_password),
         keyboardOptions = keyboardOptions,
         keyboardActions = keyboardActions
     )

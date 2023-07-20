@@ -157,14 +157,14 @@ fun RegisterScreen(
                     snackbarScope.launch {
                         focusManager.clearFocus()
                         keyboardController?.hide()
-                        snackbarHostState.showSnackbar(message = context.getString(R.string.user_register_successfully_message))
+                        snackbarHostState.showSnackbar(message = context.getString(R.string.register_success_message))
                         onRegisterRequest()
                     }
                 },
                 isPrimaryActionEnabled = registerScreenUiState.canRegister(),
                 primaryActionContent = {
                     Text(
-                        text = stringResource(id = R.string.user_register_btn),
+                        text = stringResource(id = R.string.register_btn),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button
                     )

@@ -95,13 +95,13 @@ class ProductDetailScreenUiState(private val product: Product) {
 
     fun createValidationErrorMessage(context: Context): String {
         if (selectedColor == ProductColors.NONE && selectedSize == ProductSizes.NONE)
-            return context.getString(R.string.product_detail_chip_color_and_size_warning)
+            return context.getString(R.string.error_no_color_and_size)
 
         if (selectedColor == ProductColors.NONE && selectedSize != ProductSizes.NONE)
-            return context.getString(R.string.product_detail_chip_color_warning)
+            return context.getString(R.string.error_no_color_selected)
 
         if (selectedColor != ProductColors.NONE && selectedSize == ProductSizes.NONE)
-            return context.getString(R.string.product_detail_chip_size_warning)
+            return context.getString(R.string.error_no_size_selected)
 
         return ""
     }
@@ -168,7 +168,7 @@ fun ProductDetailScreen(
                         if (!isFavorite) {
                             onAddToFavorites(product)
                         } else {
-                            onAddToFavoritesFailed(context.getString(R.string.product_detail_favorites_warning))
+                            onAddToFavoritesFailed(context.getString(R.string.error_already_favorite))
                         }
                     },
                     content = {

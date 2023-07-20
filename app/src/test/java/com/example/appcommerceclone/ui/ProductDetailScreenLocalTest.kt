@@ -94,7 +94,7 @@ class ProductDetailScreenLocalTest {
                 .assertIsDisplayed()
                 .performClick()
 
-            onNodeWithText(getStringResource(R.string.product_detail_chip_color_and_size_warning))
+            onNodeWithText(getStringResource(R.string.error_no_color_and_size))
                 .assertDoesNotExist()
 
             assertThat(purchaseCompletionStatus.value).isTrue()

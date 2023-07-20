@@ -205,17 +205,17 @@ class EndToEndLocalTest {
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
 
-            onNodeWithText(getStringResource(R.string.user_hint_username))
+            onNodeWithText(getStringResource(R.string.hint_username))
                 .assertExists()
                 .assertIsDisplayed()
                 .performTextReplacement(firstUser.username)
 
-            onNodeWithText(getStringResource(R.string.user_hint_password))
+            onNodeWithText(getStringResource(R.string.hint_password))
                 .assertExists()
                 .assertIsDisplayed()
                 .performTextReplacement(firstUser.password)
 
-            onAllNodesWithText(getStringResource(R.string.user_login_btn))
+            onAllNodesWithText(getStringResource(R.string.login_btn))
                 .assertCountEquals(2)
                 .onFirst()
                 .performClick()
@@ -226,14 +226,14 @@ class EndToEndLocalTest {
             assertThat(user.value).isNotNull()
             assertThat(user.value).isEqualTo(firstUser)
 
-            onNodeWithText(getStringResource(R.string.user_profile_welcome_message, firstUser.username))
+            onNodeWithText(getStringResource(R.string.profile_welcome_message, firstUser.username))
                 .assertExists()
                 .assertIsDisplayed()
 
             snackbarHostState.currentSnackbarData?.dismiss()
             waitForIdle()
 
-            onNodeWithText(getStringResource(R.string.user_profile_welcome_message, firstUser.username))
+            onNodeWithText(getStringResource(R.string.profile_welcome_message, firstUser.username))
                 .assertDoesNotExist()
 
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.CART_SCREEN.route)

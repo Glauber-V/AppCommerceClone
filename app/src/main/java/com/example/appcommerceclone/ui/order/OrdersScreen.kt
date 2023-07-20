@@ -1,7 +1,6 @@
 package com.example.appcommerceclone.ui.order
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Order
 import com.example.appcommerceclone.ui.common.LeftToRightCard
+import com.example.appcommerceclone.ui.common.PlaceHolder
 import com.example.appcommerceclone.util.getTotalPrice
 import com.example.appcommerceclone.util.orderedProductList
 
@@ -44,16 +44,10 @@ fun OrdersScreen(
             }
         }
     } else {
-        Box(
+        PlaceHolder(
             modifier = modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(id = R.string.order_empty_history),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.h6
-            )
-        }
+            placeHolderText = stringResource(id = R.string.place_holder_text_no_orders)
+        )
     }
 }
 

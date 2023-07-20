@@ -78,7 +78,6 @@ class LoginScreenLocalTest {
                 loadingState = userViewModel.loadingState.observeAsState(initial = LoadingState.NOT_STARTED)
                 user = userViewModel.loggedUser.observeAsState(initial = null)
                 LoginScreen(
-                    isConnected = true,
                     loadingState = loadingState.value,
                     onLoginRequest = { username: String, password: String ->
                         userViewModel.login(username, password)
@@ -96,17 +95,17 @@ class LoginScreenLocalTest {
 
             assertThat(user.value).isNull()
 
-            onNodeWithText(getStringResource(R.string.user_hint_username))
+            onNodeWithText(getStringResource(R.string.hint_username))
                 .assertExists()
                 .assertIsDisplayed()
                 .performTextReplacement("wrong username")
 
-            onNodeWithText(getStringResource(R.string.user_hint_password))
+            onNodeWithText(getStringResource(R.string.hint_password))
                 .assertExists()
                 .assertIsDisplayed()
                 .performTextReplacement("wrong password")
 
-            onNodeWithText(getStringResource(R.string.user_login_btn))
+            onNodeWithText(getStringResource(R.string.login_btn))
                 .assertExists()
                 .assertIsDisplayed()
                 .performClick()
@@ -116,10 +115,10 @@ class LoginScreenLocalTest {
             assertThat(loadingState.value).isEqualTo(LoadingState.SUCCESS)
             assertThat(user.value).isNull()
 
-            onNodeWithText(getStringResource(R.string.user_profile_welcome_message, FakeUserProvider.firstUser.username))
+            onNodeWithText(getStringResource(R.string.profile_welcome_message, FakeUserProvider.firstUser.username))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_error_not_found))
+            onNodeWithText(getStringResource(R.string.login_failure_message_user_not_found))
                 .assertExists()
                 .assertIsDisplayed()
         }
@@ -133,17 +132,17 @@ class LoginScreenLocalTest {
             assertThat(loadingState.value).isEqualTo(LoadingState.NOT_STARTED)
             assertThat(user.value).isNull()
 
-            onNodeWithText(getStringResource(R.string.user_hint_username))
+            onNodeWithText(getStringResource(R.string.hint_username))
                 .assertExists()
                 .assertIsDisplayed()
                 .performTextReplacement(FakeUserProvider.firstUser.username)
 
-            onNodeWithText(getStringResource(R.string.user_hint_password))
+            onNodeWithText(getStringResource(R.string.hint_password))
                 .assertExists()
                 .assertIsDisplayed()
                 .performTextReplacement(FakeUserProvider.firstUser.password)
 
-            onNodeWithText(getStringResource(R.string.user_login_btn))
+            onNodeWithText(getStringResource(R.string.login_btn))
                 .assertExists()
                 .assertIsDisplayed()
                 .performClick()
@@ -153,10 +152,10 @@ class LoginScreenLocalTest {
             assertThat(loadingState.value).isEqualTo(LoadingState.SUCCESS)
             assertThat(user.value).isNotNull()
 
-            onNodeWithText(getStringResource(R.string.user_error_not_found))
+            onNodeWithText(getStringResource(R.string.login_failure_message_user_not_found))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_welcome_message, FakeUserProvider.firstUser.username))
+            onNodeWithText(getStringResource(R.string.profile_welcome_message, FakeUserProvider.firstUser.username))
                 .assertExists()
                 .assertIsDisplayed()
         }

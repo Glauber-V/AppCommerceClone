@@ -141,7 +141,7 @@ fun AppCommerceNavHost(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     scaffoldState: ScaffoldState = rememberScaffoldState(drawerState, snackbarHostState),
     navHostController: NavHostController,
-    currentBackStackEntry: State<NavBackStackEntry?> = navHostController.currentBackStackEntryAsState(),
+    currentBackStackEntryState: State<NavBackStackEntry?> = navHostController.currentBackStackEntryAsState(),
     startDestination: String = AppCommerceRoutes.PRODUCTS_SCREEN.route,
     navActions: AppCommerceNavigationActions = remember(navHostController) {
         AppCommerceNavigationActions(navHostController)
@@ -169,7 +169,7 @@ fun AppCommerceNavHost(
                 }
             )
         },
-        drawerGesturesEnabled = currentBackStackEntry.value?.destination?.route == startDestination
+        drawerGesturesEnabled = currentBackStackEntryState.value?.destination?.route == startDestination
     ) { contentPadding ->
         NavHost(
             modifier = Modifier.padding(contentPadding),
@@ -276,7 +276,7 @@ fun AppCommerceNavHost(
                     return@composable
                 }
 
-                BackHandler(enabled = currentBackStackEntry.value?.destination?.route == it.destination.route) {
+                BackHandler(enabled = currentBackStackEntryState.value?.destination?.route == it.destination.route) {
                     navActions.navigateToProductsScreen()
                 }
 
@@ -284,16 +284,23 @@ fun AppCommerceNavHost(
                 OrdersScreen(orders = orders)
             }
             composable(route = AppCommerceRoutes.LOGIN_SCREEN.route) {
-                BackHandler(enabled = currentBackStackEntry.value?.destination?.route == it.destination.route) {
+                BackHandler(enabled = currentBackStackEntryState.value?.destination?.route == it.destination.route) {
                     navActions.navigateToProductsScreen()
                 }
 
                 val loadingState by userViewModel.loadingState.observeAsState(initial = LoadingState.NOT_STARTED)
                 LoginScreen(
-                    isConnected = isConnected,
                     loadingState = loadingState,
                     onLoginRequest = { username: String, password: String ->
-                        userViewModel.login(username = username, password = password)
+                        if (isConnected) {
+                            userViewModel.login(username = username, password = password)
+                        } else {
+                            snackbarScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    message = context.getString(R.string.error_no_connection)
+                                )
+                            }
+                        }
                     },
                     onRegisterRequest = {
                         navActions.navigateToUserRegisterScreen()
@@ -305,8 +312,8 @@ fun AppCommerceNavHost(
                         snackbarScope.launch {
                             snackbarHostState.showSnackbar(
                                 message = when (loadingState) {
-                                    LoadingState.SUCCESS -> context.getString(R.string.user_profile_welcome_message, user!!.username)
-                                    LoadingState.FAILURE -> context.getString(R.string.user_error_not_found)
+                                    LoadingState.SUCCESS -> context.getString(R.string.profile_welcome_message, user!!.username)
+                                    LoadingState.FAILURE -> context.getString(R.string.login_failure_message_user_not_found)
                                     else -> ""
                                 }
                             )

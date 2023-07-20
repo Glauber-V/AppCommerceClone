@@ -33,6 +33,7 @@ import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.ui.common.LeftToRightCard
+import com.example.appcommerceclone.ui.common.PlaceHolder
 import com.example.appcommerceclone.util.productList
 
 @Composable
@@ -41,25 +42,32 @@ fun FavoritesScreen(
     favoriteProducts: List<Product>,
     onRemoveFavoriteProduct: (Product) -> Unit
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(top = dimensionResource(id = R.dimen.padding_small)),
-        verticalArrangement = Arrangement.spacedBy(
-            space = dimensionResource(id = R.dimen.padding_small),
-            alignment = Alignment.Top
-        ),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        items(
-            items = favoriteProducts,
-            key = { product: Product -> product.id }
-        ) { favoriteProduct: Product ->
-            FavoriteProductItem(
-                product = favoriteProduct,
-                onRemoveFavoriteProduct = { onRemoveFavoriteProduct(favoriteProduct) }
-            )
+    if (favoriteProducts.isNotEmpty()) {
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(top = dimensionResource(id = R.dimen.padding_small)),
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_small),
+                alignment = Alignment.Top
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            items(
+                items = favoriteProducts,
+                key = { product: Product -> product.id }
+            ) { favoriteProduct: Product ->
+                FavoriteProductItem(
+                    product = favoriteProduct,
+                    onRemoveFavoriteProduct = { onRemoveFavoriteProduct(favoriteProduct) }
+                )
+            }
         }
+    } else {
+        PlaceHolder(
+            modifier = modifier.fillMaxSize(),
+            placeHolderText = stringResource(id = R.string.place_holder_text_no_favorites)
+        )
     }
 }
 
@@ -133,6 +141,17 @@ fun PreviewFavoritesScreen() {
     MaterialTheme {
         FavoritesScreen(
             favoriteProducts = productList,
+            onRemoveFavoriteProduct = {}
+        )
+    }
+}
+
+@Preview(showSystemUi = true, showBackground = true)
+@Composable
+fun PreviewFavoritesScreenWithEmptyList() {
+    MaterialTheme {
+        FavoritesScreen(
+            favoriteProducts = emptyList(),
             onRemoveFavoriteProduct = {}
         )
     }

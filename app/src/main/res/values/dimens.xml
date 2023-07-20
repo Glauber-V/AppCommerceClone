@@ -7,11 +7,6 @@
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_extra_large">22sp</dimen>
 
-    <dimen name="margin_size_small">4dp</dimen>
-    <dimen name="margin_size_medium">8dp</dimen>
-    <dimen name="margin_size_large">10dp</dimen>
-    <dimen name="margin_size_extra_large">20dp</dimen>
-
     <dimen name="padding_small">4dp</dimen>
     <dimen name="padding_medium">8dp</dimen>
     <dimen name="padding_large">10dp</dimen>
@@ -26,19 +21,10 @@
 
     <dimen name="divider_size">2dp</dimen>
 
-    <dimen name="chip_width">56dp</dimen>
-    <dimen name="chip_unchecked_stroke_width">1dp</dimen>
-    <dimen name="chip_checked_stroke_width">2dp</dimen>
-
     <dimen name="item_product_image_height">220dp</dimen>
     <dimen name="item_product_title_height">40dp</dimen>
     <dimen name="item_product_subtitle_height">30dp</dimen>
 
-    <dimen name="elevation_small">4dp</dimen>
-    <dimen name="elevation_medium">6dp</dimen>
-    <dimen name="elevation_high">8dp</dimen>
-
-    <dimen name="icon_size">48dp</dimen>
     <dimen name="btn_min_width_size">96dp</dimen>
     <dimen name="btn_min_height_size">48dp</dimen>
 

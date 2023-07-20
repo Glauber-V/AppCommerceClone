@@ -54,13 +54,13 @@ class ProfileScreenLocalTest {
                 .performScrollTo()
                 .assertIsDisplayed()
 
-            onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_cancel_update_btn))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_save_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_save_update_btn))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_start_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_start_update_btn))
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
@@ -78,7 +78,7 @@ class ProfileScreenLocalTest {
                 .assertExists()
                 .assertIsDisplayed()
 
-            onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_cancel_update_btn))
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
@@ -91,13 +91,13 @@ class ProfileScreenLocalTest {
                 .performScrollTo()
                 .assertIsDisplayed()
 
-            onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_cancel_update_btn))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_save_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_save_update_btn))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_start_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_start_update_btn))
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
@@ -110,29 +110,29 @@ class ProfileScreenLocalTest {
         with(composeRule) {
             onRoot().printToLog("onUserProfileScreen|FinishProfileUpdate")
 
-            onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_cancel_update_btn))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_save_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_save_update_btn))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_start_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_start_update_btn))
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
                 .performClick()
 
-            onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_cancel_update_btn))
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
 
-            onNodeWithText(getStringResource(R.string.user_profile_save_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_save_update_btn))
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
 
-            onNodeWithText(getStringResource(R.string.user_profile_start_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_start_update_btn))
                 .assertDoesNotExist()
 
             onNodeWithText(firstUser.username)
@@ -147,7 +147,7 @@ class ProfileScreenLocalTest {
                 .assertExists()
                 .assertIsDisplayed()
 
-            onNodeWithText(getStringResource(R.string.user_profile_save_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_save_update_btn))
                 .assertExists()
                 .performScrollTo()
                 .assertIsDisplayed()
@@ -160,13 +160,13 @@ class ProfileScreenLocalTest {
                 .performScrollTo()
                 .assertIsDisplayed()
 
-            onNodeWithText(getStringResource(R.string.user_profile_cancel_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_cancel_update_btn))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_save_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_save_update_btn))
                 .assertDoesNotExist()
 
-            onNodeWithText(getStringResource(R.string.user_profile_start_update_btn))
+            onNodeWithText(getStringResource(R.string.profile_start_update_btn))
                 .assertExists()
         }
     }

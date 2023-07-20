@@ -15,9 +15,6 @@
         <item name="colorOnSurface">@color/onSurfaceColor</item>
         <item name="colorOnError">@color/onErrorColor</item>
 
-        <!--Style Overrides-->
-        <item name="textInputStyle">@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox</item>
-
     </style>
 
 </resources>

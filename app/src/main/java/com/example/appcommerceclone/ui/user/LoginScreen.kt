@@ -3,7 +3,6 @@ package com.example.appcommerceclone.ui.user
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -43,7 +42,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.ui.common.NoConnectionPlaceHolder
 import com.example.appcommerceclone.ui.common.PrimaryActionButton
 import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
@@ -80,7 +78,6 @@ fun rememberLoginScreenUiState(): LoginScreenUiState {
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
-    isConnected: Boolean,
     loadingState: LoadingState,
     loginScreenUiState: LoginScreenUiState = rememberLoginScreenUiState(),
     onLoginRequest: (username: String, password: String) -> Unit,
@@ -88,110 +85,106 @@ fun LoginScreen(
     focusManager: FocusManager = LocalFocusManager.current,
     keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
 ) {
-    if (isConnected) {
-        Column(
-            modifier = modifier.padding(dimensionResource(id = R.dimen.padding_extra_large)),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+    Column(
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_extra_large)),
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
+            contentAlignment = Alignment.Center
         ) {
-            Box(
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
-                contentAlignment = Alignment.Center
-            ) {
-                if (loadingState == LoadingState.LOADING) {
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(150.dp),
-                        strokeWidth = 4.dp,
-                        color = colorResource(id = R.color.progress_indicator_color),
-                        backgroundColor = colorResource(id = R.color.progress_track_color)
-                    )
-                }
-                Icon(
-                    modifier = Modifier.size(125.dp),
-                    imageVector = Icons.Filled.Person,
-                    contentDescription = null
+            if (loadingState == LoadingState.LOADING) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(150.dp),
+                    strokeWidth = 4.dp,
+                    color = colorResource(id = R.color.progress_indicator_color),
+                    backgroundColor = colorResource(id = R.color.progress_track_color)
                 )
             }
-            UserNameOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
-                enabled = loadingState != LoadingState.LOADING,
-                userNameText = loginScreenUiState.usernameText,
-                onUserNameTextChange = { loginScreenUiState.onUsernameChanged(it) },
-                keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }
-                )
-            )
-            UserPasswordOutlinedTextField(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.padding_large)),
-                enabled = loadingState != LoadingState.LOADING,
-                userPasswordText = loginScreenUiState.passwordText,
-                onUserPasswordChange = { loginScreenUiState.onPasswordChanged(it) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide()
-                    }
-                )
-            )
-            PrimaryActionButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
-                shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-                onPrimaryAction = {
-                    focusManager.clearFocus()
-                    keyboardController?.hide()
-                    onLoginRequest(loginScreenUiState.usernameText, loginScreenUiState.passwordText)
-                },
-                isPrimaryActionEnabled = loginScreenUiState.canLogin() && loadingState != LoadingState.LOADING,
-                primaryActionContent = {
-                    Text(
-                        text = stringResource(id = R.string.user_login_btn),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button
-                    )
-                }
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
-                text = stringResource(id = R.string.user_no_account_warning),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.button
-            )
-            TextButton(
-                modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
-                onClick = onRegisterRequest,
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color.Transparent,
-                    contentColor = colorResource(id = R.color.primaryColor)
-                ),
-                content = {
-                    Text(
-                        text = stringResource(id = R.string.user_register_btn),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button
-                    )
-                }
+            Icon(
+                modifier = Modifier.size(125.dp),
+                imageVector = Icons.Filled.Person,
+                contentDescription = null
             )
         }
-    } else {
-        NoConnectionPlaceHolder(modifier.fillMaxSize())
+        UserNameOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+            enabled = loadingState != LoadingState.LOADING,
+            userNameText = loginScreenUiState.usernameText,
+            onUserNameTextChange = { loginScreenUiState.onUsernameChanged(it) },
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            )
+        )
+        UserPasswordOutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = dimensionResource(id = R.dimen.padding_large)),
+            enabled = loadingState != LoadingState.LOADING,
+            userPasswordText = loginScreenUiState.passwordText,
+            onUserPasswordChange = { loginScreenUiState.onPasswordChanged(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
+        )
+        PrimaryActionButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
+            onPrimaryAction = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+                onLoginRequest(loginScreenUiState.usernameText, loginScreenUiState.passwordText)
+            },
+            isPrimaryActionEnabled = loginScreenUiState.canLogin() && loadingState != LoadingState.LOADING,
+            primaryActionContent = {
+                Text(
+                    text = stringResource(id = R.string.login_btn),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.button
+                )
+            }
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+            text = stringResource(id = R.string.login_no_account),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.button
+        )
+        TextButton(
+            modifier = Modifier.padding(top = dimensionResource(id = R.dimen.padding_large)),
+            onClick = onRegisterRequest,
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Transparent,
+                contentColor = colorResource(id = R.color.primaryColor)
+            ),
+            content = {
+                Text(
+                    text = stringResource(id = R.string.register_btn),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.button
+                )
+            }
+        )
     }
 }
 
@@ -201,7 +194,6 @@ fun LoginScreen(
 fun PreviewUserLoginScreen() {
     MaterialTheme {
         LoginScreen(
-            isConnected = true,
             loadingState = LoadingState.NOT_STARTED,
             onLoginRequest = { _, _ -> },
             onRegisterRequest = {}

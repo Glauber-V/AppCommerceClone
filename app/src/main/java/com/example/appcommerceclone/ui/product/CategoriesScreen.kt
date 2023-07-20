@@ -36,6 +36,12 @@ fun CategoriesScreen(
         horizontalAlignment = Alignment.Start
     ) {
         ProductCategoryItem(
+            name = stringResource(id = R.string.category_name_all_products),
+            onProductCategorySelected = {
+                onProductCategorySelected(ProductCategories.NONE)
+            }
+        )
+        ProductCategoryItem(
             name = stringResource(id = R.string.category_name_jewelery),
             onProductCategorySelected = {
                 onProductCategorySelected(ProductCategories.JEWELERY)

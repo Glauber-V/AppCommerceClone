@@ -272,7 +272,7 @@ fun ProfileScreen(
                 readOnly = !profileScreenUiState.isEditMode,
                 label = {
                     Text(
-                        text = stringResource(id = R.string.user_hint_name_first_name),
+                        text = stringResource(id = R.string.hint_name_first_name),
                         style = MaterialTheme.typography.subtitle1
                     )
                 },
@@ -290,7 +290,7 @@ fun ProfileScreen(
                 readOnly = !profileScreenUiState.isEditMode,
                 label = {
                     Text(
-                        text = stringResource(id = R.string.user_hint_name_last_name),
+                        text = stringResource(id = R.string.hint_name_last_name),
                         style = MaterialTheme.typography.subtitle1
                     )
                 },
@@ -331,7 +331,7 @@ fun ProfileScreen(
             },
             label = {
                 Text(
-                    text = stringResource(id = R.string.user_hint_phone),
+                    text = stringResource(id = R.string.hint_phone),
                     style = MaterialTheme.typography.subtitle1
                 )
             },
@@ -352,7 +352,7 @@ fun ProfileScreen(
             readOnly = !profileScreenUiState.isEditMode,
             label = {
                 Text(
-                    text = stringResource(id = R.string.user_hint_address_zipcode),
+                    text = stringResource(id = R.string.hint_address_zipcode),
                     style = MaterialTheme.typography.subtitle1
                 )
             },
@@ -380,7 +380,7 @@ fun ProfileScreen(
             },
             label = {
                 Text(
-                    text = stringResource(id = R.string.user_hint_address_city),
+                    text = stringResource(id = R.string.hint_address_city),
                     style = MaterialTheme.typography.subtitle1
                 )
             },
@@ -407,7 +407,7 @@ fun ProfileScreen(
                 readOnly = !profileScreenUiState.isEditMode,
                 label = {
                     Text(
-                        text = stringResource(id = R.string.user_hint_address_street),
+                        text = stringResource(id = R.string.hint_address_street),
                         style = MaterialTheme.typography.subtitle1
                     )
                 },
@@ -429,7 +429,7 @@ fun ProfileScreen(
                 readOnly = !profileScreenUiState.isEditMode,
                 label = {
                     Text(
-                        text = stringResource(id = R.string.user_hint_address_number),
+                        text = stringResource(id = R.string.hint_address_number),
                         style = MaterialTheme.typography.subtitle1
                     )
                 },
@@ -453,7 +453,7 @@ fun ProfileScreen(
                 onPrimaryAction = { profileScreenUiState.onEditModeChange() },
                 primaryActionContent = {
                     Text(
-                        text = stringResource(id = R.string.user_profile_start_update_btn),
+                        text = stringResource(id = R.string.profile_start_update_btn),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button
                     )
@@ -469,7 +469,7 @@ fun ProfileScreen(
                 isPrimaryActionEnabled = profileScreenUiState.validateUpdate(),
                 primaryActionContent = {
                     Text(
-                        text = stringResource(id = R.string.user_profile_save_update_btn),
+                        text = stringResource(id = R.string.profile_save_update_btn),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button
                     )
@@ -480,7 +480,7 @@ fun ProfileScreen(
                 },
                 secondaryActionContent = {
                     Text(
-                        text = stringResource(id = R.string.user_profile_cancel_update_btn),
+                        text = stringResource(id = R.string.profile_cancel_update_btn),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button
                     )
@@ -492,7 +492,7 @@ fun ProfileScreen(
             onSecondaryAction = onLogout,
             secondaryActionContent = {
                 Text(
-                    text = stringResource(id = R.string.user_profile_logout_btn),
+                    text = stringResource(id = R.string.profile_logout_btn),
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.button
                 )
