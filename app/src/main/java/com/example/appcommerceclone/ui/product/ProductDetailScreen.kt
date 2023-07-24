@@ -9,28 +9,22 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Divider
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Favorite
@@ -57,6 +51,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Product
+import com.example.appcommerceclone.ui.common.DoubleActionButton
+import com.example.appcommerceclone.ui.common.SecondaryActionButton
 import com.example.appcommerceclone.util.productMensClothing
 
 @Stable
@@ -163,15 +159,17 @@ fun ProductDetailScreen(
                         style = MaterialTheme.typography.h6
                     )
                 }
-                IconButton(
-                    onClick = {
+                SecondaryActionButton(
+                    modifier = Modifier.size(48.dp),
+                    shape = CircleShape,
+                    onSecondaryAction = {
                         if (!isFavorite) {
                             onAddToFavorites(product)
                         } else {
                             onAddToFavoritesFailed(context.getString(R.string.error_already_favorite))
                         }
                     },
-                    content = {
+                    secondaryActionContent = {
                         Icon(
                             tint = colorResource(id = R.color.primaryColor),
                             imageVector = Icons.Filled.Favorite,
@@ -259,50 +257,32 @@ fun ProductDetailScreen(
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(id = R.dimen.padding_medium)),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                OutlinedButton(
-                    onClick = {
-                        if (productDetailScreenUiState.validateSelections()) {
-                            onAddToCart(product)
-                        } else {
-                            onPurchaseFailed(productDetailScreenUiState.createValidationErrorMessage(context))
-                        }
-                    },
-                    modifier = Modifier
-                        .height(dimensionResource(id = R.dimen.btn_min_height_size))
-                        .width(dimensionResource(id = R.dimen.btn_min_width_size)),
-                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color.Transparent,
-                        contentColor = colorResource(id = R.color.icon_color_black)
-                    ),
-                    content = {
-                        Icon(
-                            imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = stringResource(id = R.string.content_desc_add_to_cart_btn)
-                        )
-                    }
-                )
-                TextButton(
-                    onClick = {
+                DoubleActionButton(
+                    onPrimaryAction = {
                         if (productDetailScreenUiState.validateSelections()) {
                             onBuyNow(context.getString(R.string.product_detail_thanks_for_purchase))
                         } else {
                             onPurchaseFailed(productDetailScreenUiState.createValidationErrorMessage(context))
                         }
                     },
-                    modifier = Modifier
-                        .height(dimensionResource(id = R.dimen.btn_min_height_size))
-                        .weight(1f),
-                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = colorResource(id = R.color.primaryColor),
-                        contentColor = colorResource(id = R.color.white_100)
-                    ),
-                    content = {
+                    primaryActionContent = {
                         Text(
                             text = stringResource(id = R.string.product_detail_buy_now),
                             textAlign = TextAlign.Center,
                             style = MaterialTheme.typography.button
+                        )
+                    },
+                    onSecondaryAction = {
+                        if (productDetailScreenUiState.validateSelections()) {
+                            onAddToCart(product)
+                        } else {
+                            onPurchaseFailed(productDetailScreenUiState.createValidationErrorMessage(context))
+                        }
+                    },
+                    secondaryActionContent = {
+                        Icon(
+                            imageVector = Icons.Default.ShoppingCart,
+                            contentDescription = stringResource(id = R.string.content_desc_add_to_cart_btn)
                         )
                     }
                 )

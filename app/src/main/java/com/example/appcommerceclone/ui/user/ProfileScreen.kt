@@ -223,7 +223,7 @@ fun ProfileScreen(
                 primaryActionContent = {
                     Text(
                         modifier = Modifier.width(180.dp),
-                        text = "Take a picture",
+                        text = stringResource(id = R.string.profile_update_profile_pic),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.button
                     )

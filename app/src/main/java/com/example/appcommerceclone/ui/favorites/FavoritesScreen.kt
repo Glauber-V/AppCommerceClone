@@ -55,7 +55,7 @@ fun FavoritesScreen(
         ) {
             items(
                 items = favoriteProducts,
-                key = { product: Product -> product.id }
+                key = { it.id }
             ) { favoriteProduct: Product ->
                 FavoriteProductItem(
                     product = favoriteProduct,
@@ -75,7 +75,7 @@ fun FavoritesScreen(
 fun FavoriteProductItem(
     modifier: Modifier = Modifier,
     product: Product,
-    onRemoveFavoriteProduct: (Product) -> Unit
+    onRemoveFavoriteProduct: () -> Unit
 ) {
     LeftToRightCard(
         modifier = modifier
@@ -122,7 +122,7 @@ fun FavoriteProductItem(
                 )
             }
             IconButton(
-                onClick = { onRemoveFavoriteProduct(product) },
+                onClick = onRemoveFavoriteProduct,
                 content = {
                     Icon(
                         tint = colorResource(id = R.color.primaryColor),

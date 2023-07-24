@@ -54,6 +54,7 @@
     <string name="profile_cancel_update_btn">Cancel</string>
     <string name="profile_save_update_btn">Save</string>
     <string name="profile_logout_btn">Logout</string>
+    <string name="profile_update_profile_pic">Update profile picture</string>
     <string name="profile_dialog_title">Select a picture from:</string>
     <string name="profile_dialog_option_gallery">Gallery</string>
     <string name="profile_dialog_option_camera">Camera</string>
@@ -90,6 +91,10 @@
 
     <!--Content Description-->
     <string name="content_desc_no_internet_connection_image">No Internet connection</string>
+
+    <string name="content_desc_menu_open">Open menu</string>
+    <string name="content_desc_menu_close">Close menu</string>
+    <string name="content_desc_menu_navigate_back">Go back</string>
 
     <string name="content_desc_add_to_favorites_btn">Add to favorites</string>
     <string name="content_desc_add_to_cart_btn">Add to cart</string>

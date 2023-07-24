@@ -12,15 +12,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.ScaffoldState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Category
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Star
@@ -29,7 +33,6 @@ import androidx.compose.material.rememberDrawerState
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
@@ -44,7 +47,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -141,17 +143,35 @@ fun AppCommerceNavHost(
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     scaffoldState: ScaffoldState = rememberScaffoldState(drawerState, snackbarHostState),
     navHostController: NavHostController,
-    currentBackStackEntryState: State<NavBackStackEntry?> = navHostController.currentBackStackEntryAsState(),
     startDestination: String = AppCommerceRoutes.PRODUCTS_SCREEN.route,
     navActions: AppCommerceNavigationActions = remember(navHostController) {
         AppCommerceNavigationActions(navHostController)
     }
 ) {
     val user by userViewModel.loggedUser.observeAsState(initial = null)
+    val currentBackStackEntryState by navHostController.currentBackStackEntryAsState()
 
     Scaffold(
         modifier = modifier,
         scaffoldState = scaffoldState,
+        topBar = {
+            TopAppBarContent(
+                context = context,
+                isDrawerOpen = drawerState.isOpen,
+                startDestination = startDestination,
+                currentRoute = currentBackStackEntryState?.destination?.route,
+                onNavigationIconClicked = {
+                    if (currentBackStackEntryState?.destination?.route != startDestination) {
+                        navHostController.popBackStack()
+                    } else {
+                        drawerScope.launch {
+                            if (drawerState.isOpen) drawerState.close()
+                            else drawerState.open()
+                        }
+                    }
+                }
+            )
+        },
         drawerContent = {
             ModalDrawerContent(
                 user = user,
@@ -169,7 +189,7 @@ fun AppCommerceNavHost(
                 }
             )
         },
-        drawerGesturesEnabled = currentBackStackEntryState.value?.destination?.route == startDestination
+        drawerGesturesEnabled = currentBackStackEntryState?.destination?.route == startDestination
     ) { contentPadding ->
         NavHost(
             modifier = Modifier.padding(contentPadding),
@@ -276,7 +296,7 @@ fun AppCommerceNavHost(
                     return@composable
                 }
 
-                BackHandler(enabled = currentBackStackEntryState.value?.destination?.route == it.destination.route) {
+                BackHandler(enabled = currentBackStackEntryState?.destination?.route == it.destination.route) {
                     navActions.navigateToProductsScreen()
                 }
 
@@ -284,7 +304,7 @@ fun AppCommerceNavHost(
                 OrdersScreen(orders = orders)
             }
             composable(route = AppCommerceRoutes.LOGIN_SCREEN.route) {
-                BackHandler(enabled = currentBackStackEntryState.value?.destination?.route == it.destination.route) {
+                BackHandler(enabled = currentBackStackEntryState?.destination?.route == it.destination.route) {
                     navActions.navigateToProductsScreen()
                 }
 
@@ -339,12 +359,52 @@ fun AppCommerceNavHost(
                 )
             }
             composable(route = AppCommerceRoutes.REGISTER_SCREEN.route) {
-                RegisterScreen(onRegisterRequest = {
+                RegisterScreen(onRegisterRequest = { registrationMessage ->
+                    snackbarScope.launch {
+                        snackbarHostState.showSnackbar(message = registrationMessage)
+                    }
                     navHostController.popBackStack()
                 })
             }
         }
     }
+}
+
+@Composable
+fun TopAppBarContent(
+    modifier: Modifier = Modifier,
+    context: Context,
+    isDrawerOpen: Boolean,
+    startDestination: String,
+    currentRoute: String?,
+    onNavigationIconClicked: () -> Unit
+) {
+    TopAppBar(
+        modifier = modifier,
+        title = {
+            Text(
+                text = stringResource(id = R.string.app_name),
+                textAlign = TextAlign.Start,
+                style = MaterialTheme.typography.h5
+            )
+        },
+        navigationIcon = {
+            IconButton(onClick = onNavigationIconClicked) {
+                Icon(
+                    imageVector =
+                    if (currentRoute == startDestination) Icons.Filled.Menu
+                    else Icons.Filled.ArrowBack,
+                    contentDescription =
+                    if (currentRoute != startDestination) {
+                        context.getString(R.string.content_desc_menu_navigate_back)
+                    } else {
+                        if (isDrawerOpen) context.getString(R.string.content_desc_menu_close)
+                        else context.getString(R.string.content_desc_menu_open)
+                    }
+                )
+            }
+        }
+    )
 }
 
 @Composable
@@ -436,6 +496,20 @@ fun ModalDrawerItem(
             text = itemText,
             textAlign = TextAlign.Start,
             style = MaterialTheme.typography.h6
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewTopAppBar() {
+    MaterialTheme {
+        TopAppBarContent(
+            context = LocalContext.current,
+            isDrawerOpen = false,
+            startDestination = AppCommerceRoutes.PRODUCTS_SCREEN.route,
+            currentRoute = AppCommerceRoutes.PRODUCTS_SCREEN.route,
+            onNavigationIconClicked = {}
         )
     }
 }

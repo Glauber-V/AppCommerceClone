@@ -10,17 +10,26 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.RemoveShoppingCart
 import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.Remove
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +56,43 @@ fun CartScreen(
     onAbandonCart: () -> Unit,
     onConfirmPurchase: () -> Unit
 ) {
+    var isDialogOpen by remember { mutableStateOf(false) }
+    if (isDialogOpen) {
+        AlertDialog(
+            title = {
+                Text(
+                    text = stringResource(id = R.string.cart_dialog_title),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.h5
+                )
+            },
+            shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
+            onDismissRequest = { isDialogOpen = false },
+            confirmButton = {
+                TextButton(
+                    onClick = { onAbandonCart(); isDialogOpen = false },
+                    content = {
+                        Text(
+                            text = stringResource(id = R.string.cart_dialog_positive),
+                            style = MaterialTheme.typography.h6
+                        )
+                    }
+                )
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { isDialogOpen = false },
+                    content = {
+                        Text(
+                            text = stringResource(id = R.string.cart_dialog_negative),
+                            style = MaterialTheme.typography.h6
+                        )
+                    }
+                )
+            }
+        )
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -93,13 +139,13 @@ fun CartScreen(
                     style = MaterialTheme.typography.button
                 )
             },
-            onSecondaryAction = onAbandonCart,
+            onSecondaryAction = { isDialogOpen = true },
             isSecondaryActionEnabled = cartProducts.isNotEmpty(),
             secondaryActionContent = {
-                Text(
-                    text = stringResource(id = R.string.cart_cancel_purchase_btn),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.button
+                Icon(
+                    tint = colorResource(id = R.color.icon_color_black),
+                    imageVector = Icons.Filled.RemoveShoppingCart,
+                    contentDescription = null
                 )
             }
         )
@@ -165,6 +211,7 @@ fun CartProductItem(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     SecondaryActionButton(
+                        modifier = Modifier.size(48.dp),
                         shape = CircleShape,
                         onSecondaryAction = onQuantityDecrease,
                         secondaryActionContent = {
@@ -180,6 +227,7 @@ fun CartProductItem(
                         style = MaterialTheme.typography.h6
                     )
                     PrimaryActionButton(
+                        modifier = Modifier.size(48.dp),
                         shape = CircleShape,
                         onPrimaryAction = onQuantityIncrease,
                         primaryActionContent = {

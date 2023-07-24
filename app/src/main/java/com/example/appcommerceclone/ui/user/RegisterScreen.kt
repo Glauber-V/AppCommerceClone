@@ -3,23 +3,17 @@ package com.example.appcommerceclone.ui.user
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -41,8 +35,6 @@ import com.example.appcommerceclone.ui.common.PrimaryActionButton
 import com.example.appcommerceclone.ui.common.UserEmailOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserNameOutlinedTextField
 import com.example.appcommerceclone.ui.common.UserPasswordOutlinedTextField
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Stable
 class RegisterScreenUiState {
@@ -71,6 +63,10 @@ class RegisterScreenUiState {
     fun canRegister(): Boolean {
         return userEmailText.isNotEmpty() && usernameText.isNotEmpty() && userPasswordText.isNotEmpty()
     }
+
+    fun createRegistrationMessage(context: Context): String {
+        return context.getString(R.string.register_success_message)
+    }
 }
 
 @Composable
@@ -83,94 +79,81 @@ fun rememberRegisterScreenUiState(): RegisterScreenUiState {
 fun RegisterScreen(
     modifier: Modifier = Modifier,
     registerScreenUiState: RegisterScreenUiState = rememberRegisterScreenUiState(),
-    onRegisterRequest: () -> Unit,
+    onRegisterRequest: (String) -> Unit,
     context: Context = LocalContext.current,
     focusManager: FocusManager = LocalFocusManager.current,
-    snackbarScope: CoroutineScope = rememberCoroutineScope(),
-    snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     keyboardController: SoftwareKeyboardController? = LocalSoftwareKeyboardController.current
 ) {
-    Scaffold(
-        modifier = modifier.fillMaxSize(),
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { contentPadding ->
-        Column(
-            modifier = Modifier
-                .padding(contentPadding)
-                .padding(dimensionResource(id = R.dimen.padding_extra_large)),
-            verticalArrangement = Arrangement.spacedBy(
-                space = dimensionResource(id = R.dimen.padding_medium),
-                alignment = Alignment.Top
+    Column(
+        modifier = modifier.padding(dimensionResource(id = R.dimen.padding_extra_large)),
+        verticalArrangement = Arrangement.spacedBy(
+            space = dimensionResource(id = R.dimen.padding_medium),
+            alignment = Alignment.Top
+        ),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        UserEmailOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            userEmailText = registerScreenUiState.userEmailText,
+            onEmailTextChange = { registerScreenUiState.onEmailTextChanged(it) },
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next
             ),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            UserEmailOutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                userEmailText = registerScreenUiState.userEmailText,
-                onEmailTextChange = { registerScreenUiState.onEmailTextChanged(it) },
-                keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }
-                )
-            )
-            UserNameOutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                userNameText = registerScreenUiState.usernameText,
-                onUserNameTextChange = { registerScreenUiState.onUsernameTextChanged(it) },
-                keyboardOptions = KeyboardOptions(
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Next
-                ),
-                keyboardActions = KeyboardActions(
-                    onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }
-                )
-            )
-            UserPasswordOutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                userPasswordText = registerScreenUiState.userPasswordText,
-                onUserPasswordChange = { registerScreenUiState.onPasswordTextChanged(it) },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                keyboardActions = KeyboardActions(
-                    onDone = {
-                        keyboardController?.hide()
-                    }
-                )
-            )
-            PrimaryActionButton(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
-                shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
-                onPrimaryAction = {
-                    snackbarScope.launch {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                        snackbarHostState.showSnackbar(message = context.getString(R.string.register_success_message))
-                        onRegisterRequest()
-                    }
-                },
-                isPrimaryActionEnabled = registerScreenUiState.canRegister(),
-                primaryActionContent = {
-                    Text(
-                        text = stringResource(id = R.string.register_btn),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.button
-                    )
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
                 }
             )
-        }
+        )
+        UserNameOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            userNameText = registerScreenUiState.usernameText,
+            onUserNameTextChange = { registerScreenUiState.onUsernameTextChanged(it) },
+            keyboardOptions = KeyboardOptions(
+                autoCorrect = false,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                }
+            )
+        )
+        UserPasswordOutlinedTextField(
+            modifier = Modifier.fillMaxWidth(),
+            userPasswordText = registerScreenUiState.userPasswordText,
+            onUserPasswordChange = { registerScreenUiState.onPasswordTextChanged(it) },
+            keyboardOptions = KeyboardOptions(
+                keyboardType = KeyboardType.Password,
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
+        )
+        PrimaryActionButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = dimensionResource(id = R.dimen.padding_extra_large)),
+            onPrimaryAction = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+                onRegisterRequest(registerScreenUiState.createRegistrationMessage(context))
+            },
+            isPrimaryActionEnabled = registerScreenUiState.canRegister(),
+            primaryActionContent = {
+                Text(
+                    text = stringResource(id = R.string.register_btn),
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.button
+                )
+            }
+        )
     }
 }
 

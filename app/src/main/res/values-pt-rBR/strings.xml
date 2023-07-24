@@ -52,6 +52,7 @@
     <string name="profile_cancel_update_btn">Cancelar</string>
     <string name="profile_save_update_btn">Salvar</string>
     <string name="profile_logout_btn">Desconectar</string>
+    <string name="profile_update_profile_pic">Atualizar foto de perfil</string>
     <string name="profile_dialog_title">Selecione uma foto da:</string>
     <string name="profile_dialog_option_gallery">Galeria</string>
     <string name="profile_dialog_option_camera">Câmera</string>
@@ -84,6 +85,10 @@
 
     <!-- Content Description -->
     <string name="content_desc_no_internet_connection_image">Sem conexão com a internet</string>
+
+    <string name="content_desc_menu_open">Abrir menu</string>
+    <string name="content_desc_menu_close">Fechar menu</string>
+    <string name="content_desc_menu_navigate_back">Voltar</string>
 
     <string name="content_desc_add_to_favorites_btn">Adicionar as favoritos</string>
     <string name="content_desc_add_to_cart_btn">Adicionar ao carrinho</string>

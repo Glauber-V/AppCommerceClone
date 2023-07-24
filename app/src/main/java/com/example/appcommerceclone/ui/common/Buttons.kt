@@ -1,5 +1,6 @@
 package com.example.appcommerceclone.ui.common
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -7,10 +8,9 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,7 +42,6 @@ fun DoubleActionButton(
     ) {
         SecondaryActionButton(
             modifier = Modifier.width(dimensionResource(id = R.dimen.btn_min_width_size)),
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
             onSecondaryAction = onSecondaryAction,
             isSecondaryActionEnabled = isSecondaryActionEnabled,
             secondaryActionContent = secondaryActionContent
@@ -51,7 +50,6 @@ fun DoubleActionButton(
             modifier = Modifier
                 .padding(start = dimensionResource(id = R.dimen.padding_medium))
                 .weight(1f),
-            shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
             onPrimaryAction = onPrimaryAction,
             isPrimaryActionEnabled = isPrimaryActionEnabled,
             primaryActionContent = primaryActionContent
@@ -62,12 +60,12 @@ fun DoubleActionButton(
 @Composable
 fun PrimaryActionButton(
     modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.small,
+    shape: Shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
     onPrimaryAction: () -> Unit,
     isPrimaryActionEnabled: Boolean = true,
     primaryActionContent: @Composable (RowScope.() -> Unit)
 ) {
-    TextButton(
+    Button(
         modifier = modifier.heightIn(min = 48.dp),
         onClick = onPrimaryAction,
         enabled = isPrimaryActionEnabled,
@@ -83,7 +81,7 @@ fun PrimaryActionButton(
 @Composable
 fun SecondaryActionButton(
     modifier: Modifier = Modifier,
-    shape: Shape = MaterialTheme.shapes.small,
+    shape: Shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
     onSecondaryAction: () -> Unit,
     isSecondaryActionEnabled: Boolean = true,
     secondaryActionContent: @Composable (RowScope.() -> Unit)
@@ -93,9 +91,13 @@ fun SecondaryActionButton(
         onClick = onSecondaryAction,
         enabled = isSecondaryActionEnabled,
         shape = shape,
+        border = BorderStroke(
+            width = dimensionResource(id = R.dimen.stroke_size_small),
+            color = colorResource(id = R.color.stroke_color_dark)
+        ),
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Color.Transparent,
-            contentColor = colorResource(id = R.color.primaryColor)
+            contentColor = colorResource(id = R.color.icon_color_black)
         ),
         content = secondaryActionContent
     )
