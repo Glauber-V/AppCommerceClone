@@ -53,6 +53,7 @@ import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.ui.common.DoubleActionButton
 import com.example.appcommerceclone.ui.common.SecondaryActionButton
+import com.example.appcommerceclone.util.getFormattedPrice
 import com.example.appcommerceclone.util.productMensClothing
 
 @Stable
@@ -114,10 +115,10 @@ fun ProductDetailScreen(
     product: Product,
     isFavorite: Boolean,
     productDetailScreenUiState: ProductDetailScreenUiState = rememberProductDetailScreenUiState(product),
-    onAddToFavorites: (Product) -> Unit,
+    onAddToFavorites: () -> Unit,
     onAddToFavoritesFailed: (errorMessage: String) -> Unit,
     onBuyNow: (message: String) -> Unit,
-    onAddToCart: (Product) -> Unit,
+    onAddToCart: () -> Unit,
     onPurchaseFailed: (errorMessage: String) -> Unit,
     context: Context = LocalContext.current,
     verticaScrollState: ScrollState = rememberScrollState()
@@ -164,7 +165,7 @@ fun ProductDetailScreen(
                     shape = CircleShape,
                     onSecondaryAction = {
                         if (!isFavorite) {
-                            onAddToFavorites(product)
+                            onAddToFavorites()
                         } else {
                             onAddToFavoritesFailed(context.getString(R.string.error_already_favorite))
                         }
@@ -274,7 +275,7 @@ fun ProductDetailScreen(
                     },
                     onSecondaryAction = {
                         if (productDetailScreenUiState.validateSelections()) {
-                            onAddToCart(product)
+                            onAddToCart()
                         } else {
                             onPurchaseFailed(productDetailScreenUiState.createValidationErrorMessage(context))
                         }

@@ -1,11 +1,16 @@
 package com.example.appcommerceclone.ui
 
+import android.content.Context
 import androidx.activity.ComponentActivity
+import androidx.compose.material.DrawerState
+import androidx.compose.material.DrawerValue
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.SnackbarHostState
+import androidx.compose.material.rememberDrawerState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
@@ -45,6 +50,7 @@ import com.example.appcommerceclone.ui.product.ProductViewModel
 import com.example.appcommerceclone.ui.user.UserViewModel
 import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.assertCurrentRouteIsEqualTo
+import com.example.appcommerceclone.util.getProductsNamesAsString
 import com.example.appcommerceclone.util.getStringResource
 import com.example.appcommerceclone.util.productElectronic
 import com.example.appcommerceclone.util.productJewelry
@@ -92,14 +98,18 @@ class EndToEndLocalTest {
     @Inject
     lateinit var userAuthenticator: UserAuthenticator
 
+    private lateinit var context: Context
+
     private lateinit var productViewModel: ProductViewModel
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var cartViewModel: CartViewModel
     private lateinit var userViewModel: UserViewModel
     private lateinit var userOrdersViewModel: UserOrdersViewModel
 
+    private lateinit var drawerState: DrawerState
     private lateinit var snackbarHostState: SnackbarHostState
     private lateinit var navHostController: TestNavHostController
+    private lateinit var navHostControllerNavigator: ComposeNavigator
 
     private val isConnected = mutableStateOf(true)
     private lateinit var user: State<User?>
@@ -107,8 +117,9 @@ class EndToEndLocalTest {
     private lateinit var products: State<List<Product>>
     private lateinit var productsLoadingState: State<LoadingState>
     private lateinit var selectedProduct: State<Product?>
-    private lateinit var cartProducts: State<List<OrderedProduct>>
-    private lateinit var orders: State<List<Order>>
+    private lateinit var favoriteProducts: List<Product>
+    private lateinit var cartProducts: List<OrderedProduct>
+    private lateinit var orders: List<Order>
 
     @Before
     fun setUp() {
@@ -116,23 +127,28 @@ class EndToEndLocalTest {
         showSemanticTreeInConsole()
         composeRule.setContent {
             MaterialTheme {
+                context = LocalContext.current
+
                 productViewModel = ProductViewModel(productsRepository, dispatcherProvider)
                 favoritesViewModel = FavoritesViewModel()
                 cartViewModel = CartViewModel()
                 userViewModel = UserViewModel(userAuthenticator, dispatcherProvider)
                 userOrdersViewModel = UserOrdersViewModel()
 
-                snackbarHostState = SnackbarHostState()
-                navHostController = TestNavHostController(LocalContext.current)
-                navHostController.navigatorProvider.addNavigator(ComposeNavigator())
+                drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+                snackbarHostState = remember { SnackbarHostState() }
+                navHostController = remember { TestNavHostController(context) }
+                navHostControllerNavigator = remember(navHostController) { ComposeNavigator() }
+                navHostController.navigatorProvider.addNavigator(navHostControllerNavigator)
 
                 user = userViewModel.loggedUser.observeAsState(initial = null)
                 userLoadingState = userViewModel.loadingState.observeAsState(initial = LoadingState.NOT_STARTED)
                 products = productViewModel.products.observeAsState(initial = emptyList())
                 productsLoadingState = productViewModel.loadingState.observeAsState(initial = LoadingState.NOT_STARTED)
                 selectedProduct = productViewModel.selectedProduct.observeAsState(initial = null)
-                cartProducts = cartViewModel.cartProducts.observeAsState(initial = emptyList())
-                orders = userOrdersViewModel.orders.observeAsState(initial = emptyList())
+                favoriteProducts = favoritesViewModel.favorites
+                cartProducts = cartViewModel.cartProducts
+                orders = userOrdersViewModel.orders
 
                 AppCommerceNavHost(
                     isConnected = isConnected.value,
@@ -141,6 +157,7 @@ class EndToEndLocalTest {
                     cartViewModel = cartViewModel,
                     userViewModel = userViewModel,
                     userOrdersViewModel = userOrdersViewModel,
+                    drawerState = drawerState,
                     snackbarHostState = snackbarHostState,
                     navHostController = navHostController
                 )
@@ -149,7 +166,29 @@ class EndToEndLocalTest {
     }
 
     @Test
-    fun startOnProductsScreen_addProductElectronicToCart_buyProduct_verifyOrderList_returnToStartDestination() = runTest {
+    fun onProductsScreen_lostConnection_verifyNoConnectionPlaceHolderIsVisible() = runTest {
+        with(composeRule) {
+            isConnected.value = false
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+            advanceUntilIdle()
+
+            onRoot().printToLog(navHostController.createTag() + " | No Connection")
+
+            onNodeWithText(getStringResource(R.string.error_no_connection))
+                .assertExists()
+                .assertIsDisplayed()
+
+            isConnected.value = true
+
+            onNodeWithText(getStringResource(R.string.error_no_connection))
+                .assertDoesNotExist()
+        }
+    }
+
+    @Test
+    fun addProductElectronicToCart_buyProduct_login_verifyOrderList_returnToStartDestination() = runTest {
         with(composeRule) {
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
@@ -178,7 +217,7 @@ class EndToEndLocalTest {
             assertThat(selectedProduct.value).isNotNull()
             assertThat(selectedProduct.value).isEqualTo(productElectronic)
 
-            assertThat(cartProducts.value).isEmpty()
+            assertThat(cartProducts).isEmpty()
 
             onNodeWithContentDescription(getStringResource(R.string.product_detail_add_to_cart))
                 .assertExists()
@@ -189,9 +228,9 @@ class EndToEndLocalTest {
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.CART_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
 
-            assertThat(cartProducts.value).isNotEmpty()
-            assertThat(cartProducts.value).hasSize(1)
-            assertThat(cartProducts.value).contains(OrderedProduct(productElectronic))
+            assertThat(cartProducts).isNotEmpty()
+            assertThat(cartProducts).hasSize(1)
+            assertThat(cartProducts).contains(OrderedProduct(productElectronic))
 
             assertThat(userLoadingState.value).isEqualTo(LoadingState.NOT_STARTED)
             assertThat(user.value).isNull()
@@ -226,22 +265,22 @@ class EndToEndLocalTest {
             assertThat(user.value).isNotNull()
             assertThat(user.value).isEqualTo(firstUser)
 
-            onNodeWithText(getStringResource(R.string.profile_welcome_message, firstUser.username))
+            onNodeWithText(getStringResource(R.string.login_success_message, firstUser.username))
                 .assertExists()
                 .assertIsDisplayed()
 
             snackbarHostState.currentSnackbarData?.dismiss()
             waitForIdle()
 
-            onNodeWithText(getStringResource(R.string.profile_welcome_message, firstUser.username))
+            onNodeWithText(getStringResource(R.string.login_success_message, firstUser.username))
                 .assertDoesNotExist()
 
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.CART_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
 
-            assertThat(cartProducts.value).isNotEmpty()
-            assertThat(cartProducts.value).hasSize(1)
-            assertThat(cartProducts.value).contains(OrderedProduct(productElectronic))
+            assertThat(cartProducts).isNotEmpty()
+            assertThat(cartProducts).hasSize(1)
+            assertThat(cartProducts).contains(OrderedProduct(productElectronic))
 
             onNodeWithText(getStringResource(R.string.cart_confirm_purchase_btn))
                 .assertExists()
@@ -252,16 +291,198 @@ class EndToEndLocalTest {
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.ORDERS_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
 
-            assertThat(orders.value).isNotEmpty()
-            assertThat(orders.value).hasSize(1)
+            assertThat(orders).isNotEmpty()
+            assertThat(orders).hasSize(1)
 
-            onNodeWithText(getStringResource(R.string.order_item_products, orders.value.first().getOrderedProductListAsString()))
+            onNodeWithText(getStringResource(R.string.order_item_products, orders.first().getProductsNamesAsString()))
                 .assertExists()
                 .assertIsDisplayed()
 
             activity.onBackPressed()
 
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+        }
+    }
+
+    @Test
+    fun openDrawerToLogin_addProductJeweleryToFavoriteList_removeProductJeweleryFromList_verifyList_returnToStartDestination() = runTest {
+        with(composeRule) {
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+            advanceUntilIdle()
+
+            assertThat(productsLoadingState.value).isEqualTo(LoadingState.SUCCESS)
+
+            assertThat(drawerState.isOpen).isFalse()
+
+            onNodeWithContentDescription(getStringResource(R.string.content_desc_menu_open))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+
+            waitForIdle()
+            assertThat(drawerState.isOpen).isTrue()
+
+            onNodeWithText(getStringResource(R.string.menu_title_login))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+
+            waitForIdle()
+            assertThat(drawerState.isOpen).isFalse()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+
+            onNodeWithText(getStringResource(R.string.hint_username))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement(firstUser.username)
+
+            onNodeWithText(getStringResource(R.string.hint_password))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement(firstUser.password)
+
+            onAllNodesWithText(getStringResource(R.string.login_btn))
+                .assertCountEquals(2)
+                .onFirst()
+                .performClick()
+
+            advanceUntilIdle()
+
+            assertThat(userLoadingState.value).isEqualTo(LoadingState.SUCCESS)
+            assertThat(user.value).isNotNull()
+            assertThat(user.value).isEqualTo(firstUser)
+
+            onNodeWithText(getStringResource(R.string.login_success_message, firstUser.username))
+                .assertExists()
+                .assertIsDisplayed()
+
+            snackbarHostState.currentSnackbarData?.dismiss()
+            waitForIdle()
+
+            onNodeWithText(getStringResource(R.string.login_success_message, firstUser.username))
+                .assertDoesNotExist()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+
+            onNodeWithText(productJewelry.name)
+                .assertExists()
+                .performScrollTo()
+                .assertIsDisplayed()
+                .performClick()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCT_DETAIL_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+
+            onNodeWithText(productJewelry.name)
+                .assertExists()
+                .assertIsDisplayed()
+
+            onNodeWithContentDescription(getStringResource(R.string.content_desc_add_to_favorites_btn))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.FAVORITES_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+
+            assertThat(favoriteProducts).isNotEmpty()
+            assertThat(favoriteProducts).hasSize(1)
+            assertThat(favoriteProducts).contains(productJewelry)
+
+            onNodeWithText(productJewelry.name)
+                .assertExists()
+                .assertIsDisplayed()
+
+            onNodeWithContentDescription(getStringResource(R.string.content_desc_remove_from_favorites_btn))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+
+            assertThat(favoriteProducts).isEmpty()
+
+            onNodeWithText(productJewelry.name)
+                .assertDoesNotExist()
+
+            onNodeWithText(getStringResource(R.string.place_holder_text_no_favorites))
+                .assertExists()
+                .assertIsDisplayed()
+
+            activity.onBackPressed()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+        }
+    }
+
+    @Test
+    fun openDrawerToLogin_failedLogin_backPressed_verifyLoadingStateWasProperlyReset() = runTest {
+        with(composeRule) {
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+            advanceUntilIdle()
+
+            assertThat(productsLoadingState.value).isEqualTo(LoadingState.SUCCESS)
+
+            assertThat(drawerState.isOpen).isFalse()
+
+            onNodeWithContentDescription(getStringResource(R.string.content_desc_menu_open))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+
+            waitForIdle()
+            assertThat(drawerState.isOpen).isTrue()
+
+            onNodeWithText(getStringResource(R.string.menu_title_login))
+                .assertExists()
+                .assertIsDisplayed()
+                .performClick()
+
+            waitForIdle()
+            assertThat(drawerState.isOpen).isFalse()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+
+            onNodeWithText(getStringResource(R.string.hint_username))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement("wrong username")
+
+            onNodeWithText(getStringResource(R.string.hint_password))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement("wrong password")
+
+            onAllNodesWithText(getStringResource(R.string.login_btn))
+                .assertCountEquals(2)
+                .onFirst()
+                .performClick()
+
+            advanceUntilIdle()
+
+            assertThat(userLoadingState.value).isEqualTo(LoadingState.FAILURE)
+            assertThat(user.value).isNull()
+
+            onNodeWithText(getStringResource(R.string.login_failure_message_user_not_found))
+                .assertExists()
+                .assertIsDisplayed()
+
+            snackbarHostState.currentSnackbarData?.dismiss()
+            waitForIdle()
+
+            onNodeWithText(getStringResource(R.string.login_failure_message_user_not_found))
+                .assertDoesNotExist()
+
+            activity.onBackPressed()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+
+            assertThat(userLoadingState.value).isEqualTo(LoadingState.NOT_STARTED)
         }
     }
 

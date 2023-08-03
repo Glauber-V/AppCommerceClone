@@ -1,5 +1,6 @@
 package com.example.appcommerceclone.ui.cart
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -12,19 +13,19 @@ import javax.inject.Inject
 @HiltViewModel
 class CartViewModel @Inject constructor() : ViewModel() {
 
-    private val _cartProducts = MutableLiveData<MutableList<OrderedProduct>>(mutableListOf())
-    val cartProducts: LiveData<MutableList<OrderedProduct>> = _cartProducts
+    private val _cartProducts = mutableStateListOf<OrderedProduct>()
+    val cartProducts: List<OrderedProduct> = _cartProducts
 
     private var _cartTotalPrice = MutableLiveData(0.0)
     val cartTotalPrice: LiveData<Double> = _cartTotalPrice
 
 
     private fun updateTotalPrice() {
-        _cartTotalPrice.value = _cartProducts.value?.getTotalPrice() ?: 0.0
+        _cartTotalPrice.value = _cartProducts.getTotalPrice()
     }
 
     fun addToCart(product: Product) {
-        _cartProducts.value?.firstOrNull { orderedProduct ->
+        _cartProducts.firstOrNull { orderedProduct ->
             orderedProduct.product == product
         }?.let {
             increaseQuantity(it)
@@ -33,7 +34,7 @@ class CartViewModel @Inject constructor() : ViewModel() {
 
         val newOrderedProduct = OrderedProduct(product)
 
-        _cartProducts.value?.add(newOrderedProduct)
+        _cartProducts.add(newOrderedProduct)
         updateTotalPrice()
     }
 
@@ -44,12 +45,12 @@ class CartViewModel @Inject constructor() : ViewModel() {
 
     fun decreaseQuantity(orderedProduct: OrderedProduct) {
         orderedProduct.quantity -= 1
-        if (orderedProduct.quantity < 1) _cartProducts.value?.remove(orderedProduct)
+        if (orderedProduct.quantity < 1) _cartProducts.remove(orderedProduct)
         updateTotalPrice()
     }
 
     fun abandonCart() {
-        _cartProducts.value = mutableListOf()
+        _cartProducts.clear()
         updateTotalPrice()
     }
 }

@@ -10,8 +10,8 @@ import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.data.product.model.Product
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 enum class ProductCategories(val categoryName: String) {
@@ -48,7 +48,7 @@ class ProductViewModel @Inject constructor(
     private val _loadingState = MutableLiveData(LoadingState.NOT_STARTED)
     val loadingState: LiveData<LoadingState> = _loadingState
 
-    private val _products = MutableLiveData<List<Product>>(mutableListOf())
+    private val _products = MutableLiveData<List<Product>>(listOf())
     val products: LiveData<List<Product>> = _products
 
     private val _selectedProduct = MutableLiveData<Product?>(null)
@@ -56,16 +56,16 @@ class ProductViewModel @Inject constructor(
 
 
     fun updateProductList() {
+        _loadingState.value = LoadingState.LOADING
         viewModelScope.launch(dispatcherProvider.main) {
-            _loadingState.value = LoadingState.LOADING
-            try {
-                _allProducts = repository.loadProductsList()
-                _products.value = _allProducts
-                _loadingState.value = LoadingState.SUCCESS
-            } catch (e: HttpException) {
-                _products.value = emptyList()
-                _loadingState.value = LoadingState.FAILURE
+            _allProducts = try {
+                repository.loadProductsList()
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                emptyList()
             }
+            _products.value = _allProducts
+            _loadingState.value = if (_allProducts.isNotEmpty()) LoadingState.SUCCESS else LoadingState.FAILURE
         }
     }
 

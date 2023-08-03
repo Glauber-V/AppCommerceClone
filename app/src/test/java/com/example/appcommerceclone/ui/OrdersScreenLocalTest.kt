@@ -2,8 +2,6 @@ package com.example.appcommerceclone.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.State
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithText
@@ -14,6 +12,7 @@ import com.example.appcommerceclone.data.product.model.Order
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.ui.order.OrdersScreen
 import com.example.appcommerceclone.ui.order.UserOrdersViewModel
+import com.example.appcommerceclone.util.getProductsNamesAsString
 import com.example.appcommerceclone.util.getStringResource
 import com.example.appcommerceclone.util.orderedProductList
 import com.example.appcommerceclone.util.showSemanticTreeInConsole
@@ -37,7 +36,7 @@ class OrdersScreenLocalTest {
 
     private lateinit var userOrdersViewModel: UserOrdersViewModel
 
-    private lateinit var orders: State<List<Order>>
+    private lateinit var orders: List<Order>
 
     @Before
     fun setUp() {
@@ -49,19 +48,19 @@ class OrdersScreenLocalTest {
                     orderedProductList = orderedProductList
                 )
             }
-            orders = userOrdersViewModel.orders.observeAsState(initial = emptyList())
+            orders = userOrdersViewModel.orders
             MaterialTheme {
-                OrdersScreen(orders = orders.value)
+                OrdersScreen(orders = orders)
             }
         }
     }
 
     @Test
     fun onOrderScreen_verifyOrderListIsDisplayed() {
-        assertThat(orders.value).isNotEmpty()
-        assertThat(orders.value).hasSize(1)
+        assertThat(orders).isNotEmpty()
+        assertThat(orders).hasSize(1)
 
-        val order = orders.value.first()
+        val order = orders.first()
 
         with(composeRule) {
             onRoot().printToLog("onOderScreen")
@@ -70,7 +69,7 @@ class OrdersScreenLocalTest {
                 .assertExists()
                 .assertIsDisplayed()
 
-            onNodeWithText(getStringResource(R.string.order_item_products, order.getOrderedProductListAsString()))
+            onNodeWithText(getStringResource(R.string.order_item_products, order.getProductsNamesAsString()))
                 .assertExists()
                 .assertIsDisplayed()
         }

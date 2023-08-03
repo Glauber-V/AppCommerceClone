@@ -12,6 +12,7 @@
     <string name="menu_title_logout">Logout</string>
 
     <!--Place Holders-->
+    <string name="place_holder_text_no_products">Something went wrong, try refresh the page</string>
     <string name="place_holder_text_no_favorites">You have no favorites</string>
     <string name="place_holder_text_no_orders">You have no purchases</string>
 
@@ -48,7 +49,6 @@
     <string name="register_success_message">Account successfully created - not actually</string>
 
     <!--Profile-->
-    <string name="profile_welcome_message">Welcome %1s</string>
     <string name="profile_updated_message">Profile updated</string>
     <string name="profile_start_update_btn">Update profile</string>
     <string name="profile_cancel_update_btn">Cancel</string>
@@ -80,8 +80,8 @@
     <string name="cart_confirm_purchase_btn">Confirm</string>
     <string name="cart_cancel_purchase_btn">Cancel</string>
     <string name="cart_dialog_title">Abandon Cart?</string>
-    <string name="cart_dialog_positive">Abandon</string>
-    <string name="cart_dialog_negative">Cancel</string>
+    <string name="cart_dialog_positive">Yes</string>
+    <string name="cart_dialog_negative">No</string>
 
     <!--Order-->
     <string name="order_item_id">Order Id: %1s</string>

@@ -38,7 +38,9 @@ import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.ui.common.NoConnectionPlaceHolder
+import com.example.appcommerceclone.ui.common.PlaceHolder
 import com.example.appcommerceclone.ui.common.shimmerEffect
+import com.example.appcommerceclone.util.getFormattedPrice
 import com.example.appcommerceclone.util.productList
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -57,42 +59,51 @@ fun ProductsScreen(
         onRefresh = onRefresh
     )
 
-    if (isConnected) {
-        Box(modifier = modifier.pullRefresh(pullRefreshState)) {
-            LazyVerticalGrid(
-                modifier = Modifier.fillMaxSize(),
-                columns = GridCells.Fixed(2),
-                verticalArrangement = Arrangement.spacedBy(
-                    space = dimensionResource(id = R.dimen.padding_small),
-                    alignment = Alignment.Top
-                ),
-                horizontalArrangement = Arrangement.spacedBy(
-                    space = dimensionResource(id = R.dimen.padding_small),
-                    alignment = Alignment.CenterHorizontally
-                ),
-                contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding_small))
-            ) {
-                if (loadingState == LoadingState.LOADING) {
-                    items(12) {
-                        ProductItemWithShimmer()
-                    }
-                } else {
-                    items(products) { product: Product ->
-                        ProductItem(
-                            product = product,
-                            onProductClicked = { onProductClicked(product) }
-                        )
-                    }
+    if (!isConnected) {
+        NoConnectionPlaceHolder(modifier = Modifier.fillMaxSize())
+        return
+    }
+
+    if (loadingState != LoadingState.LOADING && products.isEmpty()) {
+        PlaceHolder(
+            modifier = Modifier.fillMaxSize(),
+            placeHolderText = LocalContext.current.getString(R.string.place_holder_text_no_products)
+        )
+        return
+    }
+
+    Box(modifier = modifier.pullRefresh(pullRefreshState)) {
+        LazyVerticalGrid(
+            modifier = Modifier.fillMaxSize(),
+            columns = GridCells.Fixed(2),
+            verticalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_small),
+                alignment = Alignment.Top
+            ),
+            horizontalArrangement = Arrangement.spacedBy(
+                space = dimensionResource(id = R.dimen.padding_small),
+                alignment = Alignment.CenterHorizontally
+            ),
+            contentPadding = PaddingValues(dimensionResource(id = R.dimen.padding_small))
+        ) {
+            if (loadingState == LoadingState.LOADING) {
+                items(12) {
+                    ProductItemWithShimmer()
+                }
+            } else {
+                items(products) { product: Product ->
+                    ProductItem(
+                        product = product,
+                        onProductClicked = { onProductClicked(product) }
+                    )
                 }
             }
-            PullRefreshIndicator(
-                modifier = Modifier.align(alignment = Alignment.TopCenter),
-                refreshing = isRefreshing,
-                state = pullRefreshState
-            )
         }
-    } else {
-        NoConnectionPlaceHolder(modifier.fillMaxSize())
+        PullRefreshIndicator(
+            modifier = Modifier.align(alignment = Alignment.TopCenter),
+            refreshing = isRefreshing,
+            state = pullRefreshState
+        )
     }
 }
 

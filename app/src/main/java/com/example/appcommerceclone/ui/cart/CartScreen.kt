@@ -15,7 +15,6 @@ import androidx.compose.material.AlertDialog
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.RemoveShoppingCart
 import androidx.compose.material.icons.rounded.Add
@@ -36,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.appcommerceclone.R
@@ -44,6 +44,7 @@ import com.example.appcommerceclone.ui.common.DoubleActionButton
 import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.ui.common.PrimaryActionButton
 import com.example.appcommerceclone.ui.common.SecondaryActionButton
+import com.example.appcommerceclone.util.getFormattedPrice
 import com.example.appcommerceclone.util.orderedProductList
 
 @Composable
@@ -59,33 +60,40 @@ fun CartScreen(
     var isDialogOpen by remember { mutableStateOf(false) }
     if (isDialogOpen) {
         AlertDialog(
+            modifier = Modifier.padding(horizontal = dimensionResource(id = R.dimen.padding_extra_large)),
+            contentColor = colorResource(id = R.color.primaryColor),
+            backgroundColor = colorResource(id = R.color.onPrimaryColor),
+            properties = DialogProperties(usePlatformDefaultWidth = false),
             title = {
                 Text(
+                    modifier = Modifier.padding(bottom = dimensionResource(id = R.dimen.padding_extra_large)),
                     text = stringResource(id = R.string.cart_dialog_title),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.h5
+                    style = MaterialTheme.typography.h6
                 )
             },
             shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small)),
             onDismissRequest = { isDialogOpen = false },
             confirmButton = {
-                TextButton(
-                    onClick = { onAbandonCart(); isDialogOpen = false },
-                    content = {
+                PrimaryActionButton(
+                    onPrimaryAction = {
+                        onAbandonCart()
+                        isDialogOpen = false
+                    },
+                    primaryActionContent = {
                         Text(
                             text = stringResource(id = R.string.cart_dialog_positive),
-                            style = MaterialTheme.typography.h6
+                            style = MaterialTheme.typography.subtitle1
                         )
                     }
                 )
             },
             dismissButton = {
-                TextButton(
-                    onClick = { isDialogOpen = false },
-                    content = {
+                SecondaryActionButton(
+                    onSecondaryAction = { isDialogOpen = false },
+                    secondaryActionContent = {
                         Text(
                             text = stringResource(id = R.string.cart_dialog_negative),
-                            style = MaterialTheme.typography.h6
+                            style = MaterialTheme.typography.subtitle1
                         )
                     }
                 )

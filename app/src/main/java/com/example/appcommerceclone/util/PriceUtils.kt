@@ -1,12 +1,29 @@
 package com.example.appcommerceclone.util
 
+import com.example.appcommerceclone.data.product.model.Order
 import com.example.appcommerceclone.data.product.model.OrderedProduct
+import com.example.appcommerceclone.data.product.model.Product
 import java.text.NumberFormat
 
-fun Collection<OrderedProduct>.getTotalPrice(): Double =
-    sumOf { orderedProduct: OrderedProduct ->
+fun Double.formatPrice(): String = NumberFormat.getCurrencyInstance().format(this)
+
+fun Product.getFormattedPrice(): String = price.formatPrice()
+
+fun OrderedProduct.getPrice(): Double = product.price * quantity
+
+fun OrderedProduct.getFormattedPrice(): String = getPrice().formatPrice()
+
+fun Collection<OrderedProduct>.getTotalPrice(): Double {
+    return sumOf { orderedProduct: OrderedProduct ->
         orderedProduct.product.price * orderedProduct.quantity
     }
+}
 
-fun Double.formatPrice(): String =
-    NumberFormat.getCurrencyInstance().format(this)
+fun Order.getTotalPrice(): Double = orderedProducts.getTotalPrice()
+
+fun Order.getFormattedTotalPrice(): String = getTotalPrice().formatPrice()
+
+fun Order.getProductsNamesAsString(): String {
+    val nameList = orderedProducts.map { it.product.name }
+    return nameList.joinToString()
+}

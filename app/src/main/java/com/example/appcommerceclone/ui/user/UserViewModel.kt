@@ -9,8 +9,8 @@ import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.UserAuthenticator
 import com.example.appcommerceclone.data.user.model.User
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,16 +27,20 @@ class UserViewModel @Inject constructor(
 
 
     fun login(username: String, password: String) {
+        _loadingState.value = LoadingState.LOADING
         viewModelScope.launch(dispatcherProvider.main) {
-            _loadingState.value = LoadingState.LOADING
-            try {
-                _loggedUser.value = userAuthenticator.getUserByUsernameAndPassword(username, password)
-                _loadingState.value = LoadingState.SUCCESS
-            } catch (e: HttpException) {
-                _loggedUser.value = null
-                _loadingState.value = LoadingState.FAILURE
+            _loggedUser.value = try {
+                userAuthenticator.getUserByUsernameAndPassword(username, password)
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+                null
             }
+            _loadingState.value = if (_loggedUser.value != null) LoadingState.SUCCESS else LoadingState.FAILURE
         }
+    }
+
+    fun resetLoadingState() {
+        _loadingState.value = LoadingState.NOT_STARTED
     }
 
     fun logout() {

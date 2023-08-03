@@ -1,8 +1,11 @@
 package com.example.appcommerceclone.ui
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.example.appcommerceclone.data.product.model.OrderedProduct
 import com.example.appcommerceclone.ui.cart.CartViewModel
 import com.example.appcommerceclone.util.getOrAwaitValue
+import com.example.appcommerceclone.util.getPrice
+import com.example.appcommerceclone.util.getTotalPrice
 import com.example.appcommerceclone.util.productElectronic
 import com.example.appcommerceclone.util.productJewelry
 import com.example.appcommerceclone.util.productMensClothing
@@ -26,11 +29,10 @@ class CartViewModelTest {
 
     @Test
     fun increaseOrderedProductQuantity_verifyQuantityIsEqualTo2() {
-        val product = productJewelry
-        cartViewModel.addToCart(product)
+        cartViewModel.addToCart(productJewelry)
 
-        val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
-        assertThat(orderedProduct.product).isEqualTo(product)
+        val orderedProduct = cartViewModel.cartProducts.first()
+        assertThat(orderedProduct.product).isEqualTo(productJewelry)
 
         cartViewModel.increaseQuantity(orderedProduct)
         assertThat(orderedProduct.quantity).isEqualTo(2)
@@ -38,22 +40,20 @@ class CartViewModelTest {
 
     @Test
     fun increaseOrderedProductQuantity_byAddingTheSameProductTwice_verifyQuantityIsEqualTo2() {
-        val product = productJewelry
-        cartViewModel.addToCart(product)
-        cartViewModel.addToCart(product)
+        cartViewModel.addToCart(productElectronic)
+        cartViewModel.addToCart(productElectronic)
 
-        val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
-        assertThat(orderedProduct.product).isEqualTo(product)
+        val orderedProduct = cartViewModel.cartProducts.first()
+        assertThat(orderedProduct.product).isEqualTo(productElectronic)
         assertThat(orderedProduct.quantity).isEqualTo(2)
     }
 
     @Test
     fun decreaseOrderedProductQuantity_verifyQuantityIsEqualTo1() {
-        val product = productElectronic
-        cartViewModel.addToCart(product)
+        cartViewModel.addToCart(productMensClothing)
 
-        val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
-        assertThat(orderedProduct.product).isEqualTo(product)
+        val orderedProduct = cartViewModel.cartProducts.first()
+        assertThat(orderedProduct.product).isEqualTo(productMensClothing)
 
         cartViewModel.increaseQuantity(orderedProduct)
         assertThat(orderedProduct.quantity).isEqualTo(2)
@@ -64,17 +64,14 @@ class CartViewModelTest {
 
     @Test
     fun decreaseOrderedProductWhenQuantityIs1_verifyOrderedProductWasRemoved() {
-        val product = productElectronic
-        cartViewModel.addToCart(product)
+        cartViewModel.addToCart(productWomensClothing)
 
-        val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
-        assertThat(orderedProduct.product).isEqualTo(product)
+        val orderedProduct = cartViewModel.cartProducts.first()
+        assertThat(orderedProduct.product).isEqualTo(productWomensClothing)
         assertThat(orderedProduct.quantity).isEqualTo(1)
 
         cartViewModel.decreaseQuantity(orderedProduct)
-
-        val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
-        assertThat(cartProducts).isEmpty()
+        assertThat(cartViewModel.cartProducts).isEmpty()
     }
 
     @Test
@@ -82,20 +79,19 @@ class CartViewModelTest {
         var totalPrice = cartViewModel.cartTotalPrice.getOrAwaitValue()
         assertThat(totalPrice).isEqualTo(0.0)
 
-        val product = productMensClothing
-        cartViewModel.addToCart(product)
+        cartViewModel.addToCart(productJewelry)
 
-        val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
-        assertThat(orderedProduct.product).isEqualTo(product)
+        val orderedProduct = cartViewModel.cartProducts.first()
+        assertThat(orderedProduct.product).isEqualTo(productJewelry)
         assertThat(orderedProduct.quantity).isEqualTo(1)
 
         totalPrice = cartViewModel.cartTotalPrice.getOrAwaitValue()
-        assertThat(totalPrice).isEqualTo(orderedProduct.quantity * orderedProduct.product.price)
+        assertThat(totalPrice).isEqualTo(orderedProduct.getPrice())
     }
 
     @Test
     fun abandonCart_verifyCartListIsEmpty_and_totalPriceIsEqualTo0() {
-        var cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
+        val cartProducts = cartViewModel.cartProducts
         assertThat(cartProducts).isEmpty()
 
         cartViewModel.addToCart(productJewelry)
@@ -103,13 +99,20 @@ class CartViewModelTest {
         cartViewModel.addToCart(productMensClothing)
         cartViewModel.addToCart(productWomensClothing)
 
-        cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
         assertThat(cartProducts).isNotEmpty()
         assertThat(cartProducts).hasSize(4)
+        assertThat(cartProducts).contains(OrderedProduct(productJewelry))
+        assertThat(cartProducts).contains(OrderedProduct(productElectronic))
+        assertThat(cartProducts).contains(OrderedProduct(productMensClothing))
+        assertThat(cartProducts).contains(OrderedProduct(productWomensClothing))
+
+        var cartTotalPrice = cartViewModel.cartTotalPrice.getOrAwaitValue()
+        assertThat(cartTotalPrice).isEqualTo(cartProducts.getTotalPrice())
 
         cartViewModel.abandonCart()
-
-        cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
         assertThat(cartProducts).isEmpty()
+
+        cartTotalPrice = cartViewModel.cartTotalPrice.getOrAwaitValue()
+        assertThat(cartTotalPrice).isEqualTo(0.0)
     }
 }

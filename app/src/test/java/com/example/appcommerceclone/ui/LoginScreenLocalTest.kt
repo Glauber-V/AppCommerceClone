@@ -15,7 +15,7 @@ import androidx.compose.ui.test.printToLog
 import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.user.FakeUserProvider
+import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.data.user.UserAuthenticator
 import com.example.appcommerceclone.data.user.model.User
 import com.example.appcommerceclone.di.DispatcherModule
@@ -93,6 +93,7 @@ class LoginScreenLocalTest {
         with(composeRule) {
             onRoot().printToLog("onUserLoginScreen|FailedLogin")
 
+            assertThat(loadingState.value).isEqualTo(LoadingState.NOT_STARTED)
             assertThat(user.value).isNull()
 
             onNodeWithText(getStringResource(R.string.hint_username))
@@ -112,15 +113,8 @@ class LoginScreenLocalTest {
 
             advanceUntilIdle()
 
-            assertThat(loadingState.value).isEqualTo(LoadingState.SUCCESS)
+            assertThat(loadingState.value).isEqualTo(LoadingState.FAILURE)
             assertThat(user.value).isNull()
-
-            onNodeWithText(getStringResource(R.string.profile_welcome_message, FakeUserProvider.firstUser.username))
-                .assertDoesNotExist()
-
-            onNodeWithText(getStringResource(R.string.login_failure_message_user_not_found))
-                .assertExists()
-                .assertIsDisplayed()
         }
     }
 
@@ -135,12 +129,12 @@ class LoginScreenLocalTest {
             onNodeWithText(getStringResource(R.string.hint_username))
                 .assertExists()
                 .assertIsDisplayed()
-                .performTextReplacement(FakeUserProvider.firstUser.username)
+                .performTextReplacement(firstUser.username)
 
             onNodeWithText(getStringResource(R.string.hint_password))
                 .assertExists()
                 .assertIsDisplayed()
-                .performTextReplacement(FakeUserProvider.firstUser.password)
+                .performTextReplacement(firstUser.password)
 
             onNodeWithText(getStringResource(R.string.login_btn))
                 .assertExists()
@@ -151,13 +145,7 @@ class LoginScreenLocalTest {
 
             assertThat(loadingState.value).isEqualTo(LoadingState.SUCCESS)
             assertThat(user.value).isNotNull()
-
-            onNodeWithText(getStringResource(R.string.login_failure_message_user_not_found))
-                .assertDoesNotExist()
-
-            onNodeWithText(getStringResource(R.string.profile_welcome_message, FakeUserProvider.firstUser.username))
-                .assertExists()
-                .assertIsDisplayed()
+            assertThat(user.value).isEqualTo(firstUser)
         }
     }
 }

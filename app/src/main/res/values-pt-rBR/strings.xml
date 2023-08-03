@@ -11,6 +11,7 @@
     <string name="menu_title_logout">Sair</string>
 
     <!--Place Holders-->
+    <string name="place_holder_text_no_products">Algo deu errado, tente recarregar a página</string>
     <string name="place_holder_text_no_favorites">Você não tem favoritos</string>
     <string name="place_holder_text_no_orders">Você não fez compras</string>
 
@@ -46,7 +47,6 @@
     <string name="register_success_message">Conta criada com successo - na verdade não</string>
 
     <!--Profile Fragment-->
-    <string name="profile_welcome_message">Seja bem-vindo %1s</string>
     <string name="profile_updated_message">Perfil atualizado</string>
     <string name="profile_start_update_btn">Atualizar perfil</string>
     <string name="profile_cancel_update_btn">Cancelar</string>
@@ -74,8 +74,8 @@
     <string name="cart_confirm_purchase_btn">Confirmar</string>
     <string name="cart_cancel_purchase_btn">Cancelar</string>
     <string name="cart_dialog_title">Abandonar o carrinho?</string>
-    <string name="cart_dialog_positive">Abandonar</string>
-    <string name="cart_dialog_negative">Cancelar</string>
+    <string name="cart_dialog_positive">Sim</string>
+    <string name="cart_dialog_negative">Não</string>
 
     <!--Order-->
     <string name="order_item_id">Numeração: %1s</string>

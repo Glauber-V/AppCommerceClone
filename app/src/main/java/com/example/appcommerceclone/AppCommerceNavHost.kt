@@ -42,15 +42,18 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.data.user.model.User
 import com.example.appcommerceclone.ui.cart.CartScreen
@@ -124,6 +127,16 @@ class AppCommerceNavigationActions(private val navHostController: NavHostControl
     fun navigateTo(route: String) {
         navHostController.navigate(route)
     }
+
+    fun shouldInterceptBackPressed(currentRoute: String?): Boolean {
+        return when (currentRoute) {
+            AppCommerceRoutes.LOGIN_SCREEN.route -> true
+            AppCommerceRoutes.CART_SCREEN.route -> true
+            AppCommerceRoutes.FAVORITES_SCREEN.route -> true
+            AppCommerceRoutes.ORDERS_SCREEN.route -> true
+            else -> false
+        }
+    }
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -142,14 +155,15 @@ fun AppCommerceNavHost(
     snackbarScope: CoroutineScope = rememberCoroutineScope(),
     snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
     scaffoldState: ScaffoldState = rememberScaffoldState(drawerState, snackbarHostState),
-    navHostController: NavHostController,
+    navHostController: NavHostController = rememberNavController(),
     startDestination: String = AppCommerceRoutes.PRODUCTS_SCREEN.route,
     navActions: AppCommerceNavigationActions = remember(navHostController) {
         AppCommerceNavigationActions(navHostController)
     }
 ) {
-    val user by userViewModel.loggedUser.observeAsState(initial = null)
-    val currentBackStackEntryState by navHostController.currentBackStackEntryAsState()
+    val user: User? by userViewModel.loggedUser.observeAsState(initial = null)
+    val currentBackStackEntryState: NavBackStackEntry? by navHostController.currentBackStackEntryAsState()
+    val currentRoute: String? = currentBackStackEntryState?.destination?.route
 
     Scaffold(
         modifier = modifier,
@@ -159,10 +173,11 @@ fun AppCommerceNavHost(
                 context = context,
                 isDrawerOpen = drawerState.isOpen,
                 startDestination = startDestination,
-                currentRoute = currentBackStackEntryState?.destination?.route,
+                currentRoute = currentRoute,
                 onNavigationIconClicked = {
-                    if (currentBackStackEntryState?.destination?.route != startDestination) {
-                        navHostController.popBackStack()
+                    if (currentRoute != startDestination) {
+                        if (navActions.shouldInterceptBackPressed(currentRoute)) navActions.navigateToProductsScreen()
+                        else navHostController.popBackStack()
                     } else {
                         drawerScope.launch {
                             if (drawerState.isOpen) drawerState.close()
@@ -189,7 +204,7 @@ fun AppCommerceNavHost(
                 }
             )
         },
-        drawerGesturesEnabled = currentBackStackEntryState?.destination?.route == startDestination
+        drawerGesturesEnabled = currentRoute == startDestination
     ) { contentPadding ->
         NavHost(
             modifier = Modifier.padding(contentPadding),
@@ -216,34 +231,42 @@ fun AppCommerceNavHost(
             }
             composable(route = AppCommerceRoutes.PRODUCT_DETAIL_SCREEN.route) {
                 val selectedProduct by productViewModel.selectedProduct.observeAsState()
-                ProductDetailScreen(
-                    product = selectedProduct!!,
-                    isFavorite = favoritesViewModel.isFavorite(selectedProduct!!),
-                    onAddToFavorites = { product ->
-                        favoritesViewModel.addToFavorites(product)
-                        navActions.navigateToFavoritesScreen()
-                    },
-                    onAddToFavoritesFailed = { errorMessage ->
-                        snackbarScope.launch {
-                            snackbarHostState.showSnackbar(message = errorMessage)
+                if (selectedProduct == null) navHostController.popBackStack()
+                selectedProduct?.let { product ->
+                    ProductDetailScreen(
+                        product = product,
+                        isFavorite = favoritesViewModel.isFavorite(product),
+                        onAddToFavorites = {
+                            favoritesViewModel.addToFavorites(product)
+                            navActions.navigateToFavoritesScreen()
+                        },
+                        onAddToFavoritesFailed = { errorMessage ->
+                            snackbarScope.launch {
+                                snackbarHostState.showSnackbar(message = errorMessage)
+                            }
+                        },
+                        onBuyNow = { appreciationMessage ->
+                            if (user != null) {
+                                userOrdersViewModel.createOrder(userId = user!!.id, product = product)
+                                snackbarScope.launch {
+                                    snackbarHostState.showSnackbar(message = appreciationMessage)
+                                }
+                                navHostController.popBackStack()
+                            } else {
+                                navActions.navigateToUserLoginScreen()
+                            }
+                        },
+                        onAddToCart = {
+                            cartViewModel.addToCart(product)
+                            navActions.navigateToCartScreen()
+                        },
+                        onPurchaseFailed = { errorMessage ->
+                            snackbarScope.launch {
+                                snackbarHostState.showSnackbar(message = errorMessage)
+                            }
                         }
-                    },
-                    onBuyNow = { appreciationMessage ->
-                        snackbarScope.launch {
-                            snackbarHostState.showSnackbar(message = appreciationMessage)
-                        }
-                        navHostController.popBackStack()
-                    },
-                    onAddToCart = { product ->
-                        cartViewModel.addToCart(product)
-                        navActions.navigateToCartScreen()
-                    },
-                    onPurchaseFailed = { errorMessage ->
-                        snackbarScope.launch {
-                            snackbarHostState.showSnackbar(message = errorMessage)
-                        }
-                    }
-                )
+                    )
+                }
             }
             composable(route = AppCommerceRoutes.FAVORITES_SCREEN.route) {
                 if (user == null) {
@@ -251,7 +274,11 @@ fun AppCommerceNavHost(
                     return@composable
                 }
 
-                val favoriteProducts by favoritesViewModel.favorites.observeAsState(initial = emptyList())
+                BackHandler {
+                    navActions.navigateToProductsScreen()
+                }
+
+                val favoriteProducts = favoritesViewModel.favorites
                 FavoritesScreen(
                     favoriteProducts = favoriteProducts,
                     onRemoveFavoriteProduct = { product ->
@@ -266,7 +293,11 @@ fun AppCommerceNavHost(
                 })
             }
             composable(route = AppCommerceRoutes.CART_SCREEN.route) {
-                val cartProducts by cartViewModel.cartProducts.observeAsState(initial = emptyList())
+                BackHandler {
+                    navActions.navigateToProductsScreen()
+                }
+
+                val cartProducts = cartViewModel.cartProducts
                 val cartTotalPrice by cartViewModel.cartTotalPrice.observeAsState(initial = 0.0)
                 CartScreen(
                     cartProducts = cartProducts,
@@ -283,6 +314,7 @@ fun AppCommerceNavHost(
                     onConfirmPurchase = {
                         if (user != null) {
                             userOrdersViewModel.createOrder(userId = user!!.id, orderedProductList = cartProducts)
+                            cartViewModel.abandonCart()
                             navActions.navigateToOrdersScreen()
                         } else {
                             navActions.navigateToUserLoginScreen()
@@ -296,16 +328,17 @@ fun AppCommerceNavHost(
                     return@composable
                 }
 
-                BackHandler(enabled = currentBackStackEntryState?.destination?.route == it.destination.route) {
+                BackHandler {
                     navActions.navigateToProductsScreen()
                 }
 
-                val orders by userOrdersViewModel.orders.observeAsState(initial = emptyList())
+                val orders = userOrdersViewModel.orders
                 OrdersScreen(orders = orders)
             }
             composable(route = AppCommerceRoutes.LOGIN_SCREEN.route) {
-                BackHandler(enabled = currentBackStackEntryState?.destination?.route == it.destination.route) {
+                BackHandler {
                     navActions.navigateToProductsScreen()
+                    userViewModel.resetLoadingState()
                 }
 
                 val loadingState by userViewModel.loadingState.observeAsState(initial = LoadingState.NOT_STARTED)
@@ -329,16 +362,13 @@ fun AppCommerceNavHost(
 
                 if (loadingState == LoadingState.SUCCESS || loadingState == LoadingState.FAILURE) {
                     LaunchedEffect(user) {
-                        snackbarScope.launch {
-                            snackbarHostState.showSnackbar(
-                                message = when (loadingState) {
-                                    LoadingState.SUCCESS -> context.getString(R.string.profile_welcome_message, user!!.username)
-                                    LoadingState.FAILURE -> context.getString(R.string.login_failure_message_user_not_found)
-                                    else -> ""
-                                }
-                            )
+                        if (user != null) {
+                            snackbarHostState.showSnackbar(message = context.getString(R.string.login_success_message, user!!.username))
+                            navHostController.popBackStack()
+                            userViewModel.resetLoadingState()
+                        } else {
+                            snackbarHostState.showSnackbar(message = context.getString(R.string.login_failure_message_user_not_found))
                         }
-                        if (loadingState == LoadingState.SUCCESS) navHostController.popBackStack()
                     }
                 }
             }
@@ -381,6 +411,8 @@ fun TopAppBarContent(
 ) {
     TopAppBar(
         modifier = modifier,
+        contentColor = colorResource(id = R.color.onPrimaryColor),
+        backgroundColor = colorResource(id = R.color.primaryColor),
         title = {
             Text(
                 text = stringResource(id = R.string.app_name),
@@ -423,7 +455,9 @@ fun ModalDrawerContent(
         )
     ) {
         ModalDrawerItem(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = dimensionResource(id = R.dimen.padding_large)),
             onClick = {
                 onNavigationRequest(
                     if (user == null) AppCommerceRoutes.LOGIN_SCREEN.route
@@ -495,7 +529,7 @@ fun ModalDrawerItem(
         Text(
             text = itemText,
             textAlign = TextAlign.Start,
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.subtitle1
         )
     }
 }
@@ -514,7 +548,7 @@ fun PreviewTopAppBar() {
     }
 }
 
-@Preview(showSystemUi = false, showBackground = true)
+@Preview
 @Composable
 fun PreviewModalDrawerContentNoUser() {
     MaterialTheme {
@@ -526,7 +560,7 @@ fun PreviewModalDrawerContentNoUser() {
     }
 }
 
-@Preview(showSystemUi = false, showBackground = true)
+@Preview
 @Composable
 fun PreviewModalDrawerContentWithUser() {
     MaterialTheme {

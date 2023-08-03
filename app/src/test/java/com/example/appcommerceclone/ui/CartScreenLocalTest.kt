@@ -22,7 +22,9 @@ import com.example.appcommerceclone.ui.cart.CartScreen
 import com.example.appcommerceclone.ui.cart.CartViewModel
 import com.example.appcommerceclone.util.formatPrice
 import com.example.appcommerceclone.util.getStringResource
+import com.example.appcommerceclone.util.productElectronic
 import com.example.appcommerceclone.util.productJewelry
+import com.example.appcommerceclone.util.productMensClothing
 import com.example.appcommerceclone.util.showSemanticTreeInConsole
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -48,7 +50,7 @@ class CartScreenLocalTest {
 
     private lateinit var cartViewModel: CartViewModel
 
-    private lateinit var cartProducts: State<List<OrderedProduct>>
+    private lateinit var cartProducts: List<OrderedProduct>
     private lateinit var cartTotalPrice: State<Double>
 
     private val purchaseCompletionStatus = mutableStateOf(false)
@@ -59,11 +61,11 @@ class CartScreenLocalTest {
         showSemanticTreeInConsole()
         composeAndroidRule.setContent {
             cartViewModel = CartViewModel()
-            cartProducts = cartViewModel.cartProducts.observeAsState(initial = emptyList())
+            cartProducts = cartViewModel.cartProducts
             cartTotalPrice = cartViewModel.cartTotalPrice.observeAsState(initial = 0.0)
             MaterialTheme {
                 CartScreen(
-                    cartProducts = cartProducts.value,
+                    cartProducts = cartProducts,
                     onQuantityIncrease = { cartViewModel.increaseQuantity(it) },
                     onQuantityDecrease = { cartViewModel.decreaseQuantity(it) },
                     cartTotalPrice = cartTotalPrice.value.formatPrice(),
@@ -76,16 +78,17 @@ class CartScreenLocalTest {
 
     @Test
     fun onCartScreen_clickIncreaseQuantityBtn_verifyCartWasUpdatedCorrectly_verifyPurchaseCompletionStatusIsTrue() {
-        assertThat(cartProducts.value).isEmpty()
+        assertThat(cartProducts).isEmpty()
 
         cartViewModel.addToCart(productJewelry)
-        assertThat(cartProducts.value).isNotEmpty()
-        assertThat(cartProducts.value).hasSize(1)
+        assertThat(cartProducts).isNotEmpty()
+        assertThat(cartProducts).hasSize(1)
+        assertThat(cartProducts).contains(OrderedProduct(productJewelry))
 
         with(composeAndroidRule) {
             onRoot().printToLog("onCartScreen|IncreaseQuantity")
 
-            val orderedProduct = cartProducts.value.first()
+            val orderedProduct = cartProducts.first()
             assertThat(orderedProduct.quantity).isEqualTo(1)
 
             onNodeWithText(orderedProduct.product.name)
@@ -98,6 +101,10 @@ class CartScreenLocalTest {
 
             assertThat(orderedProduct.quantity).isEqualTo(2)
 
+            onNodeWithText(orderedProduct.quantity.toString())
+                .assertExists()
+                .assertIsDisplayed()
+
             onNodeWithText(getStringResource(R.string.cart_confirm_purchase_btn))
                 .assertExists()
                 .assertIsDisplayed()
@@ -109,18 +116,19 @@ class CartScreenLocalTest {
 
     @Test
     fun onCartScreen_clickDecreaseQuantityBtn_verifyCartWasUpdatedCorrectly_verifyPurchaseCompletionStatusIsTrue() {
-        assertThat(cartProducts.value).isEmpty()
+        assertThat(cartProducts).isEmpty()
 
-        cartViewModel.addToCart(productJewelry)
-        cartViewModel.addToCart(productJewelry)
+        cartViewModel.addToCart(productElectronic)
+        cartViewModel.addToCart(productElectronic)
 
-        assertThat(cartProducts.value).isNotEmpty()
-        assertThat(cartProducts.value).hasSize(1)
+        assertThat(cartProducts).isNotEmpty()
+        assertThat(cartProducts).hasSize(1)
+        assertThat(cartProducts).contains(OrderedProduct(productElectronic, 2))
 
         with(composeAndroidRule) {
             onRoot().printToLog("onCartScreen|DecreaseQuantity")
 
-            val orderedProduct = cartProducts.value.first()
+            val orderedProduct = cartProducts.first()
             assertThat(orderedProduct.quantity).isEqualTo(2)
 
             onNodeWithText(orderedProduct.product.name)
@@ -133,6 +141,10 @@ class CartScreenLocalTest {
 
             assertThat(orderedProduct.quantity).isEqualTo(1)
 
+            onNodeWithText(orderedProduct.quantity.toString())
+                .assertExists()
+                .assertIsDisplayed()
+
             onNodeWithText(getStringResource(R.string.cart_confirm_purchase_btn))
                 .assertExists()
                 .assertIsDisplayed()
@@ -144,16 +156,17 @@ class CartScreenLocalTest {
 
     @Test
     fun onCartScreen_clickDecreaseQuantityBtn_whenQuantityIs1_verifyCartWasUpdatedCorrectly_verifyPurchaseCompletionStatusIsFalse() {
-        assertThat(cartProducts.value).isEmpty()
+        assertThat(cartProducts).isEmpty()
 
-        cartViewModel.addToCart(productJewelry)
-        assertThat(cartProducts.value).isNotEmpty()
-        assertThat(cartProducts.value).hasSize(1)
+        cartViewModel.addToCart(productMensClothing)
+        assertThat(cartProducts).isNotEmpty()
+        assertThat(cartProducts).hasSize(1)
+        assertThat(cartProducts).contains(OrderedProduct(productMensClothing))
 
         with(composeAndroidRule) {
             onRoot().printToLog("onCartScreen|RemoveProduct")
 
-            val orderedProduct = cartProducts.value.first()
+            val orderedProduct = cartProducts.first()
             assertThat(orderedProduct.quantity).isEqualTo(1)
 
             onNodeWithText(orderedProduct.product.name)
@@ -164,7 +177,10 @@ class CartScreenLocalTest {
                 .filterToOne(hasContentDescription(getStringResource(R.string.content_desc_item_cart_decrease_btn)))
                 .performClick()
 
-            assertThat(cartProducts.value).isEmpty()
+            assertThat(cartProducts).isEmpty()
+
+            onNodeWithText(orderedProduct.product.name)
+                .assertDoesNotExist()
 
             onNodeWithText(getStringResource(R.string.cart_confirm_purchase_btn))
                 .assertExists()

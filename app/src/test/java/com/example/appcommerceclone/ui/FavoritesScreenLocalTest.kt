@@ -2,8 +2,6 @@ package com.example.appcommerceclone.ui
 
 import androidx.activity.ComponentActivity
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.State
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.filterToOne
 import androidx.compose.ui.test.hasContentDescription
@@ -20,10 +18,7 @@ import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.ui.favorites.FavoritesScreen
 import com.example.appcommerceclone.ui.favorites.FavoritesViewModel
 import com.example.appcommerceclone.util.getStringResource
-import com.example.appcommerceclone.util.productElectronic
 import com.example.appcommerceclone.util.productJewelry
-import com.example.appcommerceclone.util.productMensClothing
-import com.example.appcommerceclone.util.productWomensClothing
 import com.example.appcommerceclone.util.showSemanticTreeInConsole
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -49,23 +44,18 @@ class FavoritesScreenLocalTest {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
 
-    private lateinit var favoriteProducts: State<List<Product>>
+    private lateinit var favoriteProducts: List<Product>
 
     @Before
     fun setUp() {
         hiltAndroidRule.inject()
         showSemanticTreeInConsole()
         composeAndroidRule.setContent {
-            favoritesViewModel = FavoritesViewModel().apply {
-                addToFavorites(productJewelry)
-                addToFavorites(productElectronic)
-                addToFavorites(productMensClothing)
-                addToFavorites(productWomensClothing)
-            }
-            favoriteProducts = favoritesViewModel.favorites.observeAsState(initial = emptyList())
             MaterialTheme {
+                favoritesViewModel = FavoritesViewModel()
+                favoriteProducts = favoritesViewModel.favorites
                 FavoritesScreen(
-                    favoriteProducts = favoriteProducts.value,
+                    favoriteProducts = favoriteProducts,
                     onRemoveFavoriteProduct = { product: Product ->
                         favoritesViewModel.removeFromFavorites(product)
                     }
@@ -76,10 +66,22 @@ class FavoritesScreenLocalTest {
 
     @Test
     fun onFavoriteScreen_removeFavoriteProduct_verifyProductWasRemoved() {
-        assertThat(favoriteProducts.value).hasSize(4)
-
         with(composeAndroidRule) {
-            onRoot().printToLog("onFavoriteScreen")
+            onRoot().printToLog("onFavoriteScreen|EmptyList")
+
+            onNodeWithText(getStringResource(R.string.place_holder_text_no_favorites))
+                .assertExists()
+                .assertIsDisplayed()
+
+            favoritesViewModel.addToFavorites(productJewelry)
+
+            assertThat(favoriteProducts).hasSize(1)
+            assertThat(favoriteProducts).contains(productJewelry)
+
+            onRoot().printToLog("onFavoriteScreen|FavoriteListHasSize1")
+
+            onNodeWithText(getStringResource(R.string.place_holder_text_no_favorites))
+                .assertDoesNotExist()
 
             onNodeWithText(productJewelry.name)
                 .assertExists()
@@ -90,7 +92,12 @@ class FavoritesScreenLocalTest {
                 .filterToOne(hasContentDescription(getStringResource(R.string.content_desc_remove_from_favorites_btn)))
                 .performClick()
 
-            assertThat(favoriteProducts.value).hasSize(3)
+            onRoot().printToLog("onFavoriteScreen|ProductJeweleryRemoved")
+
+            assertThat(favoriteProducts).isEmpty()
+
+            onNodeWithText(productJewelry.name)
+                .assertDoesNotExist()
         }
     }
 }

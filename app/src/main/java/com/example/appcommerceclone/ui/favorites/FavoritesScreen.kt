@@ -34,6 +34,7 @@ import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.ui.common.PlaceHolder
+import com.example.appcommerceclone.util.getFormattedPrice
 import com.example.appcommerceclone.util.productList
 
 @Composable

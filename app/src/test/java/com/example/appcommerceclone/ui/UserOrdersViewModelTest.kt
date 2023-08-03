@@ -3,7 +3,7 @@ package com.example.appcommerceclone.ui
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.appcommerceclone.data.user.FakeUserProvider.Companion.firstUser
 import com.example.appcommerceclone.ui.order.UserOrdersViewModel
-import com.example.appcommerceclone.util.getOrAwaitValue
+import com.example.appcommerceclone.util.getTotalPrice
 import com.example.appcommerceclone.util.orderedProductList
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
@@ -24,7 +24,7 @@ class UserOrdersViewModelTest {
 
     @Test
     fun createNewUserOder_verifyOrderWasAddedToOrderList() {
-        var orders = userOrdersViewModel.orders.getOrAwaitValue()
+        val orders = userOrdersViewModel.orders
         assertThat(orders).isEmpty()
 
         userOrdersViewModel.createOrder(
@@ -32,8 +32,11 @@ class UserOrdersViewModelTest {
             orderedProductList = orderedProductList
         )
 
-        orders = userOrdersViewModel.orders.getOrAwaitValue()
         assertThat(orders).isNotEmpty()
         assertThat(orders).hasSize(1)
+
+        val order = orders.first()
+        assertThat(order.userId).isEqualTo(firstUser.id)
+        assertThat(order.getTotalPrice()).isEqualTo(orderedProductList.getTotalPrice())
     }
 }

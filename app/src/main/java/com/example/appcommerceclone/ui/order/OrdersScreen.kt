@@ -20,7 +20,8 @@ import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Order
 import com.example.appcommerceclone.ui.common.LeftToRightCard
 import com.example.appcommerceclone.ui.common.PlaceHolder
-import com.example.appcommerceclone.util.getTotalPrice
+import com.example.appcommerceclone.util.getFormattedTotalPrice
+import com.example.appcommerceclone.util.getProductsNamesAsString
 import com.example.appcommerceclone.util.orderedProductList
 
 @Composable
@@ -88,7 +89,7 @@ fun OrderItem(
             Text(
                 text = stringResource(
                     id = R.string.order_item_products,
-                    order.getOrderedProductListAsString()
+                    order.getProductsNamesAsString()
                 ),
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.body1
@@ -96,7 +97,7 @@ fun OrderItem(
             Text(
                 text = stringResource(
                     id = R.string.order_item_total_price,
-                    order.getFormattedPrice()
+                    order.getFormattedTotalPrice()
                 ),
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.body1
@@ -125,8 +126,7 @@ fun PreviewOrdersScreen() {
                         id = it,
                         userId = 9256,
                         date = "29/06/2023",
-                        orderedProducts = orderedProductList,
-                        total = orderedProductList.getTotalPrice()
+                        orderedProducts = orderedProductList
                     )
                 }
             )
