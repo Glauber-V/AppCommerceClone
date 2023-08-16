@@ -1,5 +1,6 @@
 package com.example.appcommerceclone.ui.user
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,6 +26,13 @@ class UserViewModel @Inject constructor(
     private val _loggedUser = MutableLiveData<User?>(null)
     val loggedUser: LiveData<User?> = _loggedUser
 
+    private val _profilePicture = MutableLiveData<Uri?>(null)
+    val profilePicture: LiveData<Uri?> = _profilePicture
+
+
+    fun updateProfilePicture(uri: Uri) {
+        _profilePicture.value = uri
+    }
 
     fun login(username: String, password: String) {
         _loadingState.value = LoadingState.LOADING
@@ -45,5 +53,6 @@ class UserViewModel @Inject constructor(
 
     fun logout() {
         _loggedUser.value = null
+        _loadingState.value = LoadingState.NOT_STARTED
     }
 }

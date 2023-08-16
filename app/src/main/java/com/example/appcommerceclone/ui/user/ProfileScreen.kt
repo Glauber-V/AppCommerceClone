@@ -1,5 +1,6 @@
 package com.example.appcommerceclone.ui.user
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.border
@@ -33,6 +34,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.platform.SoftwareKeyboardController
@@ -44,6 +46,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.user.model.Address
 import com.example.appcommerceclone.data.user.model.Name
@@ -185,8 +189,9 @@ fun rememberProfileScreenUiState(user: User): ProfileScreenUiState {
 fun ProfileScreen(
     modifier: Modifier = Modifier,
     user: User,
+    userPicture: Uri?,
     profileScreenUiState: ProfileScreenUiState = rememberProfileScreenUiState(user),
-    onPictureRequest: () -> Unit,
+    onUpdateProfilePicture: () -> Unit,
     onUpdateUserProfile: (updatedUser: User) -> Unit,
     onLogout: () -> Unit,
     focusManager: FocusManager = LocalFocusManager.current,
@@ -203,23 +208,43 @@ fun ProfileScreen(
         ),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            modifier = Modifier
-                .size(200.dp)
-                .border(
-                    border = BorderStroke(
-                        width = dimensionResource(id = R.dimen.stroke_size_small),
-                        color = colorResource(id = R.color.stroke_color_dark)
+        if (userPicture != null) {
+            AsyncImage(
+                modifier = Modifier
+                    .size(200.dp)
+                    .border(
+                        border = BorderStroke(
+                            width = dimensionResource(id = R.dimen.stroke_size_small),
+                            color = colorResource(id = R.color.stroke_color_dark)
+                        ),
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))
                     ),
-                    shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))
-                ),
-            imageVector = Icons.Filled.Person,
-            contentDescription = null,
-            tint = colorResource(id = R.color.icon_color_black)
-        )
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(userPicture)
+                    .placeholder(R.drawable.place_holder)
+                    .error(R.drawable.ic_broken_image)
+                    .build(),
+                contentDescription = null
+            )
+        } else {
+            Icon(
+                modifier = Modifier
+                    .size(200.dp)
+                    .border(
+                        border = BorderStroke(
+                            width = dimensionResource(id = R.dimen.stroke_size_small),
+                            color = colorResource(id = R.color.stroke_color_dark)
+                        ),
+                        shape = RoundedCornerShape(dimensionResource(id = R.dimen.corner_size_small))
+                    ),
+                imageVector = Icons.Filled.Person,
+                contentDescription = null,
+                tint = colorResource(id = R.color.icon_color_black)
+            )
+        }
         if (profileScreenUiState.isEditMode) {
             PrimaryActionButton(
-                onPrimaryAction = onPictureRequest,
+                onPrimaryAction = onUpdateProfilePicture,
                 primaryActionContent = {
                     Text(
                         modifier = Modifier.width(180.dp),
@@ -524,7 +549,8 @@ fun PreviewUserProfileScreenWithUser() {
                     zipcode = "57314"
                 )
             ),
-            onPictureRequest = {},
+            userPicture = null,
+            onUpdateProfilePicture = {},
             onUpdateUserProfile = {},
             onLogout = {}
         )

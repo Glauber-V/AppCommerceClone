@@ -54,6 +54,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.data.user.model.User
 import com.example.appcommerceclone.ui.cart.CartScreen
@@ -96,36 +97,13 @@ enum class AppCommerceRoutes(val route: String) {
 
 class AppCommerceNavigationActions(private val navHostController: NavHostController) {
 
-    fun navigateToProductsScreen() {
-        navHostController.popBackStack(route = AppCommerceRoutes.PRODUCTS_SCREEN.route, inclusive = false)
-    }
-
-    fun navigateToProductDetailScreen() {
-        navHostController.navigate(route = AppCommerceRoutes.PRODUCT_DETAIL_SCREEN.route)
-    }
-
-    fun navigateToFavoritesScreen() {
-        navHostController.navigate(route = AppCommerceRoutes.FAVORITES_SCREEN.route)
-    }
-
-    fun navigateToCartScreen() {
-        navHostController.navigate(route = AppCommerceRoutes.CART_SCREEN.route)
-    }
-
-    fun navigateToOrdersScreen() {
-        navHostController.navigate(route = AppCommerceRoutes.ORDERS_SCREEN.route)
-    }
-
-    fun navigateToUserLoginScreen() {
-        navHostController.navigate(route = AppCommerceRoutes.LOGIN_SCREEN.route)
-    }
-
-    fun navigateToUserRegisterScreen() {
-        navHostController.navigate(route = AppCommerceRoutes.REGISTER_SCREEN.route)
-    }
-
     fun navigateTo(route: String) {
-        navHostController.navigate(route)
+        navHostController.navigate(
+            route = route,
+            navOptions = navOptions {
+                launchSingleTop = true
+            }
+        )
     }
 
     fun shouldInterceptBackPressed(currentRoute: String?): Boolean {
@@ -136,6 +114,41 @@ class AppCommerceNavigationActions(private val navHostController: NavHostControl
             AppCommerceRoutes.ORDERS_SCREEN.route -> true
             else -> false
         }
+    }
+
+    fun navigateToProductsScreen() {
+        val startRoute = AppCommerceRoutes.PRODUCTS_SCREEN.route
+        navHostController.navigate(
+            route = startRoute,
+            navOptions = navOptions {
+                launchSingleTop = true
+                popUpTo(startRoute)
+            }
+        )
+    }
+
+    fun navigateToProductDetailScreen() {
+        navigateTo(AppCommerceRoutes.PRODUCT_DETAIL_SCREEN.route)
+    }
+
+    fun navigateToFavoritesScreen() {
+        navigateTo(AppCommerceRoutes.FAVORITES_SCREEN.route)
+    }
+
+    fun navigateToCartScreen() {
+        navigateTo(AppCommerceRoutes.CART_SCREEN.route)
+    }
+
+    fun navigateToOrdersScreen() {
+        navigateTo(AppCommerceRoutes.ORDERS_SCREEN.route)
+    }
+
+    fun navigateToUserLoginScreen() {
+        navigateTo(AppCommerceRoutes.LOGIN_SCREEN.route)
+    }
+
+    fun navigateToUserRegisterScreen() {
+        navigateTo(AppCommerceRoutes.REGISTER_SCREEN.route)
     }
 }
 
@@ -149,6 +162,7 @@ fun AppCommerceNavHost(
     cartViewModel: CartViewModel,
     userViewModel: UserViewModel,
     userOrdersViewModel: UserOrdersViewModel,
+    onUpdateProfilePicture: () -> Unit,
     context: Context = LocalContext.current,
     drawerScope: CoroutineScope = rememberCoroutineScope(),
     drawerState: DrawerState = rememberDrawerState(DrawerValue.Closed),
@@ -176,7 +190,7 @@ fun AppCommerceNavHost(
                 currentRoute = currentRoute,
                 onNavigationIconClicked = {
                     if (currentRoute != startDestination) {
-                        if (navActions.shouldInterceptBackPressed(currentRoute)) navActions.navigateToProductsScreen()
+                        if (navActions.shouldInterceptBackPressed(currentRoute)) navActions.navigateTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
                         else navHostController.popBackStack()
                     } else {
                         drawerScope.launch {
@@ -184,7 +198,9 @@ fun AppCommerceNavHost(
                             else drawerState.open()
                         }
                     }
-                }
+                },
+                showErrorMessage = !isConnected,
+                errorMessage = stringResource(id = R.string.error_no_connection)
             )
         },
         drawerContent = {
@@ -214,9 +230,8 @@ fun AppCommerceNavHost(
             composable(route = AppCommerceRoutes.PRODUCTS_SCREEN.route) {
                 val loadingState by productViewModel.loadingState.observeAsState(initial = LoadingState.NOT_STARTED)
                 val products by productViewModel.products.observeAsState(initial = emptyList())
-                if (loadingState == LoadingState.NOT_STARTED) productViewModel.updateProductList()
+                if (isConnected && loadingState == LoadingState.NOT_STARTED) productViewModel.updateProductList()
                 ProductsScreen(
-                    isConnected = isConnected,
                     loadingState = loadingState,
                     products = products,
                     onProductClicked = { product: Product ->
@@ -237,8 +252,12 @@ fun AppCommerceNavHost(
                         product = product,
                         isFavorite = favoritesViewModel.isFavorite(product),
                         onAddToFavorites = {
-                            favoritesViewModel.addToFavorites(product)
-                            navActions.navigateToFavoritesScreen()
+                            if (user != null) {
+                                favoritesViewModel.addToFavorites(product)
+                                navActions.navigateToFavoritesScreen()
+                            } else {
+                                navActions.navigateToUserLoginScreen()
+                            }
                         },
                         onAddToFavoritesFailed = { errorMessage ->
                             snackbarScope.launch {
@@ -247,6 +266,7 @@ fun AppCommerceNavHost(
                         },
                         onBuyNow = { appreciationMessage ->
                             if (user != null) {
+                                if (!isConnected) return@ProductDetailScreen
                                 userOrdersViewModel.createOrder(userId = user!!.id, product = product)
                                 snackbarScope.launch {
                                     snackbarHostState.showSnackbar(message = appreciationMessage)
@@ -269,11 +289,6 @@ fun AppCommerceNavHost(
                 }
             }
             composable(route = AppCommerceRoutes.FAVORITES_SCREEN.route) {
-                if (user == null) {
-                    navActions.navigateToUserLoginScreen()
-                    return@composable
-                }
-
                 BackHandler {
                     navActions.navigateToProductsScreen()
                 }
@@ -313,6 +328,7 @@ fun AppCommerceNavHost(
                     },
                     onConfirmPurchase = {
                         if (user != null) {
+                            if (!isConnected) return@CartScreen
                             userOrdersViewModel.createOrder(userId = user!!.id, orderedProductList = cartProducts)
                             cartViewModel.abandonCart()
                             navActions.navigateToOrdersScreen()
@@ -323,11 +339,6 @@ fun AppCommerceNavHost(
                 )
             }
             composable(route = AppCommerceRoutes.ORDERS_SCREEN.route) {
-                if (user == null) {
-                    navActions.navigateToUserLoginScreen()
-                    return@composable
-                }
-
                 BackHandler {
                     navActions.navigateToProductsScreen()
                 }
@@ -345,15 +356,7 @@ fun AppCommerceNavHost(
                 LoginScreen(
                     loadingState = loadingState,
                     onLoginRequest = { username: String, password: String ->
-                        if (isConnected) {
-                            userViewModel.login(username = username, password = password)
-                        } else {
-                            snackbarScope.launch {
-                                snackbarHostState.showSnackbar(
-                                    message = context.getString(R.string.error_no_connection)
-                                )
-                            }
-                        }
+                        if (isConnected) userViewModel.login(username = username, password = password)
                     },
                     onRegisterRequest = {
                         navActions.navigateToUserRegisterScreen()
@@ -373,18 +376,15 @@ fun AppCommerceNavHost(
                 }
             }
             composable(route = AppCommerceRoutes.PROFILE_SCREEN.route) {
-                if (user == null) {
-                    navActions.navigateToUserLoginScreen()
-                    return@composable
-                }
-
+                val profilePicture by userViewModel.profilePicture.observeAsState(initial = null)
                 ProfileScreen(
                     user = user!!,
-                    onPictureRequest = {},
+                    userPicture = profilePicture,
+                    onUpdateProfilePicture = onUpdateProfilePicture,
                     onUpdateUserProfile = {},
                     onLogout = {
-                        userViewModel.logout()
                         navActions.navigateToProductsScreen()
+                        userViewModel.logout()
                     }
                 )
             }
@@ -407,36 +407,50 @@ fun TopAppBarContent(
     isDrawerOpen: Boolean,
     startDestination: String,
     currentRoute: String?,
-    onNavigationIconClicked: () -> Unit
+    onNavigationIconClicked: () -> Unit,
+    showErrorMessage: Boolean,
+    errorMessage: String
 ) {
-    TopAppBar(
-        modifier = modifier,
-        contentColor = colorResource(id = R.color.onPrimaryColor),
-        backgroundColor = colorResource(id = R.color.primaryColor),
-        title = {
-            Text(
-                text = stringResource(id = R.string.app_name),
-                textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.h5
-            )
-        },
-        navigationIcon = {
-            IconButton(onClick = onNavigationIconClicked) {
-                Icon(
-                    imageVector =
-                    if (currentRoute == startDestination) Icons.Filled.Menu
-                    else Icons.Filled.ArrowBack,
-                    contentDescription =
-                    if (currentRoute != startDestination) {
-                        context.getString(R.string.content_desc_menu_navigate_back)
-                    } else {
-                        if (isDrawerOpen) context.getString(R.string.content_desc_menu_close)
-                        else context.getString(R.string.content_desc_menu_open)
-                    }
+    Column {
+        TopAppBar(
+            modifier = modifier,
+            contentColor = colorResource(id = R.color.onPrimaryColor),
+            backgroundColor = colorResource(id = R.color.primaryColor),
+            title = {
+                Text(
+                    text = stringResource(id = R.string.app_name),
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.h5
                 )
+            },
+            navigationIcon = {
+                IconButton(onClick = onNavigationIconClicked) {
+                    Icon(
+                        imageVector =
+                        if (currentRoute == startDestination) Icons.Filled.Menu
+                        else Icons.Filled.ArrowBack,
+                        contentDescription =
+                        if (currentRoute != startDestination) {
+                            context.getString(R.string.content_desc_menu_navigate_back)
+                        } else {
+                            if (isDrawerOpen) context.getString(R.string.content_desc_menu_close)
+                            else context.getString(R.string.content_desc_menu_open)
+                        }
+                    )
+                }
             }
+        )
+        if (showErrorMessage) {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = dimensionResource(id = R.dimen.padding_small)),
+                text = errorMessage,
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.caption
+            )
         }
-    )
+    }
 }
 
 @Composable
@@ -470,7 +484,12 @@ fun ModalDrawerContent(
         )
         ModalDrawerItem(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { onNavigationRequest(AppCommerceRoutes.FAVORITES_SCREEN.route) },
+            onClick = {
+                onNavigationRequest(
+                    if (user == null) AppCommerceRoutes.LOGIN_SCREEN.route
+                    else AppCommerceRoutes.FAVORITES_SCREEN.route
+                )
+            },
             itemIcon = Icons.Filled.Star,
             itemText = stringResource(id = R.string.menu_title_favorites)
         )
@@ -482,7 +501,12 @@ fun ModalDrawerContent(
         )
         ModalDrawerItem(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { onNavigationRequest(AppCommerceRoutes.ORDERS_SCREEN.route) },
+            onClick = {
+                onNavigationRequest(
+                    if (user == null) AppCommerceRoutes.LOGIN_SCREEN.route
+                    else AppCommerceRoutes.ORDERS_SCREEN.route
+                )
+            },
             itemIcon = Icons.Filled.History,
             itemText = stringResource(id = R.string.menu_title_my_orders)
         )
@@ -543,7 +567,25 @@ fun PreviewTopAppBar() {
             isDrawerOpen = false,
             startDestination = AppCommerceRoutes.PRODUCTS_SCREEN.route,
             currentRoute = AppCommerceRoutes.PRODUCTS_SCREEN.route,
-            onNavigationIconClicked = {}
+            onNavigationIconClicked = {},
+            showErrorMessage = false,
+            errorMessage = ""
+        )
+    }
+}
+
+@Preview
+@Composable
+fun PreviewTopAppBarWithMessage() {
+    MaterialTheme {
+        TopAppBarContent(
+            context = LocalContext.current,
+            isDrawerOpen = false,
+            startDestination = AppCommerceRoutes.PRODUCTS_SCREEN.route,
+            currentRoute = AppCommerceRoutes.PRODUCTS_SCREEN.route,
+            onNavigationIconClicked = {},
+            showErrorMessage = true,
+            errorMessage = stringResource(id = R.string.error_no_connection)
         )
     }
 }

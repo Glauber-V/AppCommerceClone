@@ -4,10 +4,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.State
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.test.assertIsDisplayed
+import androidx.compose.ui.test.hasScrollToIndexAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.onRoot
+import androidx.compose.ui.test.performTouchInput
 import androidx.compose.ui.test.printToLog
+import androidx.compose.ui.test.swipeDown
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -73,25 +76,36 @@ class ProductsScreenLocalTest {
             products = productViewModel.products.observeAsState(initial = emptyList())
             MaterialTheme {
                 ProductsScreen(
-                    isConnected = true,
                     loadingState = loadingState.value,
                     products = products.value,
                     onProductClicked = {},
-                    onRefresh = {}
+                    onRefresh = { productViewModel.updateProductList() }
                 )
             }
         }
     }
 
     @Test
-    fun onProductsScreen_verifyProductsAreVisible() = runTest {
+    fun onProductsScreen_noProducts_swipeToRefreshProductList_verifyProductsAreVisible() = runTest {
         with(composeRule) {
-            assertThat(loadingState.value).isEqualTo(LoadingState.NOT_STARTED)
+            onRoot().printToLog("onProductScreen|NoProducts")
 
-            productViewModel.updateProductList()
+            assertThat(loadingState.value).isEqualTo(LoadingState.NOT_STARTED)
+            assertThat(products.value).isEmpty()
+
+            onNodeWithText(productJewelry.name).assertDoesNotExist()
+            onNodeWithText(productElectronic.name).assertDoesNotExist()
+            onNodeWithText(productMensClothing.name).assertDoesNotExist()
+            onNodeWithText(productWomensClothing.name).assertDoesNotExist()
+
+            onNode(hasScrollToIndexAction())
+                .assertExists()
+                .assertIsDisplayed()
+                .performTouchInput { swipeDown(startY = topCenter.y, endY = bottomCenter.y) }
+
             advanceUntilIdle()
 
-            onRoot().printToLog("onProductScreen")
+            onRoot().printToLog("onProductScreen|WithProducts")
 
             assertThat(loadingState.value).isEqualTo(LoadingState.SUCCESS)
             assertThat(products.value).isNotEmpty()

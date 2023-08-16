@@ -37,8 +37,6 @@ import coil.request.ImageRequest
 import com.example.appcommerceclone.LoadingState
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.Product
-import com.example.appcommerceclone.ui.common.NoConnectionPlaceHolder
-import com.example.appcommerceclone.ui.common.PlaceHolder
 import com.example.appcommerceclone.ui.common.shimmerEffect
 import com.example.appcommerceclone.util.getFormattedPrice
 import com.example.appcommerceclone.util.productList
@@ -47,7 +45,6 @@ import com.example.appcommerceclone.util.productList
 @Composable
 fun ProductsScreen(
     modifier: Modifier = Modifier,
-    isConnected: Boolean,
     loadingState: LoadingState,
     products: List<Product>,
     onProductClicked: (Product) -> Unit,
@@ -58,19 +55,6 @@ fun ProductsScreen(
         refreshing = isRefreshing,
         onRefresh = onRefresh
     )
-
-    if (!isConnected) {
-        NoConnectionPlaceHolder(modifier = Modifier.fillMaxSize())
-        return
-    }
-
-    if (loadingState != LoadingState.LOADING && products.isEmpty()) {
-        PlaceHolder(
-            modifier = Modifier.fillMaxSize(),
-            placeHolderText = LocalContext.current.getString(R.string.place_holder_text_no_products)
-        )
-        return
-    }
 
     Box(modifier = modifier.pullRefresh(pullRefreshState)) {
         LazyVerticalGrid(
@@ -202,7 +186,6 @@ fun ProductItemWithShimmer(modifier: Modifier = Modifier) {
 fun PreviewProductsScreen() {
     MaterialTheme {
         ProductsScreen(
-            isConnected = true,
             loadingState = LoadingState.NOT_STARTED,
             products = productList,
             onProductClicked = {},
@@ -216,7 +199,6 @@ fun PreviewProductsScreen() {
 fun PreviewProductsScreenWhileLoading() {
     MaterialTheme {
         ProductsScreen(
-            isConnected = true,
             loadingState = LoadingState.LOADING,
             products = emptyList(),
             onProductClicked = {},
@@ -230,7 +212,6 @@ fun PreviewProductsScreenWhileLoading() {
 fun PreviewProductsScreenWhileNotConnected() {
     MaterialTheme {
         ProductsScreen(
-            isConnected = false,
             loadingState = LoadingState.FAILURE,
             products = emptyList(),
             onProductClicked = {},

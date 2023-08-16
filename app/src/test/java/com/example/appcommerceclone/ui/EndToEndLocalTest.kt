@@ -2,6 +2,7 @@ package com.example.appcommerceclone.ui
 
 import android.content.Context
 import androidx.activity.ComponentActivity
+import androidx.annotation.StringRes
 import androidx.compose.material.DrawerState
 import androidx.compose.material.DrawerValue
 import androidx.compose.material.MaterialTheme
@@ -15,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.test.assertCountEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
+import androidx.compose.ui.test.junit4.AndroidComposeTestRule
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onFirst
@@ -27,6 +29,7 @@ import androidx.compose.ui.test.performTextReplacement
 import androidx.compose.ui.test.printToLog
 import androidx.navigation.compose.ComposeNavigator
 import androidx.navigation.testing.TestNavHostController
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.example.appcommerceclone.AppCommerceNavHost
 import com.example.appcommerceclone.AppCommerceRoutes
 import com.example.appcommerceclone.LoadingState
@@ -157,6 +160,7 @@ class EndToEndLocalTest {
                     cartViewModel = cartViewModel,
                     userViewModel = userViewModel,
                     userOrdersViewModel = userOrdersViewModel,
+                    onUpdateProfilePicture = {},
                     drawerState = drawerState,
                     snackbarHostState = snackbarHostState,
                     navHostController = navHostController
@@ -166,15 +170,13 @@ class EndToEndLocalTest {
     }
 
     @Test
-    fun onProductsScreen_lostConnection_verifyNoConnectionPlaceHolderIsVisible() = runTest {
+    fun onProductsScreen_lostConnection_verifyNoConnectionMessageIsVisible() = runTest {
         with(composeRule) {
             isConnected.value = false
 
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
             advanceUntilIdle()
-
-            onRoot().printToLog(navHostController.createTag() + " | No Connection")
 
             onNodeWithText(getStringResource(R.string.error_no_connection))
                 .assertExists()
@@ -305,7 +307,7 @@ class EndToEndLocalTest {
     }
 
     @Test
-    fun openDrawerToLogin_addProductJeweleryToFavoriteList_removeProductJeweleryFromList_verifyList_returnToStartDestination() = runTest {
+    fun openDrawer_navigateToLogin_addProductJeweleryToFavoriteList_removeProductJeweleryFromList_verifyList_returnToStartDestination() = runTest {
         with(composeRule) {
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
@@ -313,23 +315,7 @@ class EndToEndLocalTest {
 
             assertThat(productsLoadingState.value).isEqualTo(LoadingState.SUCCESS)
 
-            assertThat(drawerState.isOpen).isFalse()
-
-            onNodeWithContentDescription(getStringResource(R.string.content_desc_menu_open))
-                .assertExists()
-                .assertIsDisplayed()
-                .performClick()
-
-            waitForIdle()
-            assertThat(drawerState.isOpen).isTrue()
-
-            onNodeWithText(getStringResource(R.string.menu_title_login))
-                .assertExists()
-                .assertIsDisplayed()
-                .performClick()
-
-            waitForIdle()
-            assertThat(drawerState.isOpen).isFalse()
+            openDrawerAndChooseOptionWithText(R.string.menu_title_login)
 
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
@@ -418,7 +404,7 @@ class EndToEndLocalTest {
     }
 
     @Test
-    fun openDrawerToLogin_failedLogin_backPressed_verifyLoadingStateWasProperlyReset() = runTest {
+    fun openDrawer_navigateToLogin_failedLogin_backPressed_verifyLoadingStateWasProperlyReset() = runTest {
         with(composeRule) {
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
@@ -426,23 +412,7 @@ class EndToEndLocalTest {
 
             assertThat(productsLoadingState.value).isEqualTo(LoadingState.SUCCESS)
 
-            assertThat(drawerState.isOpen).isFalse()
-
-            onNodeWithContentDescription(getStringResource(R.string.content_desc_menu_open))
-                .assertExists()
-                .assertIsDisplayed()
-                .performClick()
-
-            waitForIdle()
-            assertThat(drawerState.isOpen).isTrue()
-
-            onNodeWithText(getStringResource(R.string.menu_title_login))
-                .assertExists()
-                .assertIsDisplayed()
-                .performClick()
-
-            waitForIdle()
-            assertThat(drawerState.isOpen).isFalse()
+            openDrawerAndChooseOptionWithText(R.string.menu_title_login)
 
             navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
             onRoot().printToLog(navHostController.createTag())
@@ -486,7 +456,166 @@ class EndToEndLocalTest {
         }
     }
 
+    @Test
+    fun openDrawer_navigateToFavorites_backPressed_verifyLoadingStateWasProperlyReset() = runTest {
+        with(composeRule) {
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+            advanceUntilIdle()
+
+            assertThat(productsLoadingState.value).isEqualTo(LoadingState.SUCCESS)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_favorites)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+
+            assertThat(userLoadingState.value).isEqualTo(LoadingState.NOT_STARTED)
+            assertThat(user.value).isNull()
+
+            activity.onBackPressed()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            onRoot().printToLog(navHostController.createTag())
+
+            assertThat(userLoadingState.value).isEqualTo(LoadingState.NOT_STARTED)
+        }
+    }
+
+    @Test
+    fun openDrawer_navigateToEachAvailableRoute_withoutUser_returnToProductsScreen() = runTest {
+        with(composeRule) {
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            advanceUntilIdle()
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_login)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_favorites)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_categories)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.CATEGORIES_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_my_orders)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_cart)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.CART_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+        }
+    }
+
+    @Test
+    fun openDrawer_navigateToEachAvailableRoute_withUser_returnToProductsScreen() = runTest {
+        with(composeRule) {
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+            advanceUntilIdle()
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_login)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.LOGIN_SCREEN.route)
+
+            onNodeWithText(getStringResource(R.string.hint_username))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement(firstUser.username)
+
+            onNodeWithText(getStringResource(R.string.hint_password))
+                .assertExists()
+                .assertIsDisplayed()
+                .performTextReplacement(firstUser.password)
+
+            onAllNodesWithText(getStringResource(R.string.login_btn))
+                .assertCountEquals(2)
+                .onFirst()
+                .performClick()
+
+            advanceUntilIdle()
+
+            assertThat(userLoadingState.value).isEqualTo(LoadingState.SUCCESS)
+            assertThat(user.value).isNotNull()
+            assertThat(user.value).isEqualTo(firstUser)
+
+            onNodeWithText(getStringResource(R.string.login_success_message, firstUser.username))
+                .assertExists()
+                .assertIsDisplayed()
+
+            snackbarHostState.currentSnackbarData?.dismiss()
+            waitForIdle()
+
+            onNodeWithText(getStringResource(R.string.login_success_message, firstUser.username))
+                .assertDoesNotExist()
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_favorites)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.FAVORITES_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_categories)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.CATEGORIES_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_my_orders)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.ORDERS_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_cart)
+
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.CART_SCREEN.route)
+            activity.onBackPressed()
+            navHostController.assertCurrentRouteIsEqualTo(AppCommerceRoutes.PRODUCTS_SCREEN.route)
+
+            openDrawerAndChooseOptionWithText(R.string.menu_title_logout)
+            advanceUntilIdle()
+
+            assertThat(user.value).isNull()
+            assertThat(userLoadingState.value).isEqualTo(LoadingState.NOT_STARTED)
+        }
+    }
+
     private fun TestNavHostController.createTag(): String {
         return "Current Route: ${this.currentBackStackEntry?.destination?.route}"
+    }
+
+    private fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.openDrawerAndChooseOptionWithText(@StringRes resId: Int) {
+        assertThat(drawerState.isOpen).isFalse()
+
+        onNodeWithContentDescription(getStringResource(R.string.content_desc_menu_open))
+            .assertExists()
+            .assertIsDisplayed()
+            .performClick()
+
+        waitForIdle()
+        assertThat(drawerState.isOpen).isTrue()
+
+        onNodeWithText(getStringResource(resId))
+            .assertExists()
+            .assertIsDisplayed()
+            .performClick()
+
+        waitForIdle()
+        assertThat(drawerState.isOpen).isFalse()
     }
 }

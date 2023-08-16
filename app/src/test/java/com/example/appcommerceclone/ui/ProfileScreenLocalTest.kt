@@ -36,7 +36,8 @@ class ProfileScreenLocalTest {
             MaterialTheme {
                 ProfileScreen(
                     user = firstUser,
-                    onPictureRequest = {},
+                    userPicture = null,
+                    onUpdateProfilePicture = {},
                     onUpdateUserProfile = {},
                     onLogout = {}
                 )
