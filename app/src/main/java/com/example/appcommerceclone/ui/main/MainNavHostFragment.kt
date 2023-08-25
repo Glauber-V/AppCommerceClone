@@ -9,7 +9,7 @@ class MainNavHostFragment : NavHostFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        val fragmentFactory = MainFragmentFactory(requireActivity())
+        val fragmentFactory = DefaultFragmentFactory(requireActivity())
         childFragmentManager.fragmentFactory = fragmentFactory
     }
 }

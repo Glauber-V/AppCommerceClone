@@ -1,14 +1,13 @@
 package com.example.appcommerceclone.util
 
+import androidx.annotation.IdRes
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.core.app.ApplicationProvider
 import com.example.appcommerceclone.R
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
-@ExperimentalCoroutinesApi
-class TestNavHostControllerRule(private val currentDestination: Int) : TestWatcher() {
+class TestNavHostControllerRule(@IdRes private val currentDestination: Int) : TestWatcher() {
 
     private lateinit var testNavHostController: TestNavHostController
 

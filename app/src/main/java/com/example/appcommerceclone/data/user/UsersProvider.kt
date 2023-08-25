@@ -1,7 +1,7 @@
 package com.example.appcommerceclone.data.user
 
-import com.example.appcommerceclone.model.user.User
-import com.example.appcommerceclone.model.user.UserToken
+import com.example.appcommerceclone.data.user.model.User
+import com.example.appcommerceclone.data.user.model.UserToken
 import retrofit2.http.*
 
 interface UsersProvider {
@@ -19,6 +19,6 @@ interface UsersProvider {
     @GET("users/{id}")
     suspend fun getUserById(
         @Path("id") id: Int
-    ): User
+    ): User?
 }
 

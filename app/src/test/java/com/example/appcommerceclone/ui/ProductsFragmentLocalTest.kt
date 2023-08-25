@@ -1,25 +1,21 @@
 package com.example.appcommerceclone.ui
 
 import androidx.navigation.testing.TestNavHostController
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productElectronic
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productJewelery
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productMensClothing
-import com.example.appcommerceclone.data.product.FakeProductsProvider.Companion.productWomensClothing
 import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
-import com.example.appcommerceclone.ui.product.ProductsAdapter
+import com.example.appcommerceclone.ui.product.ProductCategories
+import com.example.appcommerceclone.ui.product.ProductViewHolder
+import com.example.appcommerceclone.ui.product.ProductViewModel
 import com.example.appcommerceclone.ui.product.ProductsFragment
 import com.example.appcommerceclone.util.*
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
-import com.example.appcommerceclone.viewmodels.ProductViewModel
 import com.google.common.truth.Truth.assertThat
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
@@ -52,8 +48,11 @@ class ProductsFragmentLocalTest {
     @get:Rule(order = 2)
     val testMainDispatcherRule = TestMainDispatcherRule()
 
-    @Inject lateinit var productsRepository: ProductsRepository
-    @Inject lateinit var dispatcherProvider: DispatcherProvider
+    @Inject
+    lateinit var productsRepository: ProductsRepository
+
+    @Inject
+    lateinit var dispatcherProvider: DispatcherProvider
 
     private lateinit var navHostController: TestNavHostController
     private lateinit var productViewModel: ProductViewModel
@@ -68,118 +67,49 @@ class ProductsFragmentLocalTest {
     }
 
     @Test
-    fun launchProductsFragment_verifyLayoutVisibility_verifyListIsNotEmpty() = runTest {
-
-        var products = productViewModel.products.getOrAwaitValue()
+    fun launchProductsFragment_filterListWithCategoryElectronics_undoFilterWithSwipeToRefreshAction() = runTest {
+        val products = productViewModel.products.getOrAwaitValue()
         assertThat(products).isEmpty()
 
         launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            onView(withId(R.id.products_shimmer))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
+            productViewModel.assertThatLoadingStateIsEqualTo(LoadingState.LOADING)
+            productViewModel.assertThatShimmerVisibilityIsInSyncWithLoadingState()
             advanceUntilIdle()
 
-            val isLoading = productViewModel.isLoading.getOrAwaitValue()
-            assertThat(isLoading).isFalse()
+            productViewModel.assertThatLoadingStateIsEqualTo(LoadingState.SUCCESS)
+            productViewModel.assertThatShimmerVisibilityIsInSyncWithLoadingState()
+            productViewModel.assertThatProductListHasCorrectSizeAndElements()
 
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(4)
+            with(ProductCategories.ELECTRONICS) {
+                productViewModel.filterProductList(this)
+                productViewModel.assertThatProductListHasCorrectSizeAndElements(this)
+            }
 
-            onView(withId(R.id.products_shimmer))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
+            (this as SwipeRefreshLayout.OnRefreshListener).onRefresh()
 
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-        }
-    }
-
-    @Test
-    fun launchProductsFragment_reloadListWithSelectedCategory_verifySwipeToRefreshResetsList() = runTest {
-
-        var products = productViewModel.products.getOrAwaitValue()
-        assertThat(products).isEmpty()
-
-        launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            onView(withId(R.id.products_shimmer))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
-            advanceUntilIdle()
-
-            val isLoading = productViewModel.isLoading.getOrAwaitValue()
-            assertThat(isLoading).isFalse()
-
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(4)
-
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(atPosition(0, hasDescendant(withText(productJewelery.name)))))
-                .check(matches(atPosition(1, hasDescendant(withText(productElectronic.name)))))
-                .check(matches(atPosition(2, hasDescendant(withText(productMensClothing.name)))))
-                .check(matches(atPosition(3, hasDescendant(withText(productWomensClothing.name)))))
-
-            productViewModel.selectCategoryAndUpdateProductsList(CATEGORY_NAME_ELECTRONICS)
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(1)
-            assertThat(products.first().category).isEqualTo(CATEGORY_NAME_ELECTRONICS)
-
-            // This action won't have any effect while using robolectric:
-            // onView(withId(R.id.products_swipe_refresh_layout)).perform(swipeDown())
-            // https://stackoverflow.com/questions/55517269/android-espresso-testing-swiperefreshlayout-onrefresh-not-been-triggered-on-swip
-            productViewModel.updateProductsList()
-            advanceUntilIdle()
-
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(4)
-            assertThat(products).contains(productJewelery)
-            assertThat(products).contains(productElectronic)
-            assertThat(products).contains(productMensClothing)
-            assertThat(products).contains(productWomensClothing)
+            productViewModel.assertThatProductListHasCorrectSizeAndElements()
         }
     }
 
     @Test
     fun launchProductsFragment_clickOnProductFromTheList_navigateToProductDetailFragment() = runTest {
-
-        var products = productViewModel.products.getOrAwaitValue()
-        assertThat(products).isEmpty()
-
         launchFragmentInHiltContainer<ProductsFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            onView(withId(R.id.products_shimmer))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
-
-            onView(withId(R.id.products_recycler_view))
-                .check(matches(withEffectiveVisibility(Visibility.GONE)))
-
+            navHostController.assertThatCurrentDestinationIsEqualTo(R.id.products_fragment)
+            productViewModel.assertThatLoadingStateIsEqualTo(LoadingState.LOADING)
+            productViewModel.assertThatShimmerVisibilityIsInSyncWithLoadingState()
             advanceUntilIdle()
 
-            val isLoading = productViewModel.isLoading.getOrAwaitValue()
-            assertThat(isLoading).isFalse()
-
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(4)
+            productViewModel.assertThatLoadingStateIsEqualTo(LoadingState.SUCCESS)
+            productViewModel.assertThatProductListHasCorrectSizeAndElements()
 
             onView(withId(R.id.products_recycler_view))
-                .perform(scrollToPosition<ProductsAdapter.ProductViewHolder>(0))
+                .perform(scrollToPosition<ProductViewHolder>(0))
 
             onView(withId(R.id.products_recycler_view))
-                .perform(actionOnItemAtPosition<ProductsAdapter.ProductViewHolder>(1, click()))
+                .perform(actionOnItemAtPosition<ProductViewHolder>(0, click()))
 
-            assertThat(navHostController.currentDestination?.id).isNotEqualTo(R.id.products_fragment)
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.product_detail_fragment)
+            navHostController.assertThatCurrentDestinationIsNotEqualTo(R.id.products_fragment)
+            navHostController.assertThatCurrentDestinationIsEqualTo(R.id.product_detail_fragment)
         }
     }
 }

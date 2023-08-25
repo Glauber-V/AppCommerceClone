@@ -7,17 +7,19 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.databinding.FragmentProductsBinding
-import com.example.appcommerceclone.viewmodels.ProductViewModel
+import com.example.appcommerceclone.util.LoadingState
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ProductsFragment(private val productViewModel: ProductViewModel) : Fragment(), SwipeRefreshLayout.OnRefreshListener {
+class ProductsFragment(private val productViewModel: ProductViewModel) : Fragment(), ProductClickHandler, SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var binding: FragmentProductsBinding
 
     private lateinit var productsAdapter: ProductsAdapter
-
+    private var loadingState: LoadingState = LoadingState.NOT_STARTED
+    private var products: List<Product> = emptyList()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentProductsBinding.inflate(inflater, container, false)
@@ -28,34 +30,37 @@ class ProductsFragment(private val productViewModel: ProductViewModel) : Fragmen
         super.onViewCreated(view, savedInstanceState)
 
         binding.productsSwipeRefreshLayout.setOnRefreshListener(this)
-        setupProductsRecyclerView()
-        observeLoadingProcess()
-        observeProductsListChanges()
-    }
 
-
-    private fun setupProductsRecyclerView() {
-        productsAdapter = ProductsAdapter { product ->
-            productViewModel.selectProduct(product)
-            navigateToProductDetailFragment()
-        }
+        productsAdapter = ProductsAdapter(productClickHandler = this@ProductsFragment)
         binding.productsRecyclerView.adapter = productsAdapter
-    }
 
-    private fun observeLoadingProcess() {
-        productViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            if (isLoading) startShimmer()
-            else stopShimmer()
+        productViewModel.loadingState.observe(viewLifecycleOwner) { _loadingState ->
+            loadingState = _loadingState
+            when (loadingState) {
+                LoadingState.NOT_STARTED -> productViewModel.updateProductList()
+                LoadingState.LOADING -> startShimmer()
+                LoadingState.FAILURE -> stopShimmer()
+                LoadingState.SUCCESS -> {
+                    productsAdapter.submitList(products)
+                    stopShimmer()
+                }
+            }
         }
+
+        productViewModel.products.observe(viewLifecycleOwner) { products = it }
     }
 
-    private fun observeProductsListChanges() {
-        productViewModel.products.observe(viewLifecycleOwner) { products ->
-            if (products.isEmpty()) productViewModel.updateProductsList()
-            else productsAdapter.submitList(products)
-        }
+    override fun onRefresh() {
+        if (loadingState == LoadingState.FAILURE) productViewModel.updateProductList()
+        productViewModel.filterProductList(ProductCategories.NONE)
     }
 
+    override fun onProductClicked(product: Product) {
+        productViewModel.selectProduct(product)
+        findNavController().navigate(
+            ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
+        )
+    }
 
     private fun startShimmer() {
         binding.productsShimmer.startShimmer()
@@ -68,15 +73,5 @@ class ProductsFragment(private val productViewModel: ProductViewModel) : Fragmen
         binding.productsShimmer.visibility = View.GONE
         binding.productsSwipeRefreshLayout.visibility = View.VISIBLE
         binding.productsSwipeRefreshLayout.isRefreshing = false
-    }
-
-
-    private fun navigateToProductDetailFragment() {
-        val toDestination = ProductsFragmentDirections.actionProductsFragmentToProductDetailFragment()
-        findNavController().navigate(toDestination)
-    }
-
-    override fun onRefresh() {
-        productViewModel.updateProductsList()
     }
 }

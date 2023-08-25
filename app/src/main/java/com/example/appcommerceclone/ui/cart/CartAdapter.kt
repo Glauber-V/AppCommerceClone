@@ -2,17 +2,30 @@ package com.example.appcommerceclone.ui.cart
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.appcommerceclone.data.product.model.OrderedProduct
 import com.example.appcommerceclone.databinding.ItemProductInCartBinding
-import com.example.appcommerceclone.model.order.OrderedProduct
-import com.example.appcommerceclone.viewmodels.CartViewModel
 
-class CartAdapter(
-    private val cartViewModel: CartViewModel
-) : ListAdapter<OrderedProduct, CartAdapter.CartViewHolder>(OrderedProductDiffCallback) {
+interface CartClickHandler {
 
-    class CartViewHolder(val binding: ItemProductInCartBinding) : RecyclerView.ViewHolder(binding.root)
+    fun onIncreaseQuantity(orderedProduct: OrderedProduct)
+
+    fun onDecreaseQuantity(orderedProduct: OrderedProduct)
+}
+
+class CartViewHolder(val binding: ItemProductInCartBinding) : RecyclerView.ViewHolder(binding.root)
+
+object OrderedProductDiffCallback : DiffUtil.ItemCallback<OrderedProduct>() {
+    override fun areItemsTheSame(oldItem: OrderedProduct, newItem: OrderedProduct): Boolean =
+        oldItem.id == newItem.id
+
+    override fun areContentsTheSame(oldItem: OrderedProduct, newItem: OrderedProduct): Boolean =
+        oldItem.id == newItem.id && oldItem.quantity == newItem.quantity
+}
+
+class CartAdapter(private val cartClickHandler: CartClickHandler) : ListAdapter<OrderedProduct, CartViewHolder>(OrderedProductDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CartViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -24,11 +37,11 @@ class CartAdapter(
         val orderedProduct = getItem(position)
         holder.binding.orderedProduct = orderedProduct
         holder.binding.itemProductInCartIncreaseQuantityBtn.setOnClickListener {
-            cartViewModel.increaseQuantity(orderedProduct)
+            cartClickHandler.onIncreaseQuantity(orderedProduct)
             notifyItemChanged(holder.adapterPosition)
         }
         holder.binding.itemProductInCartDecreaseQuantityBtn.setOnClickListener {
-            cartViewModel.decreaseQuantity(orderedProduct)
+            cartClickHandler.onDecreaseQuantity(orderedProduct)
             if (orderedProduct.quantity >= 1) notifyItemChanged(holder.adapterPosition)
             else notifyItemRemoved(holder.adapterPosition)
         }

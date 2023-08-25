@@ -16,7 +16,6 @@ object ConnectivityModule {
 
     @Singleton
     @Provides
-    fun provideConnectivityObserver(@ApplicationContext context: Context): ConnectivityObserver {
-        return DefaultConnectivityObserver(context)
-    }
+    fun provideConnectivityObserver(@ApplicationContext context: Context): ConnectivityObserver =
+        DefaultConnectivityObserver(context)
 }

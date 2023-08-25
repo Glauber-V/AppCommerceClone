@@ -5,80 +5,79 @@
     <!--Fragments Names-->
     <string name="fragment_products_label" translatable="false">@string/app_name</string>
     <string name="fragment_product_detail_label" translatable="false">@string/app_name</string>
-    <string name="fragment_user_login_label">Log In</string>
-    <string name="fragment_user_profile_label">Profile</string>
-    <string name="fragment_user_profile_editable">Profile</string>
-    <string name="fragment_user_register_label">Register</string>
+    <string name="fragment_login_label">Log In</string>
+    <string name="fragment_profile_label">Profile</string>
+    <string name="fragment_register_label">Register</string>
     <string name="fragment_categories_label">Categories</string>
     <string name="fragment_orders_label">My Orders</string>
     <string name="fragment_cart_label">Cart</string>
     <string name="fragment_favorites_label">My favorites</string>
-    <string name="fragment_connection_label">@string/app_name</string>
     <string name="fragment_picture_chooser_dialog_label" translatable="false">Picture Chooser Dialog</string>
 
-    <!--Menu Options-->
-    <string name="menu_title_home">Home</string>
-    <string name="menu_title_profile">Profile</string>
+    <!--Drawer Menu Options-->
     <string name="menu_title_login">Login</string>
-    <string name="menu_title_my_orders">My Orders</string>
-    <string name="menu_title_categories">Categories</string>
-    <string name="menu_title_cart">Cart</string>
+    <string name="menu_title_profile">Profile</string>
     <string name="menu_title_favorites">Favorites</string>
-    <string name="menu_title_search">Search</string>
+    <string name="menu_title_categories">Categories</string>
+    <string name="menu_title_my_orders">My Orders</string>
+    <string name="menu_title_cart">Cart</string>
     <string name="menu_title_logout">Logout</string>
-    <string name="menu_title_edit">Edit</string>
-    <string name="menu_drawer_title">Login</string>
-    <string name="menu_drawer_toggle_open">Open</string>
-    <string name="menu_drawer_toggle_close">Close</string>
 
-    <!--User Hints-->
-    <string name="user_hint_name_first_name">First Name</string>
-    <string name="user_hint_name_last_name">Last Name</string>
-    <string name="user_hint_username">Username</string>
-    <string name="user_hint_password">Password</string>
-    <string name="user_hint_email" translatable="false">Email</string>
-    <string name="user_hint_phone">Phone</string>
-    <string name="user_hint_address_city">City</string>
-    <string name="user_hint_address_number">Number</string>
-    <string name="user_hint_address_street">Street</string>
-    <string name="user_hint_address_zipcode">Zipcode</string>
+    <!--Place Holders-->
+    <string name="place_holder_text_no_favorites">You have no favorites</string>
+    <string name="place_holder_text_no_orders">You have no purchases</string>
 
-    <!--User Errors-->
-    <string name="user_error_not_found">User does not exist</string>
-    <string name="user_error_account_already_exist">Account already exist</string>
-    <string name="user_error_no_email">Type your email</string>
-    <string name="user_error_no_username">Type your username</string>
-    <string name="user_error_no_password">Type your password</string>
+    <!--Hints-->
+    <string name="hint_name_first_name">First Name</string>
+    <string name="hint_name_last_name">Last Name</string>
+    <string name="hint_username">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_email" translatable="false">Email</string>
+    <string name="hint_phone">Phone</string>
+    <string name="hint_address_city">City</string>
+    <string name="hint_address_number">Number</string>
+    <string name="hint_address_street">Street</string>
+    <string name="hint_address_zipcode">Zipcode</string>
 
-    <!--Profile Fragment-->
-    <string name="user_profile_welcome_message">Welcome %1s</string>
-    <string name="user_profile_updated_message">Profile updated</string>
-    <string name="user_profile_start_update_btn">Update profile</string>
-    <string name="user_profile_cancel_update_btn">Cancel</string>
-    <string name="user_profile_save_update_btn">Save</string>
-    <string name="user_profile_logout_btn">Logout</string>
-    <string name="user_profile_dialog_title">Select a picture from:</string>
-    <string name="user_profile_dialog_opt_gallery">Gallery</string>
-    <string name="user_profile_dialog_opt_camera">Camera</string>
+    <!--Errors-->
+    <string name="error_no_connection">No Internet connection</string>
+    <string name="error_no_email">Type your email</string>
+    <string name="error_no_username">Type your username</string>
+    <string name="error_no_password">Type your password</string>
+    <string name="error_already_favorite">Product already added to your favorites</string>
+    <string name="error_no_color_selected">Select a color</string>
+    <string name="error_no_size_selected">Select a size</string>
+    <string name="error_no_color_and_size_selected">Select a color and a size</string>
 
     <!--Login Fragment-->
-    <string name="user_login_btn">Login</string>
-    <string name="user_no_account_warning">Don\'t have an account?</string>
-    <string name="user_login_successfully_message">Welcome %1s</string>
+    <string name="login_btn">Login</string>
+    <string name="login_no_account">Don\'t have an account?</string>
+    <string name="login_success_message">Welcome %1s</string>
+    <string name="login_failure_message">User does not exist</string>
 
     <!--Register Fragment-->
-    <string name="user_register_btn">Register</string>
-    <string name="user_register_successfully_message">Account successfully created - not actually</string>
+    <string name="register_btn">Register</string>
+    <string name="register_success_message">Account successfully created - not actually</string>
+
+    <!--Profile Fragment-->
+    <string name="profile_welcome_message">Welcome %1s</string>
+    <string name="profile_updated_message">Profile updated</string>
+    <string name="profile_start_update_btn">Update profile</string>
+    <string name="profile_cancel_update_btn">Cancel</string>
+    <string name="profile_save_update_btn">Save</string>
+    <string name="profile_logout_btn">Logout</string>
+    <string name="profile_dialog_title">Select a picture from:</string>
+    <string name="profile_dialog_option_gallery">Gallery</string>
+    <string name="profile_dialog_option_camera">Camera</string>
 
     <!--Categories Fragment-->
-    <string name="category_all_products">All Products</string>
+    <string name="category_name_all_products">All Products</string>
     <string name="category_name_jewelery">Jewelery</string>
     <string name="category_name_electronics">Electronics</string>
     <string name="category_name_mens_clothing">Men\'s clothing</string>
     <string name="category_name_women_s_clothing">Women\'s clothing</string>
 
     <!--Product Detail Fragment-->
-    <string name="product_detail_favorites_warning">Product already added to your favorites</string>
     <string name="product_detail_add_to_cart">Add to cart</string>
     <string name="product_detail_buy_now">Buy now</string>
     <string name="product_detail_thanks_for_purchase">Thanks for your purchase</string>
@@ -91,51 +90,43 @@
     <string name="product_detail_chip_size_2" translatable="false">M</string>
     <string name="product_detail_chip_size_3" translatable="false">G</string>
     <string name="product_detail_chip_size_4" translatable="false">GG</string>
-    <string name="product_detail_chip_color_warning">Select a color</string>
-    <string name="product_detail_chip_size_warning">Select a size</string>
-    <string name="product_detail_chip_color_and_size_warning">Select a color and a size</string>
 
     <!--Cart Fragment-->
     <string name="cart_total_price">Total: %1s</string>
-    <string name="cart_proceed_to_checkout">Proceed to checkout</string>
     <string name="cart_confirm_purchase_btn">Confirm</string>
     <string name="cart_cancel_purchase_btn">Cancel</string>
     <string name="cart_dialog_title">Abandon Cart?</string>
-    <string name="cart_dialog_positive">Abandon</string>
-    <string name="cart_dialog_negative">Cancel</string>
+    <string name="cart_dialog_positive">Yes</string>
+    <string name="cart_dialog_negative">No</string>
 
     <!--Order Fragment-->
     <string name="order_item_id">Order Id: %1s</string>
     <string name="order_item_date">Date: %1s</string>
     <string name="order_item_products">Products: %1s</string>
     <string name="order_item_total_price">Total: %1s</string>
-    <string name="order_status_pendent">Pendent</string>
-    <string name="order_status_paid">Paid</string>
-    <string name="order_status_processed">Processed</string>
-    <string name="order_status_canceled">Canceled</string>
-    <string name="order_method_credit_card">Credit Card</string>
-    <string name="order_method_none">None</string>
 
-    <!--Connection Fragment-->
-    <string name="connection_lost">No Internet connection</string>
-    <string name="connection_re_establish">Connection re-establish</string>
-    <string name="connection_try_again_btn">Try Again</string>
-
-    <!-- Content Description -->
+    <!--Content Description-->
     <string name="content_desc_no_internet_connection_image">No Internet connection</string>
+
+    <string name="content_desc_menu_open">Open menu</string>
+    <string name="content_desc_menu_close">Close menu</string>
+    <string name="content_desc_menu_navigate_back">Go back</string>
+
     <string name="content_desc_add_to_favorites_btn">Add to favorites</string>
     <string name="content_desc_add_to_cart_btn">Add to cart</string>
     <string name="content_desc_buy_now">Buy now</string>
+
     <string name="content_desc_remove_from_favorites_btn">Remove product from favorites</string>
+
     <string name="content_desc_product_detail_name">Product picture</string>
     <string name="content_desc_item_cart_increase_btn">Increase product quantity</string>
     <string name="content_desc_item_cart_decrease_btn">Decrease product quantity</string>
+
+    <string name="content_desc_hide_password">Hide password</string>
+    <string name="content_desc_show_password">Show password</string>
+
     <string name="content_desc_update_profile_pic_btn">Update your profile picture</string>
     <string name="content_desc_get_picture_from_gallery_btn">Get a picture from your gallery</string>
     <string name="content_desc_get_picture_from_camera_btn">Take a picture</string>
-
-    <!-- Test -->
-    <string name="test_text" translatable="false">Shape resources consist mainly of ShapeAppearance styles. These are analogous to TextAppearance styles for type theming; in this case a “style” only concerned with shape attributes.
-    </string>
 
 </resources>

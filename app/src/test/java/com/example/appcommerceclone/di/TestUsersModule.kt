@@ -1,6 +1,5 @@
 package com.example.appcommerceclone.di
 
-import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.user.FakeUserAuthenticator
 import com.example.appcommerceclone.data.user.FakeUserProvider
 import com.example.appcommerceclone.data.user.UserAuthenticator
@@ -21,8 +20,6 @@ object TestUsersModule {
 
     @Singleton
     @Provides
-    fun provideUserAuthenticator(
-        usersProvider: UsersProvider,
-        dispatcherProvider: DispatcherProvider
-    ): UserAuthenticator = FakeUserAuthenticator(usersProvider, dispatcherProvider)
+    fun provideUserAuthenticator(usersProvider: UsersProvider): UserAuthenticator =
+        FakeUserAuthenticator(usersProvider)
 }

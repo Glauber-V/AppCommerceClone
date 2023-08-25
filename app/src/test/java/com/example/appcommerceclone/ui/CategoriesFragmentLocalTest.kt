@@ -10,10 +10,16 @@ import com.example.appcommerceclone.data.product.ProductsRepository
 import com.example.appcommerceclone.di.DispatcherModule
 import com.example.appcommerceclone.di.ProductsModule
 import com.example.appcommerceclone.ui.product.CategoriesFragment
-import com.example.appcommerceclone.util.*
-import com.example.appcommerceclone.util.Constants.CATEGORY_NAME_ELECTRONICS
-import com.example.appcommerceclone.viewmodels.ProductViewModel
-import com.google.common.truth.Truth.assertThat
+import com.example.appcommerceclone.ui.product.ProductCategories
+import com.example.appcommerceclone.ui.product.ProductViewModel
+import com.example.appcommerceclone.util.LoadingState
+import com.example.appcommerceclone.util.TestMainDispatcherRule
+import com.example.appcommerceclone.util.TestNavHostControllerRule
+import com.example.appcommerceclone.util.assertThatCurrentDestinationIsEqualTo
+import com.example.appcommerceclone.util.assertThatCurrentDestinationIsNotEqualTo
+import com.example.appcommerceclone.util.assertThatLoadingStateIsEqualTo
+import com.example.appcommerceclone.util.assertThatProductListHasCorrectSizeAndElements
+import com.example.appcommerceclone.util.launchFragmentInHiltContainer
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.HiltTestApplication
@@ -61,27 +67,22 @@ class CategoriesFragmentLocalTest {
     }
 
     @Test
-    fun selectCategory_navigateToProductsFragment_verifyTheCategoryOfTheProductMatchesSelectedCategory() = runTest {
-
-        productViewModel.updateProductsList()
+    fun launchCategoriesFragment_selectCategoryElectronics_navigateToProductsFragment_verifyProductListItemCategory() = runTest {
+        productViewModel.updateProductList()
         advanceUntilIdle()
 
-        var products = productViewModel.products.getOrAwaitValue()
-        assertThat(products).isNotEmpty()
-        assertThat(products).hasSize(4)
+        productViewModel.assertThatLoadingStateIsEqualTo(LoadingState.SUCCESS)
+        productViewModel.assertThatProductListHasCorrectSizeAndElements()
 
         launchFragmentInHiltContainer<CategoriesFragment>(navHostController = navHostController, fragmentFactory = factory) {
-
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.categories_fragment)
+            navHostController.assertThatCurrentDestinationIsEqualTo(R.id.categories_fragment)
 
             onView(withId(R.id.product_category_electronics)).perform(click())
 
-            assertThat(navHostController.currentDestination?.id).isEqualTo(R.id.products_fragment)
+            navHostController.assertThatCurrentDestinationIsNotEqualTo(R.id.categories_fragment)
+            navHostController.assertThatCurrentDestinationIsEqualTo(R.id.products_fragment)
 
-            products = productViewModel.products.getOrAwaitValue()
-            assertThat(products).isNotEmpty()
-            assertThat(products).hasSize(1)
-            assertThat(products.first().category).isEqualTo(CATEGORY_NAME_ELECTRONICS)
+            productViewModel.assertThatProductListHasCorrectSizeAndElements(ProductCategories.ELECTRONICS)
         }
     }
 }

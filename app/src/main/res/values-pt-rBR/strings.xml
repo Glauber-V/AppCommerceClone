@@ -2,78 +2,77 @@
 <resources>
 
     <!--Fragments Names-->
-    <string name="fragment_user_login_label">Logar</string>
-    <string name="fragment_user_profile_label">Conta</string>
-    <string name="fragment_user_profile_editable">Conta</string>
-    <string name="fragment_user_register_label">Registrar</string>
+    <string name="fragment_login_label">Logar</string>
+    <string name="fragment_profile_label">Conta</string>
+    <string name="fragment_register_label">Registrar</string>
     <string name="fragment_categories_label">Departamentos</string>
     <string name="fragment_orders_label">Minhas compras</string>
     <string name="fragment_cart_label">Carrinho</string>
     <string name="fragment_favorites_label">Meus favoritos</string>
-    <string name="fragment_connection_label">Status da conexão</string>
 
-    <!--Menu Options-->
-    <string name="menu_title_home">Início</string>
-    <string name="menu_title_profile">Conta</string>
+    <!--Drawer Menu Options-->
     <string name="menu_title_login">Entrar</string>
-    <string name="menu_title_my_orders">Minhas compras</string>
-    <string name="menu_title_categories">Departamentos</string>
-    <string name="menu_title_cart">Carrinho</string>
+    <string name="menu_title_profile">Conta</string>
     <string name="menu_title_favorites">Favoritos</string>
-    <string name="menu_title_search">Pesquisar</string>
+    <string name="menu_title_categories">Departamentos</string>
+    <string name="menu_title_my_orders">Minhas compras</string>
+    <string name="menu_title_cart">Carrinho</string>
     <string name="menu_title_logout">Sair</string>
-    <string name="menu_title_edit">Editar</string>
-    <string name="menu_drawer_title">Entrar</string>
-    <string name="menu_drawer_toggle_open">Abrir</string>
-    <string name="menu_drawer_toggle_close">Fechar</string>
 
-    <!--User Hints-->
-    <string name="user_hint_name_first_name">Nome</string>
-    <string name="user_hint_name_last_name">Sobrenome</string>
-    <string name="user_hint_username">Nome de usuário</string>
-    <string name="user_hint_password">Senha</string>
-    <string name="user_hint_phone">Telefone</string>
-    <string name="user_hint_address_city">Cidade</string>
-    <string name="user_hint_address_number">Número</string>
-    <string name="user_hint_address_street">Rua</string>
-    <string name="user_hint_address_zipcode">CEP</string>
+    <!--Place Holders-->
+    <string name="place_holder_text_no_favorites">Você não possui produtos salvos</string>
+    <string name="place_holder_text_no_orders">Você ainda não realizou nenhuma compra</string>
 
-    <!--User Errors-->
-    <string name="user_error_not_found">Usuário não existe</string>
-    <string name="user_error_account_already_exist">Conta já existe</string>
-    <string name="user_error_no_email">Preencha com seu email</string>
-    <string name="user_error_no_username">Preencha com seu nome de usuário</string>
-    <string name="user_error_no_password">Preencha com sua senha</string>
+    <!--Hints-->
+    <string name="hint_name_first_name">Nome</string>
+    <string name="hint_name_last_name">Sobrenome</string>
+    <string name="hint_username">Nome de usuário</string>
+    <string name="hint_password">Senha</string>
+    <string name="hint_phone">Telefone</string>
+    <string name="hint_address_city">Cidade</string>
+    <string name="hint_address_number">Número</string>
+    <string name="hint_address_street">Rua</string>
+    <string name="hint_address_zipcode">CEP</string>
 
-    <!--Profile Fragment-->
-    <string name="user_profile_welcome_message">Seja bem-vindo %1s</string>
-    <string name="user_profile_updated_message">Perfil atualizado</string>
-    <string name="user_profile_start_update_btn">Atualizar perfil</string>
-    <string name="user_profile_cancel_update_btn">Cancelar</string>
-    <string name="user_profile_save_update_btn">Salvar</string>
-    <string name="user_profile_logout_btn">Desconectar</string>
-    <string name="user_profile_dialog_title">Selecione uma foto da:</string>
-    <string name="user_profile_dialog_opt_gallery">Galeria</string>
-    <string name="user_profile_dialog_opt_camera">Câmera</string>
+    <!--Errors-->
+    <string name="error_no_connection">Sem conexão</string>
+    <string name="error_no_email">Preencha com seu email</string>
+    <string name="error_no_username">Preencha com seu nome de usuário</string>
+    <string name="error_no_password">Preencha com sua senha</string>
+    <string name="error_already_favorite">Esse produto ja foi adicionado ao seus favoritos</string>
+    <string name="error_no_color_selected">Escolha uma cor</string>
+    <string name="error_no_size_selected">Escolha um tamanho</string>
+    <string name="error_no_color_and_size_selected">Escolha uma cor e um tamanho</string>
 
     <!--Login Fragment-->
-    <string name="user_login_btn">Entrar</string>
-    <string name="user_no_account_warning">Não tem uma conta?</string>
-    <string name="user_login_successfully_message">Seja bem-vindo %1s</string>
+    <string name="login_btn">Entrar</string>
+    <string name="login_no_account">Não tem uma conta?</string>
+    <string name="login_success_message">Seja bem-vindo %1s</string>
+    <string name="login_failure_message">Usuário não existe</string>
 
     <!--Register Fragment-->
-    <string name="user_register_btn">Registrar</string>
-    <string name="user_register_successfully_message">Conta criada com successo - na verdade não</string>
+    <string name="register_btn">Registrar</string>
+    <string name="register_success_message">Conta criada com successo - na verdade não</string>
+
+    <!--Profile Fragment-->
+    <string name="profile_welcome_message">Seja bem-vindo %1s</string>
+    <string name="profile_updated_message">Perfil atualizado</string>
+    <string name="profile_start_update_btn">Atualizar perfil</string>
+    <string name="profile_cancel_update_btn">Cancelar</string>
+    <string name="profile_save_update_btn">Salvar</string>
+    <string name="profile_logout_btn">Desconectar</string>
+    <string name="profile_dialog_title">Selecione uma foto da:</string>
+    <string name="profile_dialog_option_gallery">Galeria</string>
+    <string name="profile_dialog_option_camera">Câmera</string>
 
     <!--Categories Fragment-->
-    <string name="category_all_products">Todos os produtos</string>
+    <string name="category_name_all_products">Todos os produtos</string>
     <string name="category_name_jewelery">Joias</string>
     <string name="category_name_electronics">Eletrônicos</string>
     <string name="category_name_mens_clothing">Masculino</string>
     <string name="category_name_women_s_clothing">Feminino</string>
 
     <!--Product Detail Fragment-->
-    <string name="product_detail_favorites_warning">Esse produto ja foi adicionado ao seus favoritos</string>
     <string name="product_detail_add_to_cart">Adicionar ao carrinho</string>
     <string name="product_detail_buy_now">Comprar agora</string>
     <string name="product_detail_thanks_for_purchase">Agradecemos sua compra</string>
@@ -82,45 +81,41 @@
     <string name="product_detail_chip_color_2">Cor 2</string>
     <string name="product_detail_chip_color_3">Cor 3</string>
     <string name="product_detail_available_sizes">Tamanho</string>
-    <string name="product_detail_chip_color_warning">Escolha uma cor</string>
-    <string name="product_detail_chip_size_warning">Escolha um tamanho</string>
-    <string name="product_detail_chip_color_and_size_warning">Escolha uma cor e um tamanho</string>
 
     <!--Cart Fragment-->
     <string name="cart_total_price">Total: %1s</string>
-    <string name="cart_proceed_to_checkout">Indo para o checkout</string>
     <string name="cart_confirm_purchase_btn">Confirmar</string>
     <string name="cart_cancel_purchase_btn">Cancelar</string>
     <string name="cart_dialog_title">Abandonar o carrinho?</string>
-    <string name="cart_dialog_positive">Abandonar</string>
-    <string name="cart_dialog_negative">Cancelar</string>
+    <string name="cart_dialog_positive">Sim</string>
+    <string name="cart_dialog_negative">Não</string>
 
     <!--Order Fragment-->
     <string name="order_item_id">Numeração: %1s</string>
     <string name="order_item_date">Data: %1s</string>
     <string name="order_item_products">Produtos: %1s</string>
     <string name="order_item_total_price">Total: %1s</string>
-    <string name="order_status_pendent">Pendente</string>
-    <string name="order_status_paid">Pago</string>
-    <string name="order_status_processed">Processado</string>
-    <string name="order_status_canceled">Cancelado</string>
-    <string name="order_method_credit_card">Cartão de Crédito</string>
-    <string name="order_method_none">Nenhum</string>
-
-    <!--Connection Fragment-->
-    <string name="connection_lost">Sem conexão</string>
-    <string name="connection_re_establish">Conexão restabelecida</string>
-    <string name="connection_try_again_btn">Tente novamente</string>
 
     <!-- Content Description -->
     <string name="content_desc_no_internet_connection_image">Sem conexão com a internet</string>
+
+    <string name="content_desc_menu_open">Abrir menu</string>
+    <string name="content_desc_menu_close">Fechar menu</string>
+    <string name="content_desc_menu_navigate_back">Voltar</string>
+
     <string name="content_desc_add_to_favorites_btn">Adicionar as favoritos</string>
     <string name="content_desc_add_to_cart_btn">Adicionar ao carrinho</string>
     <string name="content_desc_buy_now">Comprar agora</string>
+
     <string name="content_desc_remove_from_favorites_btn">Remove product from favorites</string>
+
     <string name="content_desc_product_detail_name">Foto do produto</string>
     <string name="content_desc_item_cart_increase_btn">Aumentar quantidate desse produto</string>
     <string name="content_desc_item_cart_decrease_btn">Diminuir a quantidate desse produto</string>
+
+    <string name="content_desc_hide_password">Esconder senha</string>
+    <string name="content_desc_show_password">Mostrar senha</string>
+
     <string name="content_desc_update_profile_pic_btn">Atualizar foto de perfil</string>
     <string name="content_desc_get_picture_from_gallery_btn">Pegar foto da galeria</string>
     <string name="content_desc_get_picture_from_camera_btn">Tirar foto</string>

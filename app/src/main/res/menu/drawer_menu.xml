@@ -2,33 +2,28 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/products_fragment"
-        android:icon="@drawable/ic_baseline_home_24"
-        android:title="@string/menu_title_home"/>
-
-    <item
         android:id="@+id/user_profile_fragment"
         android:icon="@drawable/ic_baseline_user_24"
-        android:title="@string/menu_title_profile"/>
+        android:title="@string/menu_title_profile" />
 
     <item
         android:id="@+id/favorites_fragment"
         android:icon="@drawable/ic_baseline_favorite_24"
-        android:title="@string/menu_title_favorites"/>
-
-    <item
-        android:id="@+id/orders_fragment"
-        android:icon="@drawable/ic_baseline_history_24"
-        android:title="@string/menu_title_my_orders"/>
+        android:title="@string/menu_title_favorites" />
 
     <item
         android:id="@+id/categories_fragment"
         android:icon="@drawable/ic_baseline_category_icon_24"
-        android:title="@string/menu_title_categories"/>
+        android:title="@string/menu_title_categories" />
+
+    <item
+        android:id="@+id/orders_fragment"
+        android:icon="@drawable/ic_baseline_history_24"
+        android:title="@string/menu_title_my_orders" />
 
     <item
         android:id="@+id/cart_fragment"
         android:icon="@drawable/ic_baseline_shopping_cart_24"
-        android:title="@string/menu_title_cart"/>
+        android:title="@string/menu_title_cart" />
 
 </menu>

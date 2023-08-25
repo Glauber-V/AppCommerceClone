@@ -1,0 +1,33 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="All View Models JVM Tests" type="GradleRunConfiguration" factoryName="Gradle">
+        <ExternalSystemSettings>
+            <option name="executionName" />
+            <option name="externalProjectPath" value="$PROJECT_DIR$" />
+            <option name="externalSystemIdString" value="GRADLE" />
+            <option name="scriptParameters" value="" />
+            <option name="taskDescriptions">
+                <list />
+            </option>
+            <option name="taskNames">
+                <list>
+                    <option value=":app:testDebugUnitTest" />
+                    <option value="--tests" />
+                    <option value="&quot;com.example.appcommerceclone.ui.CartViewModelTest&quot;" />
+                    <option value="--tests" />
+                    <option value="&quot;com.example.appcommerceclone.ui.FavoritesViewModelTest&quot;" />
+                    <option value="--tests" />
+                    <option value="&quot;com.example.appcommerceclone.ui.ProductViewModelTest&quot;" />
+                    <option value="--tests" />
+                    <option value="&quot;com.example.appcommerceclone.ui.UserViewModelTest&quot;" />
+                    <option value="--tests" />
+                    <option value="&quot;com.example.appcommerceclone.ui.UserOrdersViewModelTest&quot;" />
+                </list>
+            </option>
+            <option name="vmOptions" />
+        </ExternalSystemSettings>
+        <ExternalSystemDebugServerProcess>false</ExternalSystemDebugServerProcess>
+        <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+        <DebugAllEnabled>false</DebugAllEnabled>
+        <method v="2" />
+    </configuration>
+</component>

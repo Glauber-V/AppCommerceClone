@@ -1,6 +1,5 @@
 package com.example.appcommerceclone.di
 
-import com.example.appcommerceclone.data.dispatcher.DispatcherProvider
 import com.example.appcommerceclone.data.product.FakeProductsProvider
 import com.example.appcommerceclone.data.product.FakeProductsRepository
 import com.example.appcommerceclone.data.product.ProductsProvider
@@ -21,10 +20,6 @@ object TestProductsModule {
 
     @Singleton
     @Provides
-    fun provideProductsRepository(
-        productsProvider: ProductsProvider,
-        dispatcherProvider: DispatcherProvider
-    ): ProductsRepository {
-        return FakeProductsRepository(productsProvider, dispatcherProvider)
-    }
+    fun provideProductsRepository(productsProvider: ProductsProvider): ProductsRepository =
+        FakeProductsRepository(productsProvider)
 }

@@ -1,9 +1,9 @@
 package com.example.appcommerceclone.data.user
 
-import com.example.appcommerceclone.model.user.Address
-import com.example.appcommerceclone.model.user.Name
-import com.example.appcommerceclone.model.user.User
-import com.example.appcommerceclone.model.user.UserToken
+import com.example.appcommerceclone.data.user.model.User
+import com.example.appcommerceclone.data.user.model.UserToken
+import com.example.appcommerceclone.util.firstUser
+import com.example.appcommerceclone.util.secondUser
 
 class FakeUserProvider : UsersProvider {
 
@@ -25,35 +25,5 @@ class FakeUserProvider : UsersProvider {
 
     override suspend fun getUserById(id: Int): User {
         return users.firstOrNull { it.id == id } ?: User()
-    }
-
-
-    companion object {
-
-        val firstUser = User(
-            id = 1,
-            name = Name(
-                firstname = "User1FirstName",
-                lastname = "User1LastName"
-            ),
-            username = "User1",
-            password = "123",
-            email = "user1@hotmail.com",
-            phone = "55 99876-5432",
-            address = Address()
-        )
-
-        val secondUser = User(
-            id = 2,
-            name = Name(
-                firstname = "User2FirstName",
-                lastname = "User2LastName"
-            ),
-            username = "User2",
-            password = "321",
-            email = "user2@hotmail.com",
-            phone = "55 91234-5678",
-            address = Address()
-        )
     }
 }

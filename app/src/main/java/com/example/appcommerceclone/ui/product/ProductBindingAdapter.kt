@@ -5,8 +5,9 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.example.appcommerceclone.R
-import com.example.appcommerceclone.model.order.OrderedProduct
-import com.example.appcommerceclone.model.product.Product
+import com.example.appcommerceclone.data.product.model.OrderedProduct
+import com.example.appcommerceclone.data.product.model.Product
+import com.example.appcommerceclone.util.formatPrice
 
 @BindingAdapter("setProductImageFromUrl")
 fun ImageView.setProductImageFromUrl(product: Product) {
@@ -20,7 +21,7 @@ fun ImageView.setProductImageFromUrl(product: Product) {
 
 @BindingAdapter("setProductPrice")
 fun TextView.setProductPrice(product: Product) {
-    text = product.getFormattedPrice()
+    text = product.price.formatPrice()
 }
 
 @BindingAdapter("setProductQuantity")
@@ -30,5 +31,5 @@ fun TextView.setProductQuantity(orderedProduct: OrderedProduct) {
 
 @BindingAdapter("setOrderedProductPrice")
 fun TextView.setOrderedProductPrice(orderedProduct: OrderedProduct) {
-    text = orderedProduct.getFormattedPrice()
+    text = orderedProduct.formatPrice()
 }

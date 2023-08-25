@@ -10,12 +10,9 @@ import androidx.navigation.NavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.example.appcommerceclone.NavigationGraphDirections
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.databinding.ActivityMainBinding
-import com.example.appcommerceclone.util.ViewExt.isLocked
-import com.example.appcommerceclone.util.ViewExt.isNavigationUpEnabled
-import com.example.appcommerceclone.viewmodels.ConnectivityViewModel
+import com.example.appcommerceclone.ui.connection.ConnectivityViewModel
 import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,12 +27,12 @@ class MainActivity : AppCompatActivity() {
 
     private val connectivityViewModel: ConnectivityViewModel by viewModels()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        setSupportActionBar(binding.activityMainTopBar.actionBar)
 
         navHostFragment = binding.navHostFragment.getFragment()
         navController = navHostFragment.navController
@@ -45,44 +42,46 @@ class MainActivity : AppCompatActivity() {
 
         val onBackPressedCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
-                if (drawerLayout.isDrawerOpen(Gravity.LEFT)) drawerLayout.closeDrawer(Gravity.LEFT)
-                else finish()
+                closeDrawerIfOpen()
             }
         }
-        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+        onBackPressedDispatcher.addCallback(this@MainActivity, onBackPressedCallback)
 
         setupActionBarWithNavController(navController, drawerLayout)
         navigationView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
                 R.id.products_fragment -> {
-                    binding.drawerLayout.isLocked(false)
+                    unlockDrawer()
                     onBackPressedCallback.isEnabled = true
                 }
-                R.id.user_login_fragment -> {
-                    supportActionBar?.isNavigationUpEnabled(false)
-                    binding.drawerLayout.isLocked(true)
-                    onBackPressedCallback.isEnabled = false
-                }
-                R.id.connection_fragment -> {
-                    supportActionBar?.isNavigationUpEnabled(false)
-                    binding.drawerLayout.isLocked(true)
-                    onBackPressedCallback.isEnabled = false
-                }
+
                 else -> {
-                    supportActionBar?.isNavigationUpEnabled(true)
-                    binding.drawerLayout.isLocked(true)
+                    lockDrawer()
                     onBackPressedCallback.isEnabled = false
+                    closeDrawerIfOpen()
                 }
             }
         }
 
         connectivityViewModel.isConnected.observe(this) { hasConnection ->
-            if (!hasConnection) navController.navigate(NavigationGraphDirections.actionGlobalConnectionFragment())
+            binding.activityMainTopBar.hasConnection = hasConnection
         }
     }
 
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(drawerLayout)
+    }
+
+    private fun closeDrawerIfOpen() {
+        if (drawerLayout.isDrawerOpen(Gravity.LEFT)) drawerLayout.closeDrawer(Gravity.LEFT)
+    }
+
+    private fun lockDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+    }
+
+    private fun unlockDrawer() {
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
     }
 }
