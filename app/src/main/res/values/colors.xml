@@ -2,21 +2,10 @@
 <resources>
 
     <color name="white_100">#ffffff</color>
-    <color name="white_090">#E6FFFFFF</color>
-    <color name="white_080">#CCFFFFFF</color>
-    <color name="white_060">#99FFFFFF</color>
-    <color name="white_030">#4DFFFFFF</color>
-    <color name="white_000">#00FFFFFF</color>
 
-    <color name="black_900_100">#000000</color>
-    <color name="black_900_090">#E6000000</color>
     <color name="black_900_080">#CC000000</color>
-    <color name="black_900_060">#99000000</color>
     <color name="black_900_040">#66000000</color>
-    <color name="black_900_030">#4D000000</color>
     <color name="black_900_020">#33000000</color>
-    <color name="black_900_010">#1A000000</color>
-    <color name="black_900_005">#0D000000</color>
 
     <color name="primaryColor">#c62828</color>
     <color name="primaryLightColor">#D64D42</color>
@@ -28,13 +17,12 @@
     <color name="secondaryDarkColor">#E6E6E6</color>
     <color name="onSecondaryColor">#000000</color>
 
-    <color name="onBackgroundColor">#ffffff</color>
     <color name="onSurfaceColor">#000000</color>
     <color name="onErrorColor">#c62828</color>
 
     <color name="shimmer_color">#C8C8C8</color>
 
-    <color name="divider_color">@color/black_900_030</color>
+    <color name="divider_color">@color/black_900_040</color>
 
     <color name="chip_color_1">#FFC107</color>
     <color name="chip_color_2">#03A9F4</color>
@@ -43,9 +31,9 @@
     <color name="chip_unchecked_stroke_color">@color/black_900_020</color>
     <color name="chip_checked_stroke_color">@color/black_900_080</color>
 
-    <color name="stroke_color_dark">@color/black_900_030</color>
+    <color name="stroke_color_dark">@color/black_900_040</color>
 
-    <color name="progress_track_color">@color/black_900_005</color>
+    <color name="progress_track_color">@color/black_900_020</color>
     <color name="progress_indicator_color">@color/primaryColor</color>
 
     <color name="icon_color_black">#2D2D2D</color>

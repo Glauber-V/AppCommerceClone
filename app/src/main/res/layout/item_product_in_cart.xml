@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/margin_size_small"
-        android:layout_marginEnd="@dimen/margin_size_extra_large"
+        android:layout_marginEnd="@dimen/margin_size_large"
         app:shapeAppearance="@style/AppCommerce.ShapeAppearance.CardView.RightRoundedCorners"
         app:strokeColor="@color/stroke_color_dark"
         app:strokeWidth="@dimen/stroke_size_small">
@@ -37,8 +37,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearance="@style/AppCommerce.ShapeAppearance.ImageView.FullRounded"
-                tools:src="@drawable/banner_men_s_clothing" />
+                app:shapeAppearance="@style/AppCommerce.ShapeAppearance.ImageView.FullRounded" />
 
             <TextView
                 android:id="@+id/item_product_in_cart_name"

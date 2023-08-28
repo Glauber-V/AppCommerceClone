@@ -15,6 +15,7 @@ import com.example.appcommerceclone.ui.order.UserOrdersViewModel
 import com.example.appcommerceclone.ui.user.UserViewModel
 import com.example.appcommerceclone.util.TestMainDispatcherRule
 import com.example.appcommerceclone.util.TestNavHostControllerRule
+import com.example.appcommerceclone.util.assertThatCartPlaceholderIsInSyncWithListState
 import com.example.appcommerceclone.util.assertThatCurrentDestinationIsEqualTo
 import com.example.appcommerceclone.util.assertThatCurrentDestinationIsNotEqualTo
 import com.example.appcommerceclone.util.atPosition
@@ -82,6 +83,16 @@ class CartFragmentLocalTest {
     }
 
     @Test
+    fun launchCartFragment_emptyCart_placeHolderTextIsVisible() {
+        val cartProducts = cartViewModel.cartProducts.getOrAwaitValue()
+        assertThat(cartProducts).isEmpty()
+
+        launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            cartViewModel.assertThatCartPlaceholderIsInSyncWithListState()
+        }
+    }
+
+    @Test
     fun launchCartFragment_clickIncreaseQuantityBtn_verifyCartWasUpdatedCorrectly() {
         cartViewModel.addToCart(productJewelry)
 
@@ -90,6 +101,8 @@ class CartFragmentLocalTest {
         assertThat(cartProducts).hasSize(1)
 
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            cartViewModel.assertThatCartPlaceholderIsInSyncWithListState()
+
             val orderedProduct = cartProducts.first()
             assertThat(orderedProduct.quantity).isEqualTo(1)
 
@@ -112,6 +125,8 @@ class CartFragmentLocalTest {
         assertThat(cartProducts).hasSize(1)
 
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            cartViewModel.assertThatCartPlaceholderIsInSyncWithListState()
+
             val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
             assertThat(orderedProduct.quantity).isEqualTo(1)
 
@@ -142,6 +157,8 @@ class CartFragmentLocalTest {
         assertThat(cartProducts).hasSize(1)
 
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            cartViewModel.assertThatCartPlaceholderIsInSyncWithListState()
+
             val orderedProduct = cartViewModel.cartProducts.getOrAwaitValue().first()
             assertThat(orderedProduct.quantity).isEqualTo(1)
 
@@ -180,6 +197,8 @@ class CartFragmentLocalTest {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
             navHostController.assertThatCurrentDestinationIsEqualTo(R.id.cart_fragment)
 
+            cartViewModel.assertThatCartPlaceholderIsInSyncWithListState()
+
             onView(withId(R.id.cart_confirm_purchase_btn)).perform(click())
 
             navHostController.assertThatCurrentDestinationIsNotEqualTo(R.id.cart_fragment)
@@ -201,6 +220,8 @@ class CartFragmentLocalTest {
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
             navHostController.assertThatCurrentDestinationIsEqualTo(R.id.cart_fragment)
 
+            cartViewModel.assertThatCartPlaceholderIsInSyncWithListState()
+
             onView(withId(R.id.cart_confirm_purchase_btn)).perform(click())
 
             navHostController.assertThatCurrentDestinationIsNotEqualTo(R.id.cart_fragment)
@@ -217,6 +238,8 @@ class CartFragmentLocalTest {
         assertThat(cartProducts).hasSize(1)
 
         launchFragmentInHiltContainer<CartFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            cartViewModel.assertThatCartPlaceholderIsInSyncWithListState()
+
             onView(withId(R.id.cart_cancel_purchase_btn)).perform(click())
 
             val dialog = ShadowDialog.getLatestDialog()

@@ -11,16 +11,15 @@
     <string name="fragment_favorites_label">Meus favoritos</string>
 
     <!--Drawer Menu Options-->
-    <string name="menu_title_login">Entrar</string>
     <string name="menu_title_profile">Conta</string>
     <string name="menu_title_favorites">Favoritos</string>
     <string name="menu_title_categories">Departamentos</string>
     <string name="menu_title_my_orders">Minhas compras</string>
     <string name="menu_title_cart">Carrinho</string>
-    <string name="menu_title_logout">Sair</string>
 
     <!--Place Holders-->
     <string name="place_holder_text_no_favorites">Você não possui produtos salvos</string>
+    <string name="place_holder_text_no_products_in_cart">Seu carrinho está vazinho</string>
     <string name="place_holder_text_no_orders">Você ainda não realizou nenhuma compra</string>
 
     <!--Hints-->
@@ -55,7 +54,6 @@
     <string name="register_success_message">Conta criada com successo - na verdade não</string>
 
     <!--Profile Fragment-->
-    <string name="profile_welcome_message">Seja bem-vindo %1s</string>
     <string name="profile_updated_message">Perfil atualizado</string>
     <string name="profile_start_update_btn">Atualizar perfil</string>
     <string name="profile_cancel_update_btn">Cancelar</string>
@@ -73,13 +71,9 @@
     <string name="category_name_women_s_clothing">Feminino</string>
 
     <!--Product Detail Fragment-->
-    <string name="product_detail_add_to_cart">Adicionar ao carrinho</string>
     <string name="product_detail_buy_now">Comprar agora</string>
     <string name="product_detail_thanks_for_purchase">Agradecemos sua compra</string>
     <string name="product_detail_available_colors">Escolha a cor</string>
-    <string name="product_detail_chip_color_1">Cor 1</string>
-    <string name="product_detail_chip_color_2">Cor 2</string>
-    <string name="product_detail_chip_color_3">Cor 3</string>
     <string name="product_detail_available_sizes">Tamanho</string>
 
     <!--Cart Fragment-->
@@ -97,12 +91,6 @@
     <string name="order_item_total_price">Total: %1s</string>
 
     <!-- Content Description -->
-    <string name="content_desc_no_internet_connection_image">Sem conexão com a internet</string>
-
-    <string name="content_desc_menu_open">Abrir menu</string>
-    <string name="content_desc_menu_close">Fechar menu</string>
-    <string name="content_desc_menu_navigate_back">Voltar</string>
-
     <string name="content_desc_add_to_favorites_btn">Adicionar as favoritos</string>
     <string name="content_desc_add_to_cart_btn">Adicionar ao carrinho</string>
     <string name="content_desc_buy_now">Comprar agora</string>
@@ -112,9 +100,6 @@
     <string name="content_desc_product_detail_name">Foto do produto</string>
     <string name="content_desc_item_cart_increase_btn">Aumentar quantidate desse produto</string>
     <string name="content_desc_item_cart_decrease_btn">Diminuir a quantidate desse produto</string>
-
-    <string name="content_desc_hide_password">Esconder senha</string>
-    <string name="content_desc_show_password">Mostrar senha</string>
 
     <string name="content_desc_update_profile_pic_btn">Atualizar foto de perfil</string>
     <string name="content_desc_get_picture_from_gallery_btn">Pegar foto da galeria</string>

@@ -34,10 +34,17 @@ class OrdersFragment(private val userOrdersViewModel: UserOrdersViewModel) : Fra
         super.onViewCreated(view, savedInstanceState)
 
         ordersAdapter = OrdersAdapter()
-        binding.ordersRecyclerview.adapter = ordersAdapter
+        binding.ordersRecyclerView.adapter = ordersAdapter
 
         userOrdersViewModel.orders.observe(viewLifecycleOwner) { _orders ->
-            ordersAdapter.submitList(_orders)
+            if (_orders.isEmpty()) {
+                binding.ordersRecyclerView.visibility = View.GONE
+                binding.ordersEmptyListPlaceholder.visibility = View.VISIBLE
+            } else {
+                binding.ordersRecyclerView.visibility = View.VISIBLE
+                binding.ordersEmptyListPlaceholder.visibility = View.GONE
+                ordersAdapter.submitList(_orders)
+            }
         }
     }
 

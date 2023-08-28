@@ -57,7 +57,16 @@ class CartFragment(
 
         cartViewModel.cartProducts.observe(viewLifecycleOwner) { _cartProducts ->
             cartProducts = _cartProducts
-            cartAdapter.submitList(cartProducts)
+
+            if (cartProducts.isEmpty()) {
+                binding.cartRecyclerView.visibility = View.GONE
+                binding.cartEmptyListPlaceholder.visibility = View.VISIBLE
+            } else {
+                binding.cartRecyclerView.visibility = View.VISIBLE
+                binding.cartEmptyListPlaceholder.visibility = View.GONE
+                cartAdapter.submitList(cartProducts)
+            }
+
             binding.cartCancelPurchaseBtn.isEnabled = cartProducts.isNotEmpty()
             binding.cartConfirmPurchaseBtn.isEnabled = cartProducts.isNotEmpty()
         }

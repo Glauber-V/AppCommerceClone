@@ -6,19 +6,34 @@
     android:layout_height="match_parent"
     tools:context=".ui.cart.CartFragment">
 
+    <TextView
+        android:id="@+id/cart_empty_list_placeholder"
+        style="@style/AppCommerce.TextAppearance.Headline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/place_holder_text_no_products_in_cart"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cart_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toTopOf="@+id/linearLayoutCompat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="2"
-        tools:listitem="@layout/item_product_in_cart" />
+        tools:listitem="@layout/item_product_in_cart"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/linearLayoutCompat"

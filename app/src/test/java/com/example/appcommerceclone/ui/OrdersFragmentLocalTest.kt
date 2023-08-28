@@ -12,6 +12,7 @@ import com.example.appcommerceclone.ui.order.UserOrdersViewModel
 import com.example.appcommerceclone.util.TestNavHostControllerRule
 import com.example.appcommerceclone.util.assertThatCurrentDestinationIsEqualTo
 import com.example.appcommerceclone.util.assertThatCurrentDestinationIsNotEqualTo
+import com.example.appcommerceclone.util.assertThatOrdersPlaceholderIsInSyncWithListState
 import com.example.appcommerceclone.util.atPosition
 import com.example.appcommerceclone.util.firstUser
 import com.example.appcommerceclone.util.formatTotalPrice
@@ -55,6 +56,16 @@ class OrdersFragmentLocalTest {
     }
 
     @Test
+    fun launchOrdersFragment_noOrders_placeHolderTextIsVisible() {
+        val orders = userOrdersViewModel.orders.getOrAwaitValue()
+        assertThat(orders).isEmpty()
+
+        launchFragmentInHiltContainer<OrdersFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            userOrdersViewModel.assertThatOrdersPlaceholderIsInSyncWithListState()
+        }
+    }
+
+    @Test
     fun launchOrdersFragment_addUserOrder_verifyOrderList_returnToProductsFragment() {
         var orders = userOrdersViewModel.orders.getOrAwaitValue()
         assertThat(orders).isEmpty()
@@ -72,7 +83,9 @@ class OrdersFragmentLocalTest {
         launchFragmentInHiltContainer<OrdersFragment>(navHostController = navHostController, fragmentFactory = factory) {
             navHostController.assertThatCurrentDestinationIsEqualTo(R.id.orders_fragment)
 
-            onView(withId(R.id.orders_recyclerview))
+            userOrdersViewModel.assertThatOrdersPlaceholderIsInSyncWithListState()
+
+            onView(withId(R.id.orders_recycler_view))
                 .check(matches(atPosition(0, hasDescendant(withText(getString(R.string.order_item_id, order.id))))))
                 .check(matches(atPosition(0, hasDescendant(withText(getString(R.string.order_item_date, order.date))))))
                 .check(matches(atPosition(0, hasDescendant(withText(getString(R.string.order_item_total_price, order.formatTotalPrice()))))))

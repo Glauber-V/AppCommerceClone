@@ -26,22 +26,10 @@
         <item name="cornerSize">50%</item>
     </style>
 
-    <style name="AppCommerce.ShapeAppearance.ImageView.UpRoundedCorners" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerFamilyTopLeft">@dimen/corner_size_small</item>
-        <item name="cornerFamilyTopRight">@dimen/corner_size_small</item>
-    </style>
-
     <!--Button-->
     <style name="AppCommerce.ShapeAppearance.Button.FullRounded" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">@dimen/corner_size_large</item>
-    </style>
-
-    <!--Material Alert Dialog-->
-    <style name="AppCommerce.ShapeAppearance.Dialog.Rounded" parent="">
-        <item name="cornerFamily">rounded</item>
-        <item name="cornerSize">@dimen/corner_size_small</item>
     </style>
 
 </resources>

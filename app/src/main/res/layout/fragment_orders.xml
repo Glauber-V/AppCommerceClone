@@ -5,18 +5,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <TextView
+        android:id="@+id/orders_empty_list_placeholder"
+        style="@style/AppCommerce.TextAppearance.Headline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/place_holder_text_no_orders"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/orders_recyclerview"
+        android:id="@+id/orders_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:orientation="vertical"
+        android:visibility="gone"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:itemCount="6"
-        tools:listitem="@layout/item_order" />
+        tools:listitem="@layout/item_order"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

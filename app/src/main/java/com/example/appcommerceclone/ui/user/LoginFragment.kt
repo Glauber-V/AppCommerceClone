@@ -60,7 +60,7 @@ class LoginFragment(private val userViewModel: UserViewModel) : Fragment(), AppB
 
                 LoadingState.SUCCESS -> {
                     hideProgressBar()
-                    showSnackbar(binding.root, getString(R.string.profile_welcome_message, user!!.username))
+                    showSnackbar(binding.root, getString(R.string.login_success_message, user!!.username))
                     findNavController().popBackStack()
                 }
             }

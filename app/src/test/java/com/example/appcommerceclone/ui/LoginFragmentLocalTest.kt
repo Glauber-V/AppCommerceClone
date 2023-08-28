@@ -151,7 +151,7 @@ class LoginFragmentLocalTest {
             assertThat(user?.username).isEqualTo(firstUser.username)
             assertThat(user?.password).isEqualTo(firstUser.password)
 
-            onView(withText(getString(R.string.profile_welcome_message, user!!.username)))
+            onView(withText(getString(R.string.login_success_message, user!!.username)))
                 .check(matches(isDisplayed()))
 
             navHostController.assertThatCurrentDestinationIsNotEqualTo(R.id.login_fragment)

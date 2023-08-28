@@ -1,6 +1,5 @@
 package com.example.appcommerceclone.ui
 
-
 import androidx.fragment.app.FragmentFactory
 import androidx.navigation.testing.TestNavHostController
 import androidx.test.espresso.Espresso.onView
@@ -16,6 +15,7 @@ import com.example.appcommerceclone.ui.favorites.FavoritesFragment
 import com.example.appcommerceclone.ui.favorites.FavoritesViewModel
 import com.example.appcommerceclone.ui.user.UserViewModel
 import com.example.appcommerceclone.util.TestNavHostControllerRule
+import com.example.appcommerceclone.util.assertThatFavoritesPlaceholderIsInSyncWithListState
 import com.example.appcommerceclone.util.atPosition
 import com.example.appcommerceclone.util.formatPrice
 import com.example.appcommerceclone.util.getOrAwaitValue
@@ -67,6 +67,16 @@ class FavoritesFragmentLocalTest {
     }
 
     @Test
+    fun launchFavoritesFragments_noFavorites_placeHolderTextIsVisible() {
+        val favorites = favoritesViewModel.favorites.getOrAwaitValue()
+        assertThat(favorites).isEmpty()
+
+        launchFragmentInHiltContainer<FavoritesFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            favoritesViewModel.assertThatFavoritesPlaceholderIsInSyncWithListState()
+        }
+    }
+
+    @Test
     fun launchFavoritesFragment_addProductJewelery_verifyProductIsVisible() {
         favoritesViewModel.addToFavorites(productJewelry)
 
@@ -76,6 +86,8 @@ class FavoritesFragmentLocalTest {
         assertThat(favorites).contains(productJewelry)
 
         launchFragmentInHiltContainer<FavoritesFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            favoritesViewModel.assertThatFavoritesPlaceholderIsInSyncWithListState()
+
             val favoriteProduct = favorites.first()
             onView(withId(R.id.favorites_recycler_view))
                 .check(matches(atPosition(0, hasDescendant(withText(favoriteProduct.name)))))
@@ -92,6 +104,8 @@ class FavoritesFragmentLocalTest {
         assertThat(favorites).contains(productJewelry)
 
         launchFragmentInHiltContainer<FavoritesFragment>(navHostController = navHostController, fragmentFactory = factory) {
+            favoritesViewModel.assertThatFavoritesPlaceholderIsInSyncWithListState()
+
             onView(withId(R.id.item_product_favorite_remove_btn)).perform(click())
 
             favorites = favoritesViewModel.favorites.getOrAwaitValue()

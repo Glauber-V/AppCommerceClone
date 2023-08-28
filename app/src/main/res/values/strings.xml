@@ -15,16 +15,15 @@
     <string name="fragment_picture_chooser_dialog_label" translatable="false">Picture Chooser Dialog</string>
 
     <!--Drawer Menu Options-->
-    <string name="menu_title_login">Login</string>
     <string name="menu_title_profile">Profile</string>
     <string name="menu_title_favorites">Favorites</string>
     <string name="menu_title_categories">Categories</string>
     <string name="menu_title_my_orders">My Orders</string>
     <string name="menu_title_cart">Cart</string>
-    <string name="menu_title_logout">Logout</string>
 
     <!--Place Holders-->
     <string name="place_holder_text_no_favorites">You have no favorites</string>
+    <string name="place_holder_text_no_products_in_cart">Your cart is empty</string>
     <string name="place_holder_text_no_orders">You have no purchases</string>
 
     <!--Hints-->
@@ -60,7 +59,6 @@
     <string name="register_success_message">Account successfully created - not actually</string>
 
     <!--Profile Fragment-->
-    <string name="profile_welcome_message">Welcome %1s</string>
     <string name="profile_updated_message">Profile updated</string>
     <string name="profile_start_update_btn">Update profile</string>
     <string name="profile_cancel_update_btn">Cancel</string>
@@ -78,13 +76,9 @@
     <string name="category_name_women_s_clothing">Women\'s clothing</string>
 
     <!--Product Detail Fragment-->
-    <string name="product_detail_add_to_cart">Add to cart</string>
     <string name="product_detail_buy_now">Buy now</string>
     <string name="product_detail_thanks_for_purchase">Thanks for your purchase</string>
     <string name="product_detail_available_colors">Select color</string>
-    <string name="product_detail_chip_color_1">Color 1</string>
-    <string name="product_detail_chip_color_2">Color 2</string>
-    <string name="product_detail_chip_color_3">Color 3</string>
     <string name="product_detail_available_sizes">Size</string>
     <string name="product_detail_chip_size_1" translatable="false">P</string>
     <string name="product_detail_chip_size_2" translatable="false">M</string>
@@ -106,12 +100,6 @@
     <string name="order_item_total_price">Total: %1s</string>
 
     <!--Content Description-->
-    <string name="content_desc_no_internet_connection_image">No Internet connection</string>
-
-    <string name="content_desc_menu_open">Open menu</string>
-    <string name="content_desc_menu_close">Close menu</string>
-    <string name="content_desc_menu_navigate_back">Go back</string>
-
     <string name="content_desc_add_to_favorites_btn">Add to favorites</string>
     <string name="content_desc_add_to_cart_btn">Add to cart</string>
     <string name="content_desc_buy_now">Buy now</string>
@@ -121,9 +109,6 @@
     <string name="content_desc_product_detail_name">Product picture</string>
     <string name="content_desc_item_cart_increase_btn">Increase product quantity</string>
     <string name="content_desc_item_cart_decrease_btn">Decrease product quantity</string>
-
-    <string name="content_desc_hide_password">Hide password</string>
-    <string name="content_desc_show_password">Show password</string>
 
     <string name="content_desc_update_profile_pic_btn">Update your profile picture</string>
     <string name="content_desc_get_picture_from_gallery_btn">Get a picture from your gallery</string>

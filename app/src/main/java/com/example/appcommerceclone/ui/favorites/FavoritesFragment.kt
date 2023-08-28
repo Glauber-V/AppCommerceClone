@@ -38,7 +38,14 @@ class FavoritesFragment(private val favoritesViewModel: FavoritesViewModel) : Fr
         binding.favoritesRecyclerView.adapter = favoritesAdapter
 
         favoritesViewModel.favorites.observe(viewLifecycleOwner) { _favorites ->
-            favoritesAdapter.submitList(_favorites)
+            if (_favorites.isEmpty()) {
+                binding.favoritesRecyclerView.visibility = View.GONE
+                binding.favoritesEmptyListPlaceholder.visibility = View.VISIBLE
+            } else {
+                binding.favoritesRecyclerView.visibility = View.VISIBLE
+                binding.favoritesEmptyListPlaceholder.visibility = View.GONE
+                favoritesAdapter.submitList(_favorites)
+            }
         }
     }
 
