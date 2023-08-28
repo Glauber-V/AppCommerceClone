@@ -20,12 +20,13 @@ const val THEME_EXTRAS_BUNDLE_KEY =
 /**
  * launchFragmentInContainer from the androidx.fragment:fragment-testing library
  * is NOT possible to use right now as it uses a hardcoded Activity under the hood
- * which is not annotated with @AndroidEntryPoint.
+ * (i.e. EmptyFragmentActivity) which is not annotated with @AndroidEntryPoint.
  *
  * As a workaround, use this function that is equivalent. It requires you to add
  * [HiltTestActivity] in the debug folder and include it in the debug AndroidManifest.xml file
- * as can be found in this project. Also this version makes using findNavController()
- * safer if a navHostController is passed as parameter
+ * as can be found in this project.
+ *
+ * This version also supports [NavHostController] and [FragmentFactory]
  */
 inline fun <reified T : Fragment> launchFragmentInHiltContainer(
     fragmentArgs: Bundle? = null,
@@ -34,7 +35,6 @@ inline fun <reified T : Fragment> launchFragmentInHiltContainer(
     fragmentFactory: FragmentFactory? = null,
     crossinline action: T.() -> Unit = {}
 ) {
-
     val startActivityIntent = Intent.makeMainActivity(
         ComponentName(
             ApplicationProvider.getApplicationContext(),
@@ -43,7 +43,6 @@ inline fun <reified T : Fragment> launchFragmentInHiltContainer(
     ).putExtra(THEME_EXTRAS_BUNDLE_KEY, themeResId)
 
     ActivityScenario.launch<HiltTestActivity>(startActivityIntent).onActivity { activity ->
-
         fragmentFactory?.let {
             activity.supportFragmentManager.fragmentFactory = it
         }
