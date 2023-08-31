@@ -34,7 +34,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="ContentDescription" />
+                tools:background="@color/shimmer_color"
+                tools:ignore="ContentDescription"
+                tools:layout_width="match_parent" />
 
             <TextView
                 android:id="@+id/item_product_name"

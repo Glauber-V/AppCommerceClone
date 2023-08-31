@@ -39,20 +39,22 @@ class ProductsFragment(private val productViewModel: ProductViewModel) : Fragmen
             when (loadingState) {
                 LoadingState.NOT_STARTED -> productViewModel.updateProductList()
                 LoadingState.LOADING -> startShimmer()
-                LoadingState.FAILURE -> stopShimmer()
-                LoadingState.SUCCESS -> {
-                    productsAdapter.submitList(products)
-                    stopShimmer()
-                }
+                else -> stopShimmer()
             }
         }
 
-        productViewModel.products.observe(viewLifecycleOwner) { products = it }
+        productViewModel.products.observe(viewLifecycleOwner) { _products ->
+            products = _products
+            if (products.isNotEmpty()) productsAdapter.submitList(products)
+        }
     }
 
     override fun onRefresh() {
-        if (loadingState == LoadingState.FAILURE) productViewModel.updateProductList()
-        productViewModel.filterProductList(ProductCategories.NONE)
+        when (loadingState) {
+            LoadingState.FAILURE -> productViewModel.updateProductList()
+            LoadingState.SUCCESS -> productViewModel.filterProductList(ProductCategories.NONE)
+            else -> {}
+        }
     }
 
     override fun onProductClicked(product: Product) {

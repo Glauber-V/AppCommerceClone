@@ -2,6 +2,7 @@ package com.example.appcommerceclone.ui.main
 
 import android.os.Bundle
 import android.view.Gravity
+import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -20,10 +21,10 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var navigationView: NavigationView
     private lateinit var navHostFragment: MainNavHostFragment
     private lateinit var navController: NavController
-    private lateinit var navigationView: NavigationView
-    private lateinit var drawerLayout: DrawerLayout
 
     private val connectivityViewModel: ConnectivityViewModel by viewModels()
 
@@ -31,14 +32,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        setSupportActionBar(binding.activityMainTopBar.actionBar)
-
+        drawerLayout = binding.drawerLayout
+        navigationView = binding.navView
         navHostFragment = binding.navHostFragment.getFragment()
         navController = navHostFragment.navController
 
-        drawerLayout = binding.drawerLayout
-        navigationView = binding.navView
+        setContentView(binding.root)
+        setSupportActionBar(binding.actionBar)
+        setupActionBarWithNavController(navController, drawerLayout)
+        navigationView.setupWithNavController(navController)
 
         val onBackPressedCallback = object : OnBackPressedCallback(false) {
             override fun handleOnBackPressed() {
@@ -46,26 +48,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
         onBackPressedDispatcher.addCallback(this@MainActivity, onBackPressedCallback)
-
-        setupActionBarWithNavController(navController, drawerLayout)
-        navigationView.setupWithNavController(navController)
         navController.addOnDestinationChangedListener { _, destination, _ ->
-            when (destination.id) {
-                R.id.products_fragment -> {
-                    unlockDrawer()
-                    onBackPressedCallback.isEnabled = true
-                }
-
-                else -> {
-                    lockDrawer()
-                    onBackPressedCallback.isEnabled = false
-                    closeDrawerIfOpen()
-                }
+            if (destination.id == R.id.products_fragment) {
+                unlockDrawer()
+                onBackPressedCallback.isEnabled = true
+            } else {
+                closeDrawerIfOpen()
+                lockDrawer()
+                onBackPressedCallback.isEnabled = false
             }
         }
 
         connectivityViewModel.isConnected.observe(this) { hasConnection ->
-            binding.activityMainTopBar.hasConnection = hasConnection
+            binding.actionBarMessage.visibility = if (!hasConnection) View.VISIBLE else View.GONE
         }
     }
 
