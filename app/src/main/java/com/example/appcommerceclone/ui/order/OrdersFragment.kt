@@ -6,14 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.ui.AppBarConfiguration
 import com.example.appcommerceclone.databinding.FragmentOrdersBinding
-import com.example.appcommerceclone.util.navigateToProductsFragment
 import com.example.appcommerceclone.util.onBackPressedReturnToProductsFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class OrdersFragment(private val userOrdersViewModel: UserOrdersViewModel) : Fragment(), AppBarConfiguration.OnNavigateUpListener {
+class OrdersFragment(private val userOrdersViewModel: UserOrdersViewModel) : Fragment() {
 
     private lateinit var binding: FragmentOrdersBinding
 
@@ -46,9 +44,5 @@ class OrdersFragment(private val userOrdersViewModel: UserOrdersViewModel) : Fra
                 ordersAdapter.submitList(_orders)
             }
         }
-    }
-
-    override fun onNavigateUp(): Boolean {
-        return navigateToProductsFragment()
     }
 }

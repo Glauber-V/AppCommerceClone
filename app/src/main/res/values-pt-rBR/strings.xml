@@ -11,11 +11,13 @@
     <string name="fragment_favorites_label">Meus favoritos</string>
 
     <!--Drawer Menu Options-->
+    <string name="menu_title_login">Entrar</string>
     <string name="menu_title_profile">Conta</string>
     <string name="menu_title_favorites">Favoritos</string>
     <string name="menu_title_categories">Departamentos</string>
     <string name="menu_title_my_orders">Minhas compras</string>
     <string name="menu_title_cart">Carrinho</string>
+    <string name="menu_title_logout">Sair</string>
 
     <!--Place Holders-->
     <string name="place_holder_text_no_favorites">Você não possui produtos salvos</string>

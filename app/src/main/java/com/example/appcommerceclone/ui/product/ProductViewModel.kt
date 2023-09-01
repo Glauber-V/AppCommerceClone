@@ -52,6 +52,10 @@ class ProductViewModel @Inject constructor(
         }
     }
 
+    fun updateProductListOnConnectionReestablish() {
+        if (_loadingState.value == LoadingState.FAILURE) _loadingState.value = LoadingState.NOT_STARTED
+    }
+
     fun filterProductList(category: ProductCategories) {
         _products.value = if (category == ProductCategories.NONE) _allProducts
         else _allProducts.filter { it.category == category.categoryName }

@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.product.model.OrderedProduct
 import com.example.appcommerceclone.data.user.model.User
@@ -18,7 +17,6 @@ import com.example.appcommerceclone.databinding.FragmentCartBinding
 import com.example.appcommerceclone.ui.order.UserOrdersViewModel
 import com.example.appcommerceclone.ui.user.UserViewModel
 import com.example.appcommerceclone.util.formatPrice
-import com.example.appcommerceclone.util.navigateToProductsFragment
 import com.example.appcommerceclone.util.onBackPressedReturnToProductsFragment
 import com.example.appcommerceclone.util.showSnackbar
 import com.example.appcommerceclone.util.verifyUserToProceed
@@ -30,7 +28,7 @@ class CartFragment(
     private val cartViewModel: CartViewModel,
     private val userViewModel: UserViewModel,
     private val userOrdersViewModel: UserOrdersViewModel
-) : Fragment(), CartClickHandler, AppBarConfiguration.OnNavigateUpListener {
+) : Fragment(), CartClickHandler {
 
     private lateinit var binding: FragmentCartBinding
 
@@ -114,9 +112,5 @@ class CartFragment(
 
     override fun onDecreaseQuantity(orderedProduct: OrderedProduct) {
         cartViewModel.decreaseQuantity(orderedProduct)
-    }
-
-    override fun onNavigateUp(): Boolean {
-        return navigateToProductsFragment()
     }
 }

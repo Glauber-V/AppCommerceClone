@@ -6,15 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.ui.AppBarConfiguration
 import com.example.appcommerceclone.data.product.model.Product
 import com.example.appcommerceclone.databinding.FragmentFavoritesBinding
-import com.example.appcommerceclone.util.navigateToProductsFragment
 import com.example.appcommerceclone.util.onBackPressedReturnToProductsFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class FavoritesFragment(private val favoritesViewModel: FavoritesViewModel) : Fragment(), FavoriteClickHandler, AppBarConfiguration.OnNavigateUpListener {
+class FavoritesFragment(private val favoritesViewModel: FavoritesViewModel) : Fragment(), FavoriteClickHandler {
 
     private lateinit var binding: FragmentFavoritesBinding
 
@@ -51,9 +49,5 @@ class FavoritesFragment(private val favoritesViewModel: FavoritesViewModel) : Fr
 
     override fun onRemoveFromFavorites(product: Product) {
         favoritesViewModel.removeFromFavorites(product)
-    }
-
-    override fun onNavigateUp(): Boolean {
-        return navigateToProductsFragment()
     }
 }

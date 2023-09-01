@@ -8,13 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.distinctUntilChanged
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import com.example.appcommerceclone.R
 import com.example.appcommerceclone.data.user.model.User
 import com.example.appcommerceclone.databinding.FragmentLoginBinding
 import com.example.appcommerceclone.util.LoadingState
 import com.example.appcommerceclone.util.addOnTextChangedListener
-import com.example.appcommerceclone.util.navigateToProductsFragment
 import com.example.appcommerceclone.util.onBackPressedReturnToProductsFragment
 import com.example.appcommerceclone.util.showSnackbar
 import com.example.appcommerceclone.util.validate
@@ -22,7 +20,7 @@ import com.google.android.material.progressindicator.BaseProgressIndicator.*
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class LoginFragment(private val userViewModel: UserViewModel) : Fragment(), AppBarConfiguration.OnNavigateUpListener {
+class LoginFragment(private val userViewModel: UserViewModel) : Fragment() {
 
     private lateinit var binding: FragmentLoginBinding
 
@@ -86,10 +84,6 @@ class LoginFragment(private val userViewModel: UserViewModel) : Fragment(), AppB
                 LoginFragmentDirections.actionLoginFragmentToRegisterFragment()
             )
         }
-    }
-
-    override fun onNavigateUp(): Boolean {
-        return navigateToProductsFragment()
     }
 
     private fun showProgressBar() {

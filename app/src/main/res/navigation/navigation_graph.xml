@@ -96,7 +96,27 @@
         app:destination="@id/login_fragment" />
 
     <action
+        android:id="@+id/action_global_products_fragment"
+        app:destination="@id/products_fragment" />
+
+    <action
+        android:id="@+id/action_global_profile_fragment"
+        app:destination="@id/profile_fragment" />
+
+    <action
+        android:id="@+id/action_global_favorites_fragment"
+        app:destination="@id/favorites_fragment" />
+
+    <action
+        android:id="@+id/action_global_categories_fragment"
+        app:destination="@id/categories_fragment" />
+
+    <action
         android:id="@+id/action_global_orders_fragment"
         app:destination="@id/orders_fragment" />
+
+    <action
+        android:id="@+id/action_global_cart_fragment"
+        app:destination="@id/cart_fragment" />
 
 </navigation>

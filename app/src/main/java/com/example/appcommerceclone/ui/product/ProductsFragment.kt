@@ -55,6 +55,7 @@ class ProductsFragment(private val productViewModel: ProductViewModel) : Fragmen
             LoadingState.SUCCESS -> productViewModel.filterProductList(ProductCategories.NONE)
             else -> {}
         }
+        binding.productsSwipeRefreshLayout.isRefreshing = false
     }
 
     override fun onProductClicked(product: Product) {
