@@ -3,7 +3,7 @@ package com.example.appcommerceclone.util
 import android.content.Context
 import android.net.Uri
 import androidx.core.content.FileProvider
-import com.facebook.shimmer.BuildConfig
+import com.example.appcommerceclone.BuildConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 
