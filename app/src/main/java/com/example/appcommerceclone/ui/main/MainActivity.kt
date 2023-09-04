@@ -73,6 +73,12 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
         }
 
         userViewModel.currentUser.observe(this@MainActivity) { _currentUser ->
+            closeDrawerIfOpen()
+            lockDrawer()
+
+            navigationView.menu.clear()
+            navigationView.inflateMenu(R.menu.drawer_menu)
+
             currentUser = _currentUser
             if (currentUser != null) {
                 navigationView.menu.findItem(R.id.menu_login).isVisible = false
@@ -83,6 +89,8 @@ class MainActivity : AppCompatActivity(), NavController.OnDestinationChangedList
                 navigationView.menu.findItem(R.id.menu_profile).isVisible = false
                 navigationView.menu.findItem(R.id.menu_logout).isVisible = false
             }
+
+            unlockDrawer()
         }
     }
 
