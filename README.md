@@ -39,6 +39,7 @@ created for the production and testing code.
 - [ViewBinding](https://developer.android.com/topic/libraries/view-binding)
 - [DataBinding](https://developer.android.com/topic/libraries/data-binding)
 - [Binding Adapters](https://developer.android.com/topic/libraries/data-binding/binding-adapters)
+- [Compose](https://developer.android.com/jetpack/compose)
 - [Hilt Dependency Injection](https://dagger.dev/hilt/)
 - [Retrofit](https://square.github.io/retrofit/)
 - [Moshi](https://github.com/square/moshi/)
@@ -46,6 +47,7 @@ created for the production and testing code.
 - [Coroutines](https://kotlinlang.org/docs/coroutines-guide.html)
 - [Flow](https://developer.android.com/kotlin/flow)
 - [Glide](https://bumptech.github.io/glide/)
+- [Coil](https://coil-kt.github.io/coil/)
 - [Facebook's shimmer effect](https://github.com/facebook/shimmer-android)
 - [Espresso](https://developer.android.com/training/testing/espresso)
 - [Truth](https://truth.dev/)
@@ -58,23 +60,3 @@ created for the production and testing code.
 | johnd     | m38rmF$   |
 | mor_2314  | 83r5^_    |
 | kevinryan | kev02937@ |
-
-### Image References
-
-#### Icons
-
-[Diamond Ring Icon](https://icons8.com/icon/19632/diamond-ring)
-
-[T-Shirt Icon](https://icons8.com/icon/105819/t-shirt)
-
-[Womens T-Shirt Icon](https://icons8.com/icon/25497/womens-t-shirt)
-
-[Tech Icon](https://icons8.com/icon/ifjgL624vDhJ/technology)
-
-#### Banners
-
-[Woman Fashion banner](https://www.freepik.com/photos/happy-moments)
-
-[Male fashion banner](https://www.freepik.com/free-photo/business-man-coat-talking-phone-outside_1619086.htm#query=male%20fashion&position=43&from_view=keyword)
-
-[Electronics banner](https://www.freepik.com/free-photo/beautiful-young-woman-home-office-working-from-home-teleworking-concept_11013620.htm#query=coffee%20work&position=10&from_view=keyword")
