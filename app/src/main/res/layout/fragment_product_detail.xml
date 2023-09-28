@@ -26,17 +26,17 @@
                     android:id="@+id/product_detail_image"
                     setProductImageFromUrl="@{product}"
                     android:layout_width="wrap_content"
-                    android:layout_height="300dp"
-                    android:layout_marginStart="@dimen/margin_size_large"
-                    android:layout_marginTop="@dimen/margin_size_large"
-                    android:layout_marginEnd="@dimen/margin_size_large"
-                    android:adjustViewBounds="true"
-                    android:contentDescription="@string/content_desc_product_detail_name"
-                    android:scaleType="fitCenter"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/banner_men_s_clothing"/>
+                android:layout_height="300dp"
+                android:layout_marginStart="@dimen/margin_size_large"
+                android:layout_marginTop="@dimen/margin_size_large"
+                android:layout_marginEnd="@dimen/margin_size_large"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/content_desc_product_detail_name"
+                android:scaleType="fitCenter"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/place_holder" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/product_detail_add_to_favorites"

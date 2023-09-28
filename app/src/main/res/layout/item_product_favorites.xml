@@ -27,17 +27,17 @@
                     android:id="@+id/item_product_favorite_image"
                     setProductImageFromUrl="@{product}"
                     android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="@dimen/margin_size_medium"
-                    android:layout_marginTop="@dimen/margin_size_medium"
-                    android:layout_marginBottom="@dimen/margin_size_medium"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitXY"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearance="@style/AppCommerce.ShapeAppearance.ImageView.FullRounded"
-                    tools:src="@drawable/banner_men_s_clothing"/>
+                android:layout_height="100dp"
+                android:layout_marginStart="@dimen/margin_size_medium"
+                android:layout_marginTop="@dimen/margin_size_medium"
+                android:layout_marginBottom="@dimen/margin_size_medium"
+                android:adjustViewBounds="true"
+                android:scaleType="fitXY"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearance="@style/AppCommerce.ShapeAppearance.ImageView.FullRounded"
+                tools:src="@drawable/place_holder" />
 
             <TextView
                     android:id="@+id/item_product_favorite_name"
